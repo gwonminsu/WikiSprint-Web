@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+/* ===== Tailwind v4 다크모드 설정 ===== */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===== 테마 CSS 변수 ===== */
+:root {
+  /* 라이트 테마 (기본) */
+  --background: 255 255 255;
+  --foreground: 17 24 39;
+  --primary: 253 183 85; /* #FDB755 */
+  --primary-foreground: 0 0 0;
+  --secondary: 248 250 252;
+  --secondary-foreground: 51 65 85;
+  --muted: 241 245 249;
+  --muted-foreground: 100 116 139;
+  --accent: 253 183 85;
+  --accent-foreground: 0 0 0;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --border: 253 183 85;
+  --input: 253 183 85;
+  --ring: 253 183 85;
+}
+
+.dark {
+  /* 다크 테마 */
+  --background: 26 26 26; /* #1A1A1A */
+  --foreground: 250 250 250;
+  --primary: 253 183 85; /* #FDB755 */
+  --primary-foreground: 0 0 0;
+  --secondary: 36 36 36; /* #242424 */
+  --secondary-foreground: 161 161 170;
+  --muted: 39 39 42;
+  --muted-foreground: 161 161 170;
+  --accent: 253 183 85;
+  --accent-foreground: 0 0 0;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --border: 253 183 85;
+  --input: 253 183 85;
+  --ring: 253 183 85;
+}
+
+/* ===== 커스텀 애니메이션 ===== */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes yellowPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.9);
+  }
+  70% {
+    transform: scale(1.2);
+    opacity: 0;
+    box-shadow: 0 0 0 24px rgba(255, 215, 0, 0);
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+  }
+}
+
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+.animate-yellowPulse {
+  animation: yellowPulse 1.6s ease-out infinite;
+  background: rgba(255, 215, 0, 0.25);
+}
+
+/* ===== 기본 스타일 ===== */
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
+
+/* 다크모드 전환 애니메이션 */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* 커스텀 스크롤바 */
+.scrollbar-thin-custom::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin-custom::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.6);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar-thin-custom::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(253, 183, 85, 0.9);
+  cursor: pointer;
+}
+
+.scrollbar-thin-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
