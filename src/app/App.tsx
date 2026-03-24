@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryProvider } from './providers/QueryProvider';
 import { Router } from './router/Router';
 import { Dialog, ToastContainer, useThemeStore, useAuthStore } from '@shared';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
 
 // 테마 초기화 컴포넌트
 function ThemeInitializer(): null {
@@ -47,13 +50,15 @@ function AuthInitializer(): null {
 // 메인 앱 컴포넌트
 export function App(): React.ReactElement {
   return (
-    <QueryProvider>
-      <ThemeInitializer />
-      <AuthInitializer />
-      <Router />
-      <Dialog />
-      <ToastContainer />
-    </QueryProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <QueryProvider>
+        <ThemeInitializer />
+        <AuthInitializer />
+        <Router />
+        <Dialog />
+        <ToastContainer />
+      </QueryProvider>
+    </GoogleOAuthProvider>
   );
 }
 

@@ -1,9 +1,10 @@
 import { w } from '@widgets';
-import { useAuthStore } from '@shared';
+import { useAuthStore, useTranslation, getLogoByLanguage } from '@shared';
 
 // WikiSprint 홈 페이지
 export default function HomePage(): React.ReactElement {
   const { accountInfo } = useAuthStore();
+  const { language } = useTranslation();
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -11,7 +12,11 @@ export default function HomePage(): React.ReactElement {
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-20">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary mb-2">WikiSprint</h1>
+          <img
+            src={getLogoByLanguage(language)}
+            alt="WikiSprint"
+            className="h-16 mx-auto mb-2 object-contain"
+          />
           {accountInfo?.nick && (
             <p className="text-gray-600 dark:text-gray-400 mb-8">
               안녕하세요, {accountInfo.nick}님

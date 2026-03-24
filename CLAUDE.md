@@ -90,6 +90,8 @@ src/
     │   ├── core/           # interceptor, client, token
     │   ├── types/          # ApiResponse, ApiException
     │   └── constants/      # API_BASE_URL (8585), API_ENDPOINTS
+    ├── assets/
+    │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
     ├── lib/                # cn, i18n (ko/en/ja)
     ├── store/              # authStore, themeStore
@@ -137,6 +139,9 @@ shared.store.useAuthStore, shared.store.useThemeStore
 shared.lib.cn, shared.lib.useTranslation, shared.lib.useLanguageStore, shared.lib.LANGUAGES
 shared.api.client, shared.api.getTokenStorage, shared.api.setAuthUpdateCallback
 shared.config.queryClient
+
+// 개별 export (직접 import)
+getLogoByLanguage  // 언어(Language)를 인수로 받아 해당 로고 PNG URL 반환
 ```
 
 ---

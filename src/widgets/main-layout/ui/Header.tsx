@@ -1,12 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore, useDialog, useTranslation, ProfileAvatar } from '@shared';
+import { useAuthStore, useDialog, useTranslation, ProfileAvatar, getLogoByLanguage } from '@shared';
 import { getProfileImageUrl } from '@/features/account';
 
 // 웹 네비게이션 헤더
 export function Header(): React.ReactElement {
   const { accountInfo, clearAuth } = useAuthStore();
   const { showConfirm } = useDialog();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const navigate = useNavigate();
 
   const profileImageUrl = accountInfo?.profile_img_url
@@ -26,11 +26,15 @@ export function Header(): React.ReactElement {
   };
 
   return (
-    <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+    <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <div className="max-w-5xl mx-auto flex items-center justify-between h-14 px-6">
         {/* 로고 */}
-        <Link to="/" className="text-xl font-bold text-primary hover:opacity-80 transition-opacity">
-          WikiSprint
+        <Link to="/" className="hover:opacity-80 transition-opacity">
+          <img
+            src={getLogoByLanguage(language)}
+            alt="WikiSprint"
+            className="h-8 object-contain"
+          />
         </Link>
 
         {/* 네비게이션 */}

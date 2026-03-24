@@ -6,6 +6,12 @@ import path from 'path';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    headers: {
+      // Vite 7.x 기본 COOP(same-origin) 설정이 Google OAuth postMessage를 차단하므로 완화
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+    },
+  },
   resolve: {
     alias: [
       // 레이어 네임스페이스 (index.ts로 직접 매핑)
