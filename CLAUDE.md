@@ -30,7 +30,8 @@ npm run dev -- --port 5969
 2. git log/diff 분석
 3. 버전 결정: Major (아키텍처), Minor (기능), Patch (수정)
 4. `PATCH.md` 최상단에 추가 (구분선: `=` 104개 × 3줄)
-5. 커밋: `feat: 대표 변경사항 (vX.X.X)` 형식 + 푸시
+5. `SettingsView` 앱정보 버전 번호 업데이트 (`widgets/settings/ui/SettingsView.tsx`)
+6. 커밋 제목/메시지 제안: `feat: 대표 변경사항 (vX.X.X)` 형식으로 제안만 함 (커밋 · 푸시는 사용자가 직접 수행)
 
 ---
 

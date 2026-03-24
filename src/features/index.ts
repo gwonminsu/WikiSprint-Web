@@ -15,6 +15,7 @@ import {
   useUpdateNick,
   useUploadProfileImage,
   useRemoveProfileImage,
+  ProfileImageEditModal,
 } from './account';
 
 // 네임스페이스 export
@@ -38,6 +39,9 @@ export const f = {
       getProfileImageUrl,
     },
   },
+  ui: {
+    ProfileImageEditModal,
+  },
 } as const;
 
 // 개별 export (직접 import 용도)
@@ -53,4 +57,5 @@ export {
   useUpdateNick,
   useUploadProfileImage,
   useRemoveProfileImage,
+  ProfileImageEditModal,
 } from './account';
