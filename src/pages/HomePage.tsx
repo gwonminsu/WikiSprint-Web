@@ -17,11 +17,9 @@ export default function HomePage(): React.ReactElement {
             alt="WikiSprint"
             className="h-16 mx-auto mb-2 object-contain"
           />
-          {accountInfo?.nick && (
-            <p className="text-gray-600 dark:text-gray-400 mb-8">
-              안녕하세요, {accountInfo.nick}님
-            </p>
-          )}
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
+            안녕하세요, {accountInfo?.nick ?? '게스트'}님
+          </p>
           <div className="w-16 h-1 bg-primary rounded-full mx-auto opacity-30" />
         </div>
       </main>

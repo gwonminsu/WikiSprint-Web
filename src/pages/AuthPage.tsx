@@ -30,8 +30,14 @@ export default function AuthPage(): React.ReactElement {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 text-center">
+    // 🔥 [수정] relative + overflow-hidden 추가
+    <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      
+      {/* 🔥 [추가] 배경 패턴 레이어 */}
+      <div className="absolute inset-0 pointer-events-none pattern-bg" />
+
+      {/* 🔥 기존 컨텐츠 (z-index 위해 relative 유지) */}
+      <div className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 text-center">
         <img
           src={getLogoByLanguage(language)}
           alt="WikiSprint"

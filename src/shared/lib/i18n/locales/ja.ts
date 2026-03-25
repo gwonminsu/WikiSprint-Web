@@ -23,6 +23,8 @@ export const ja = {
     welcome: 'Googleアカウントで始めましょう',
     continueWithGoogle: 'Googleで続ける',
     googleLoginFail: 'Googleログインに失敗しました。もう一度お試しください。',
+    guest: 'ゲスト',
+    loginPrompt: 'WikiSprintを思う存分楽しむにはログインしてみてください！',
   },
   nav: {
     home: 'ホーム',

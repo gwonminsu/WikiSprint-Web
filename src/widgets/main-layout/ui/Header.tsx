@@ -20,7 +20,7 @@ export function Header(): React.ReactElement {
       confirmText: t('auth.logout'),
       onConfirm: () => {
         clearAuth();
-        navigate('/auth');
+        navigate('/');
       },
     });
   };
@@ -53,7 +53,7 @@ export function Header(): React.ReactElement {
           </Link>
 
           {/* 사용자 메뉴 */}
-          {accountInfo && (
+          {accountInfo ? (
             <div className="flex items-center gap-3">
               <ProfileAvatar
                 imageUrl={profileImageUrl}
@@ -66,9 +66,29 @@ export function Header(): React.ReactElement {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+                className="text-sm text-red-400 hover:font-bold transition-all"
               >
                 {t('auth.logout')}
+              </button>
+            </div>
+          ) : (
+            // 비로그인 게스트 메뉴
+            <div className="flex items-center gap-3">
+              {/* 달리는 사람 아이콘 */}
+              <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-gray-500 dark:text-gray-400">
+                  <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9 1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z" />
+                </svg>
+              </div>
+              <span className="text-sm text-gray-700 dark:text-gray-200">
+                {t('auth.guest')}
+              </span>
+              <button
+                type="button"
+                onClick={() => navigate('/auth')}
+                className="text-sm text-red-400 hover:font-bold transition-all"
+              >
+                {t('auth.login')}
               </button>
             </div>
           )}

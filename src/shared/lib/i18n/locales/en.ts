@@ -23,6 +23,8 @@ export const en = {
     welcome: 'Get started with your Google account',
     continueWithGoogle: 'Continue with Google',
     googleLoginFail: 'Google login failed. Please try again.',
+    guest: 'Guest',
+    loginPrompt: 'Log in to enjoy WikiSprint to the fullest!',
   },
   nav: {
     home: 'Home',

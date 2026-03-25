@@ -23,6 +23,8 @@ export const ko = {
     welcome: 'Google 계정으로 시작하세요',
     continueWithGoogle: 'Google로 계속하기',
     googleLoginFail: 'Google 로그인에 실패했습니다. 다시 시도해주세요.',
+    guest: '게스트',
+    loginPrompt: '위키 스프린트를 제대로 즐겨보려면 로그인 해 보세요!',
   },
   nav: {
     home: '홈',
