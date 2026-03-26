@@ -3,6 +3,9 @@ import type { Language } from '../../lib/i18n/i18n';
 import logoKo from './wikisprint-logo-ko.png';
 import logoEn from './wikisprint-logo-en.png';
 import logoJa from './wikisprint-logo-ja.png';
+import tutoDoc from './tutoDoc.png';
+import talkerStart from './talker-start.png';
+import talkerFinger from './talker-finger.png';
 
 // 언어별 로고 이미지 맵
 const logoMap: Record<Language, string> = {
@@ -15,3 +18,9 @@ const logoMap: Record<Language, string> = {
 export function getLogoByLanguage(language: Language): string {
   return logoMap[language];
 }
+
+// 튜토리얼 문서 이미지
+export { tutoDoc };
+
+// 캐릭터(talker) 이미지
+export { talkerStart, talkerFinger };

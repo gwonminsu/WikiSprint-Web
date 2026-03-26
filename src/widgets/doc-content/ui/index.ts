@@ -1,0 +1,1 @@
+export { DocContentView } from './DocContentView';

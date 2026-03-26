@@ -14,6 +14,9 @@ import type {
   AccountResponse,
 } from './account';
 
+// Wiki 엔티티 타입
+import type { WikiSummary, WikiArticle } from './wiki';
+
 // 네임스페이스 export
 export const e = {
   auth: {
@@ -32,6 +35,12 @@ export const e = {
       AccountResponse: AccountResponse;
     },
   },
+  wiki: {
+    type: {} as {
+      WikiSummary: WikiSummary;
+      WikiArticle: WikiArticle;
+    },
+  },
 } as const;
 
 // 타입 직접 export (직접 import 용도)
@@ -48,3 +57,5 @@ export type {
   RemoveProfileResponse,
   AccountResponse,
 } from './account';
+
+export type { WikiSummary, WikiArticle } from './wiki';

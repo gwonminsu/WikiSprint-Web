@@ -2,7 +2,7 @@
 import { getLogoByLanguage } from './assets/images';
 
 // UI 컴포넌트
-import { Dialog, ToastContainer, useDialog, useToast, ProfileAvatar, EmbossButton } from './ui';
+import { Dialog, ToastContainer, useDialog, useToast, ProfileAvatar, EmbossButton, SpeechBubble, Accordion } from './ui';
 
 // 스토어
 import { useAuthStore, useThemeStore } from './store';
@@ -25,6 +25,8 @@ export const shared = {
     useToast,
     ProfileAvatar,
     EmbossButton,
+    SpeechBubble,
+    Accordion,
   },
   store: {
     useAuthStore,
@@ -47,8 +49,8 @@ export const shared = {
 } as const;
 
 // 개별 export (직접 import 용도)
-export { getLogoByLanguage } from './assets/images';
-export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton } from './ui';
+export { getLogoByLanguage, tutoDoc, talkerStart, talkerFinger } from './assets/images';
+export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion } from './ui';
 export { useAuthStore, useThemeStore, useSystemThemeListener, type Theme } from './store';
 export { cn, useTranslation, useLanguageStore, getTranslations, LANGUAGES, type Language } from './lib';
 export { queryClient } from './config';

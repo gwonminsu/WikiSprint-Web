@@ -1,3 +1,23 @@
+## v1.4.0 (2026-03-26)
+
+### Added
+- Wikipedia REST API 기반 게임 시스템 — 백엔드 프록시를 통해 문서 HTML을 가져와 자체 렌더링
+- WikiSprint 소개 문서 추가 및 링크 플로팅 버튼 홈페이지에 추가
+- 제시어 시스템 — DB에서 랜덤 제시어 조회 (`getRandomTargetWord()`), 게임 중 제시어 고정
+- 말풍선 제시어 강조 — `SpeechBubble`에 `highlightWord` prop 추가 (볼드 + `text-primary` 색상)
+- `GameIntroView` 전면 리라이트 — ready/playing 2단계 게임 플로우, Wikipedia HTML 렌더링
+- CC BY-SA 3.0 출처 표시 — playing 단계 화면 하단 고정 (`fixed bottom-0`)
+- talker+말풍선 영역 상단 고정 — playing 단계 `sticky top-14` 적용
+- `sanitizeWikiHtml()` — Wikipedia HTML의 `<base>`, `<head>` 태그 제거 (링크 버그 방지)
+- 외부 링크 완전 차단 — 문서 내 모든 링크 `preventDefault()`, 위키 내부 링크만 허용
+- `entities/wiki` 타입 확장 — `TargetWordResponse` 추가 (wordId, word, difficulty)
+- `features/wiki` API 확장 — `getRandomTargetWord()` 함수 추가
+- i18n `game` 네임스페이스 키 추가 — `startButton`, `playingMessage`, `arrivedButton`, `attribution` (ko/en/ja)
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v1.3.0 (2026-03-25)
 
 ### Added

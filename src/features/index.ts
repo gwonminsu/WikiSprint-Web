@@ -4,6 +4,9 @@ import {
   authApi,
 } from './auth';
 
+// Wiki feature (Wikipedia API 클라이언트)
+import { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord } from './wiki';
+
 // Account feature
 import {
   getMyAccount,
@@ -30,6 +33,7 @@ export const f = {
     useRemoveProfileImage,
   },
   api: {
+    wiki: { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord },
     auth: authApi,
     account: {
       getMyAccount,
@@ -46,6 +50,7 @@ export const f = {
 
 // 개별 export (직접 import 용도)
 export { useGoogleLogin, authApi } from './auth';
+export { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord } from './wiki';
 
 export {
   getMyAccount,
