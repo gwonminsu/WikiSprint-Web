@@ -33,7 +33,7 @@ function extractTitleFromHref(href: string): string | null {
 
 // 홈 게임 플로우 위젯 — Wikipedia API 기반 문서 렌더링
 export function GameIntroView({ phase, onGameStart }: Props): React.ReactElement {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const articleRef = useRef<HTMLDivElement>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -68,7 +68,8 @@ export function GameIntroView({ phase, onGameStart }: Props): React.ReactElement
 
     setIsLoading(true);
     try {
-      const html = await getArticleHtml(title);
+      // 현재 언어 설정에 맞는 Wikipedia 문서 조회
+      const html = await getArticleHtml(title, language);
       // 제시어는 변경하지 않고 문서 HTML만 업데이트
       setArticleHtml(sanitizeWikiHtml(html));
       // 문서 영역 스크롤 최상단으로
@@ -76,19 +77,19 @@ export function GameIntroView({ phase, onGameStart }: Props): React.ReactElement
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [language]);
 
   // 게임 시작 — DB에서 제시어 가져온 후 랜덤 시작 문서 fetch
   const handleGameStart = async (): Promise<void> => {
     setIsLoading(true);
     try {
-      // DB에서 랜덤 제시어 조회
-      const targetWordData = await getRandomTargetWord();
+      // 현재 언어 설정에 맞는 랜덤 제시어 조회
+      const targetWordData = await getRandomTargetWord(language);
       setTargetWord(targetWordData.word);
 
-      // 시작 문서는 제시어와 관계없는 랜덤 문서
-      const summary = await getRandomArticle();
-      const html = await getArticleHtml(summary.title);
+      // 시작 문서는 제시어와 관계없는 랜덤 문서 (현재 언어 Wikipedia)
+      const summary = await getRandomArticle(language);
+      const html = await getArticleHtml(summary.title, language);
       setArticleHtml(sanitizeWikiHtml(html));
       onGameStart();
     } finally {

@@ -211,7 +211,7 @@ export function SettingsView(): React.ReactElement {
                 <button
                   type="button"
                   onClick={() => navigate('/auth')}
-                  className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 hover:from-yellow-500 hover:via-orange-500 hover:to-red-600 shadow-md hover:shadow-lg transition-all"
+                  className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-linear-to from-yellow-400 via-orange-400 to-red-500 hover:from-yellow-500 hover:via-orange-500 hover:to-red-600 shadow-md hover:shadow-lg transition-all"
                 >
                   {t('auth.login')}
                 </button>
@@ -274,7 +274,7 @@ export function SettingsView(): React.ReactElement {
         </h2>
         <div className="flex items-center justify-between">
           <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-          <span className="text-gray-500 dark:text-gray-400">1.4.0</span>
+          <span className="text-gray-500 dark:text-gray-400">1.5.0</span>
         </div>
       </section>
 

@@ -1,5 +1,3 @@
-// 말풍선 컴포넌트 — SVG 곡선 꼬리가 있는 대화형 말풍선
-
 type Props = {
   text: string;
   isTyping: boolean;
@@ -18,13 +16,13 @@ function renderTextWithHighlight(text: string, highlightWord: string): React.Rea
   return (
     <>
       {before}
-      <span className="font-bold text-base text-primary">{highlightWord}</span>
+      <span className="font-bold text-base text-red-400">{highlightWord}</span>
       {after}
     </>
   );
 }
 
-// 말풍선 (왼쪽 아래 곡선 꼬리, 텍스트 길이에 자동 맞춤)
+// 말풍선 (텍스트 길이에 자동 맞춤)
 export function SpeechBubble({ text, isTyping, highlightWord }: Props): React.ReactElement {
   return (
     <div className="relative inline-flex flex-col">
@@ -50,28 +48,6 @@ export function SpeechBubble({ text, isTyping, highlightWord }: Props): React.Re
         )}
       </div>
 
-      {/* SVG 곡선 꼬리 — 말풍선 왼쪽 아래에서 talker 방향으로 */}
-      <div className="absolute -bottom-3 left-5 w-6 h-4 overflow-visible z-0">
-        <svg
-          viewBox="0 0 24 16"
-          xmlns="http://www.w3.org/2000/svg"
-          className="absolute top-0 left-0 w-6 h-4"
-        >
-          {/* 꼬리 테두리 (border 색상) */}
-          <path
-            d="M 0 0 Q 4 8 0 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            className="text-gray-200 dark:text-gray-600"
-          />
-          {/* 꼬리 내부 채우기 (배경 색상과 일치) */}
-          <path
-            d="M 1 1 Q 5 8 1 15 L 0 0 Z"
-            className="fill-white dark:fill-gray-800"
-          />
-        </svg>
-      </div>
     </div>
   );
 }

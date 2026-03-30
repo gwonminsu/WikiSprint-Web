@@ -69,7 +69,7 @@ export function DocContentView(): React.ReactElement {
           <img
             src={talkerStart}
             alt="character"
-            className="w-24 h-24 object-contain flex-shrink-0 hidden sm:block"
+            className="w-24 h-24 object-contain shrink-0 hidden sm:block"
           />
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -112,7 +112,7 @@ export function DocContentView(): React.ReactElement {
               key={index}
               className="flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
             >
-              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-black font-bold text-sm flex items-center justify-center">
+              <span className="shrink-0 w-8 h-8 rounded-full bg-primary text-black font-bold text-sm flex items-center justify-center">
                 {index + 1}
               </span>
               <p className="text-gray-700 dark:text-gray-200 pt-1">{step}</p>
@@ -151,7 +151,7 @@ export function DocContentView(): React.ReactElement {
           <img
             src={talkerFinger}
             alt="character"
-            className="w-16 h-16 object-contain flex-shrink-0 hidden sm:block"
+            className="w-16 h-16 object-contain shrink-0 hidden sm:block"
           />
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed pt-2">
             {t('doc.inspirationDesc')}

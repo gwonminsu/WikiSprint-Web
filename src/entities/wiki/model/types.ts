@@ -31,5 +31,6 @@ export type TargetWordResponse = {
   wordId: number;
   word: string;
   difficulty: number; // 1: 쉬움, 2: 보통, 3: 어려움
+  lang: string;       // 언어 코드 (ko, en, ja)
   createdAt: string;
 };
