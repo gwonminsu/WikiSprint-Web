@@ -13,6 +13,7 @@ import {
   talkerWarn,
   useTranslation,
   useGameStore,
+  useToast,
 } from '@shared';
 import { getRandomArticle, getArticleHtml, getRandomTargetWord } from '@features';
 import { useTypewriter, useGameTimer } from '../lib';
@@ -82,9 +83,20 @@ function TimerDisplay(): React.ReactElement {
   );
 }
 
+// Wikipedia Parsoid HTML에서 빨간 링크(존재하지 않는 문서) 여부 판별
+function isRedLink(anchor: HTMLAnchorElement): boolean {
+  // Parsoid HTML은 존재하지 않는 문서 링크에 class="new" 추가
+  if (anchor.classList.contains('new')) return true;
+  // href에 redlink=1 파라미터가 포함된 경우 (일부 포맷)
+  const href = anchor.getAttribute('href') ?? '';
+  if (href.includes('redlink=1') || href.includes('action=edit')) return true;
+  return false;
+}
+
 // 홈 게임 플로우 위젯 — Wikipedia API 기반 문서 렌더링 + 게임 핵심 시스템
 export function GameIntroView(): React.ReactElement {
   const { t, language } = useTranslation();
+  const toast = useToast();
   const articleRef = useRef<HTMLDivElement>(null);
 
   // 자주 바뀌지 않는 값만 React 구독 (re-render 최소화)
@@ -166,8 +178,10 @@ export function GameIntroView(): React.ReactElement {
 
     const title = extractTitleFromHref(href);
 
-    // 위키 내부 링크가 아닌 경우 — 외부 링크 경고 말풍선
-    if (!title) {
+    // 위키 내부 링크가 아닌 경우 또는 빨간 링크(존재하지 않는 문서) — 경고 말풍선
+    const isExternal = !title;
+    const isRed = !isExternal && isRedLink(anchor);
+    if (isExternal || isRed) {
       const warnText = t('game.externalLinkMessage').replace('???', targetWord);
       setSpeechText(warnText);
       setSpeechHighlights([{ word: targetWord, color: 'red' }]);
@@ -226,6 +240,12 @@ export function GameIntroView(): React.ReactElement {
         ]);
         setCurrentTalkerImage(talkerImg);
       }
+    } catch {
+      // API 호출 실패 시 (빨간 링크 등) — 경고 말풍선으로 안전하게 처리
+      const warnText = t('game.externalLinkMessage').replace('???', targetWord);
+      setSpeechText(warnText);
+      setSpeechHighlights([{ word: targetWord, color: 'red' }]);
+      setCurrentTalkerImage(talkerWarn);
     } finally {
       setIsLoading(false);
     }
@@ -253,6 +273,9 @@ export function GameIntroView(): React.ReactElement {
       setSpeechText(initialText);
       setSpeechHighlights([{ word, color: 'red' }]);
       setCurrentTalkerImage(talkerFinger);
+    } catch {
+      // 게임 시작 실패 (타임아웃, 네트워크 오류 등) — 토스트 알림
+      toast.error(t('game.startError'));
     } finally {
       setIsLoading(false);
     }

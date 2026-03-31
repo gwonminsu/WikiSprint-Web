@@ -101,6 +101,8 @@ export const ja = {
     timer10min: '[お題-???] 10分経過.. zzz.. まだ終わってないんですか..？急ぎましょう..',
     winMessage: 'お題 ??? に@分@@.@@秒で到達しました！おめでとうございます！',
     helpButton: 'ヘルプ！',
-    externalLinkMessage: '[お題-???] 赤いリンクは移動できません。',
+    externalLinkMessage: '[お題-???] 赤いリンクは外部リンクのため移動できません。',
+    leaveConfirm: 'ページ移動すると進行中のゲームが強制終了されます。移動しますか？',
+    startError: 'ゲームを開始できません。しばらくしてからもう一度お試しください！',
   },
 } as const;

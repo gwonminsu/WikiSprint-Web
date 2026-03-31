@@ -101,6 +101,8 @@ export const en = {
     timer10min: '[Target-???] 10 minutes passed.. zzz.. Still not done..? Pick up the pace!',
     winMessage: 'You reached ??? in @ min @@.@@ sec! Congratulations!',
     helpButton: 'Help!',
-    externalLinkMessage: '[Target-???] Red links cannot be followed.',
+    externalLinkMessage: '[Target-???] Red links are external links and cannot be followed.',
+    leaveConfirm: 'Navigating away will forcibly end your current game. Are you sure you want to leave?',
+    startError: 'Unable to start the game. Please try again in a moment!',
   },
 } as const;

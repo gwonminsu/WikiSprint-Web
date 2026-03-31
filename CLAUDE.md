@@ -68,7 +68,8 @@ src/
 ├── pages/                  # 페이지 (직접 import)
 │   ├── AuthPage.tsx        # Google OAuth 로그인
 │   ├── HomePage.tsx
-│   └── SettingsPage.tsx
+│   ├── SettingsPage.tsx
+│   └── DocPage.tsx         # WikiSprint 소개 문서
 │
 ├── widgets/                # 독립적 UI 블록
 │   ├── index.ts            # 네임스페이스 export (w.*)
@@ -123,6 +124,7 @@ import { shared } from '@shared'; // shared.ui.Dialog, shared.store.useAuthStore
 // w (widgets)
 w.Header
 w.SettingsView
+w.GameIntroView
 
 // f (features)
 f.hook.useGoogleLogin
@@ -145,6 +147,7 @@ shared.config.queryClient
 
 // 개별 export (직접 import)
 getLogoByLanguage  // 언어(Language)를 인수로 받아 해당 로고 PNG URL 반환
+tutoDoc            // 도움말 아이콘 이미지 (Header "도움!" 버튼)
 talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn  // talker 캐릭터 이미지 9종
 ```
 
@@ -153,10 +156,13 @@ talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talk
 ## 라우팅 구조
 
 ```
-/           → HomePage      (인증 필요, PrivateRoute)
-/auth       → AuthPage      (인증 불필요)
-/settings   → SettingsPage  (인증 필요)
+/           → HomePage      (게스트 포함 누구나 접근 가능)
+/auth       → AuthPage      (로그인 페이지)
+/settings   → SettingsPage  (게스트 포함 누구나 접근 가능)
+/doc        → DocPage       (WikiSprint 소개)
 ```
+
+> PrivateRoute 없음. 게임 진행 중(`playing`) 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
 
 ---
 

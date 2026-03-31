@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore, useDialog, useTranslation, ProfileAvatar, getLogoByLanguage, tutoDoc } from '@shared';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore, useDialog, useTranslation, ProfileAvatar, getLogoByLanguage, tutoDoc, useGameStore } from '@shared';
 import { getProfileImageUrl } from '@/features/account';
 
 // 구분선 컴포넌트 — nav 항목 사이에 표시
@@ -15,6 +15,25 @@ export function Header(): React.ReactElement {
   const { showConfirm } = useDialog();
   const { t, language } = useTranslation();
   const navigate = useNavigate();
+
+  // 게임 phase만 구독 — 다른 gameStore 상태 변경 시 Header 리렌더 방지
+  const phase = useGameStore((s) => s.phase);
+  const resetGame = useGameStore((s) => s.resetGame);
+
+  // 게임 진행 중 페이지 이동 시 확인 다이얼로그 표시 후 이동
+  const guardedNavigate = (path: string): void => {
+    if (phase === 'playing') {
+      showConfirm({
+        message: t('game.leaveConfirm'),
+        onConfirm: () => {
+          resetGame();
+          navigate(path);
+        },
+      });
+    } else {
+      navigate(path);
+    }
+  };
 
   const profileImageUrl = accountInfo?.profile_img_url
     ? getProfileImageUrl(accountInfo.profile_img_url)
@@ -36,38 +55,44 @@ export function Header(): React.ReactElement {
     <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <div className="max-w-5xl mx-auto flex items-center justify-between h-14 px-6">
         {/* 로고 */}
-        <Link to="/" className="hover:opacity-80 transition-opacity">
+        <button
+          type="button"
+          onClick={() => guardedNavigate('/')}
+          className="hover:opacity-80 transition-opacity"
+        >
           <img
             src={getLogoByLanguage(language)}
             alt="WikiSprint"
             className="h-8 object-contain"
           />
-        </Link>
+        </button>
 
         {/* 네비게이션 */}
         <nav className="flex items-center gap-3">
-          <Link
-            to="/"
+          <button
+            type="button"
+            onClick={() => guardedNavigate('/')}
             className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
             {t('nav.home')}
-          </Link>
+          </button>
 
           <NavDivider />
 
-          <Link
-            to="/settings"
+          <button
+            type="button"
+            onClick={() => guardedNavigate('/settings')}
             className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
             {t('nav.settings')}
-          </Link>
+          </button>
 
           <NavDivider />
 
           {/* 도움! 버튼 — DocPage로 이동 */}
           <button
             type="button"
-            onClick={() => navigate('/doc')}
+            onClick={() => guardedNavigate('/doc')}
             className="flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors px-1"
           >
             <img src={tutoDoc} alt="도움말" className="w-8 h-8 object-contain" />
@@ -111,7 +136,7 @@ export function Header(): React.ReactElement {
               <NavDivider />
               <button
                 type="button"
-                onClick={() => navigate('/auth')}
+                onClick={() => guardedNavigate('/auth')}
                 className="text-sm text-red-400 hover:font-bold transition-all"
               >
                 {t('auth.login')}

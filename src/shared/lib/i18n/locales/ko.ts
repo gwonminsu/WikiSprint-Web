@@ -101,6 +101,8 @@ export const ko = {
     timer10min: '[제시어-???] 현재 10분 경과..쿨.. 아직도 안끝났어요..? 빨리빨리 끝냅시다..',
     winMessage: '제시어 ???에 @분 @@.@@초 만에 도달했습니다! 축하드립니다!',
     helpButton: '도움!',
-    externalLinkMessage: '[제시어-???] 붉은 색 링크는 이동할 수 없습니다.',
+    externalLinkMessage: '[제시어-???] 붉은 색 링크는 외부 링크로 이동 불가합니다.',
+    leaveConfirm: '페이지 이동 시 진행중인 게임이 강제로 종료됩니다. 이동하시겠습니까?',
+    startError: '게임을 시작 할 수 없습니다. 잠시 후 다시 시도해 주세요!',
   },
 } as const;
