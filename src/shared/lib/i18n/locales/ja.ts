@@ -95,5 +95,12 @@ export const ja = {
     playingMessage: 'ゲームが始まりました！お題は ??? です。頑張ってください！',
     arrivedButton: '到着！',
     attribution: 'コンテンツ出典：Wikipedia (CC BY-SA 3.0)',
+    navigatedMessage: '[お題-???] @@@ ページに到着！お題のリンクまで辿り着けるでしょうか？',
+    timer2min: '[お題-???] 2分が経過しました！',
+    timer5min: '[お題-???] ふあーあ.. 5分が経過しました！そろそろ急いでください！',
+    timer10min: '[お題-???] 10分経過.. zzz.. まだ終わってないんですか..？急ぎましょう..',
+    winMessage: 'お題 ??? に@分@@.@@秒で到達しました！おめでとうございます！',
+    helpButton: 'ヘルプ！',
+    externalLinkMessage: '[お題-???] 赤いリンクは移動できません。',
   },
 } as const;

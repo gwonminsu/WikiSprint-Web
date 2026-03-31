@@ -211,13 +211,22 @@ body {
   margin-bottom: 0.8em;
 }
 
-/* 링크 */
+/* 링크 — 위키 내부 링크 (파란색) */
 .wiki-article a {
   color: #3366cc;
   text-decoration: none;
 }
 .wiki-article a:hover {
   text-decoration: underline;
+}
+
+/* 외부 링크 (http://, https://) — 빨간색 + 클릭 불가 커서 */
+.wiki-article a:not([href^="./"]):not([href^="/wiki/"]):not([href^="#"]) {
+  color: #ef4444 !important;
+  cursor: not-allowed;
+}
+.wiki-article a:not([href^="./"]):not([href^="/wiki/"]):not([href^="#"]):hover {
+  text-decoration: none;
 }
 
 /* 목록 */
@@ -407,6 +416,12 @@ body {
 
 .dark .wiki-article a {
   color: #6fa3e0;
+}
+
+/* 다크모드 외부 링크 */
+.dark .wiki-article a:not([href^="./"]):not([href^="/wiki/"]):not([href^="#"]) {
+  color: #f87171 !important;
+  cursor: not-allowed;
 }
 
 .dark .wiki-article blockquote {

@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { w } from '@widgets';
-import { useAuthStore, useTranslation, getLogoByLanguage } from '@shared';
-
-// 홈 게임 플로우 단계
-type GamePhase = 'intro' | 'ready' | 'playing';
+import { useAuthStore, useTranslation, getLogoByLanguage, useGameStore } from '@shared';
 
 // WikiSprint 홈 페이지 — 인트로 페이드아웃 후 게임 플로우 진입
 export default function HomePage(): React.ReactElement {
   const { accountInfo } = useAuthStore();
   const { language } = useTranslation();
+  const phase = useGameStore((s) => s.phase);
+  const setPhase = useGameStore((s) => s.setPhase);
 
-  const [phase, setPhase] = useState<GamePhase>('intro');
+  // intro 페이드아웃 애니메이션은 로컬 상태로 관리
   const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
 
   useEffect(() => {
@@ -27,10 +26,6 @@ export default function HomePage(): React.ReactElement {
     if (isFadingOut) {
       setPhase('ready');
     }
-  };
-
-  const handleGameStart = (): void => {
-    setPhase('playing');
   };
 
   return (
@@ -57,8 +52,8 @@ export default function HomePage(): React.ReactElement {
         </main>
       )}
 
-      {/* CC BY-SA 출처 표시 — playing 단계에서만, 화면 하단 고정 */}
-      {phase === 'playing' && (
+      {/* CC BY-SA 출처 표시 — playing/completed 단계에서만, 화면 하단 고정 */}
+      {(phase === 'playing' || phase === 'completed') && (
         <div className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-center gap-1.5 py-1 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
           <span className="text-xs text-gray-400 dark:text-gray-500">
             콘텐츠 출처:
@@ -75,13 +70,10 @@ export default function HomePage(): React.ReactElement {
         </div>
       )}
 
-      {/* ready/playing 단계 — talker + 말풍선 + Wikipedia 문서 */}
-      {(phase === 'ready' || phase === 'playing') && (
-        <w.GameIntroView phase={phase} onGameStart={handleGameStart} />
+      {/* ready/playing/completed 단계 — talker + 말풍선 + Wikipedia 문서 */}
+      {(phase === 'ready' || phase === 'playing' || phase === 'completed') && (
+        <w.GameIntroView />
       )}
-
-      {/* 소개 페이지 플로팅 버튼 — 항상 표시 */}
-      <w.DocFloatingButton />
     </div>
   );
 }

@@ -6,6 +6,13 @@ import logoJa from './wikisprint-logo-ja.png';
 import tutoDoc from './tutoDoc.png';
 import talkerStart from './talker-start.png';
 import talkerFinger from './talker-finger.png';
+import talkerIdle from './talker-idle.png';
+import talkerYawn from './talker-yawn.png';
+import talkerSleep from './talker-sleep.png';
+import talkerGood from './talker-good.png';
+import talkerOk from './talker-ok.png';
+import talkerLate from './talker-late.png';
+import talkerWarn from './talker-warn.png';
 
 // 언어별 로고 이미지 맵
 const logoMap: Record<Language, string> = {
@@ -23,4 +30,4 @@ export function getLogoByLanguage(language: Language): string {
 export { tutoDoc };
 
 // 캐릭터(talker) 이미지
-export { talkerStart, talkerFinger };
+export { talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn };

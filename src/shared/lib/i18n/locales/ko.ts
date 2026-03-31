@@ -95,5 +95,12 @@ export const ko = {
     playingMessage: '게임이 시작되었네요! 제시어는 ??? 입니다. 화이팅!',
     arrivedButton: '도착!',
     attribution: '콘텐츠 출처: Wikipedia (CC BY-SA 3.0)',
+    navigatedMessage: '[제시어-???] @@@ 페이지로 오셨네요! 과연 제시어 링크까지 도달할 수 있을까요?',
+    timer2min: '[제시어-???] 현재 2분 경과 했습니다!',
+    timer5min: '[제시어-???] 하아암.. 현재 5분 경과 했습니다! 슬슬 서두르세요!',
+    timer10min: '[제시어-???] 현재 10분 경과..쿨.. 아직도 안끝났어요..? 빨리빨리 끝냅시다..',
+    winMessage: '제시어 ???에 @분 @@.@@초 만에 도달했습니다! 축하드립니다!',
+    helpButton: '도움!',
+    externalLinkMessage: '[제시어-???] 붉은 색 링크는 이동할 수 없습니다.',
   },
 } as const;

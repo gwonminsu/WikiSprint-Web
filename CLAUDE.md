@@ -73,7 +73,9 @@ src/
 ├── widgets/                # 독립적 UI 블록
 │   ├── index.ts            # 네임스페이스 export (w.*)
 │   ├── main-layout/        # Header
-│   └── settings/           # SettingsView
+│   ├── settings/           # SettingsView
+│   └── game-intro/         # GameIntroView (Wikipedia 렌더링 + 게임 핵심 로직)
+│       └── lib/            # useTypewriter, useGameTimer
 │
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
@@ -95,7 +97,7 @@ src/
     │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
     ├── lib/                # cn, i18n (ko/en/ja)
-    ├── store/              # authStore, themeStore
+    ├── store/              # authStore, themeStore, gameStore
     ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton
     └── styles/             # 전역 스타일 + 테마 CSS 변수
 ```
@@ -136,13 +138,14 @@ e.account.type.*
 // shared
 shared.ui.Dialog, shared.ui.ToastContainer
 shared.ui.useDialog, shared.ui.useToast, shared.ui.ProfileAvatar, shared.ui.EmbossButton
-shared.store.useAuthStore, shared.store.useThemeStore
+shared.store.useAuthStore, shared.store.useThemeStore, shared.store.useGameStore
 shared.lib.cn, shared.lib.useTranslation, shared.lib.useLanguageStore, shared.lib.LANGUAGES
 shared.api.client, shared.api.getTokenStorage, shared.api.setAuthUpdateCallback
 shared.config.queryClient
 
 // 개별 export (직접 import)
 getLogoByLanguage  // 언어(Language)를 인수로 받아 해당 로고 PNG URL 반환
+talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn  // talker 캐릭터 이미지 9종
 ```
 
 ---

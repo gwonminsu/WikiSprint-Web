@@ -95,5 +95,12 @@ export const en = {
     playingMessage: 'The game has started! Your target is ???. Good luck!',
     arrivedButton: 'Arrived!',
     attribution: 'Content source: Wikipedia (CC BY-SA 3.0)',
+    navigatedMessage: '[Target-???] You\'ve arrived at @@@ ! Can you reach the target link?',
+    timer2min: '[Target-???] 2 minutes have passed!',
+    timer5min: '[Target-???] Yaaawn.. 5 minutes have passed! Better hurry up!',
+    timer10min: '[Target-???] 10 minutes passed.. zzz.. Still not done..? Pick up the pace!',
+    winMessage: 'You reached ??? in @ min @@.@@ sec! Congratulations!',
+    helpButton: 'Help!',
+    externalLinkMessage: '[Target-???] Red links cannot be followed.',
   },
 } as const;

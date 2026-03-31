@@ -1,6 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore, useDialog, useTranslation, ProfileAvatar, getLogoByLanguage } from '@shared';
+import { useAuthStore, useDialog, useTranslation, ProfileAvatar, getLogoByLanguage, tutoDoc } from '@shared';
 import { getProfileImageUrl } from '@/features/account';
+
+// 구분선 컴포넌트 — nav 항목 사이에 표시
+function NavDivider(): React.ReactElement {
+  return (
+    <div className="w-px h-4 bg-gray-300/60 dark:bg-gray-600/60 shrink-0" />
+  );
+}
 
 // 웹 네비게이션 헤더
 export function Header(): React.ReactElement {
@@ -38,19 +45,36 @@ export function Header(): React.ReactElement {
         </Link>
 
         {/* 네비게이션 */}
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-3">
           <Link
             to="/"
-            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors"
+            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
             {t('nav.home')}
           </Link>
+
+          <NavDivider />
+
           <Link
             to="/settings"
-            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors"
+            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
             {t('nav.settings')}
           </Link>
+
+          <NavDivider />
+
+          {/* 도움! 버튼 — DocPage로 이동 */}
+          <button
+            type="button"
+            onClick={() => navigate('/doc')}
+            className="flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors px-1"
+          >
+            <img src={tutoDoc} alt="도움말" className="w-8 h-8 object-contain" />
+            {t('game.helpButton')}
+          </button>
+
+          <NavDivider />
 
           {/* 사용자 메뉴 */}
           {accountInfo ? (
@@ -63,6 +87,7 @@ export function Header(): React.ReactElement {
               <span className="text-sm text-gray-700 dark:text-gray-200">
                 {accountInfo.nick}
               </span>
+              <NavDivider />
               <button
                 type="button"
                 onClick={handleLogout}
@@ -83,6 +108,7 @@ export function Header(): React.ReactElement {
               <span className="text-sm text-gray-700 dark:text-gray-200">
                 {t('auth.guest')}
               </span>
+              <NavDivider />
               <button
                 type="button"
                 onClick={() => navigate('/auth')}
