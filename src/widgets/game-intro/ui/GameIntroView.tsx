@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   SpeechBubble,
   EmbossButton,
+  SuccessOverlay,
   talkerStart,
   talkerFinger,
   talkerIdle,
@@ -24,11 +25,46 @@ type HighlightItem = {
   color: 'red' | 'blue';
 };
 
-// Wikipedia HTML에서 브라우저에 영향을 주는 태그 제거
+// Wikipedia HTML에서 브라우저에 영향을 주는 태그 제거 + redlink 비활성화 처리
 function sanitizeWikiHtml(html: string): string {
-  return html
+  // 기본 태그 정제
+  const cleaned = html
     .replace(/<base[^>]*>/gi, '')
     .replace(/<head[^>]*>[\s\S]*?<\/head>/gi, '');
+
+  // DOMParser로 파싱 후 redlink 앵커에 wiki-redlink 클래스 부여 + href 제거
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(cleaned, 'text/html');
+  const anchors = doc.querySelectorAll('a');
+  
+  anchors.forEach((anchor: HTMLAnchorElement) => {
+    const href = anchor.getAttribute('href') ?? '';
+    const isRed =
+      anchor.classList.contains('new') ||
+      href.includes('redlink=1') ||
+      href.includes('action=edit');
+    const isInternalWikiLink =
+      href.startsWith('./') ||
+      href.startsWith('/wiki/') ||
+      href.startsWith('#');
+    const isExternal = href !== '' && !isInternalWikiLink;
+
+    if (isRed) {
+      // redlink: 클릭 불가 텍스트로 변환 (href 제거, data 속성 및 클래스 추가)
+      anchor.removeAttribute('href');
+      anchor.setAttribute('data-redlink', 'true');
+      anchor.classList.add('wiki-redlink');
+      return;
+    }
+    if (isExternal) {
+      anchor.removeAttribute('href');
+      anchor.setAttribute('data-external-link', 'true');
+      anchor.classList.add('wiki-external-link-disabled');
+    }
+  });
+
+  // 직렬화하여 반환 (<body> 내부만 추출)
+  return doc.body.innerHTML;
 }
 
 // 위키피디아 문서 링크 클릭 시 제목 추출
@@ -83,16 +119,6 @@ function TimerDisplay(): React.ReactElement {
   );
 }
 
-// Wikipedia Parsoid HTML에서 빨간 링크(존재하지 않는 문서) 여부 판별
-function isRedLink(anchor: HTMLAnchorElement): boolean {
-  // Parsoid HTML은 존재하지 않는 문서 링크에 class="new" 추가
-  if (anchor.classList.contains('new')) return true;
-  // href에 redlink=1 파라미터가 포함된 경우 (일부 포맷)
-  const href = anchor.getAttribute('href') ?? '';
-  if (href.includes('redlink=1') || href.includes('action=edit')) return true;
-  return false;
-}
-
 // 홈 게임 플로우 위젯 — Wikipedia API 기반 문서 렌더링 + 게임 핵심 시스템
 export function GameIntroView(): React.ReactElement {
   const { t, language } = useTranslation();
@@ -109,6 +135,8 @@ export function GameIntroView(): React.ReactElement {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [articleHtml, setArticleHtml] = useState<string>('');
+  // 성공 오버레이 표시 여부
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState<boolean>(false);
 
   // 현재 말풍선 텍스트 (플레이스홀더 치환 완료)
   const [speechText, setSpeechText] = useState<string>('');
@@ -173,21 +201,28 @@ export function GameIntroView(): React.ReactElement {
     // 모든 링크 기본 동작 차단 (외부 이동 방지)
     e.preventDefault();
 
-    const href = anchor.getAttribute('href');
-    if (!href) return;
-
-    const title = extractTitleFromHref(href);
-
-    // 위키 내부 링크가 아닌 경우 또는 빨간 링크(존재하지 않는 문서) — 경고 말풍선
-    const isExternal = !title;
-    const isRed = !isExternal && isRedLink(anchor);
-    if (isExternal || isRed) {
+    // data-redlink 속성이 있으면 존재하지 않는 문서 — 전용 안내 말풍선
+    if (anchor.hasAttribute('data-redlink')) {
+      const redlinkText = t('game.redlinkMessage').replace('???', targetWord);
+      setSpeechText(redlinkText);
+      setSpeechHighlights([{ word: targetWord, color: 'red' }]);
+      setCurrentTalkerImage(talkerWarn);
+      return;
+    }
+    // 외부 링크 비활성화 안내
+    if (anchor.hasAttribute('data-external-link')) {
       const warnText = t('game.externalLinkMessage').replace('???', targetWord);
       setSpeechText(warnText);
       setSpeechHighlights([{ word: targetWord, color: 'red' }]);
       setCurrentTalkerImage(talkerWarn);
       return;
     }
+
+    const href = anchor.getAttribute('href');
+    if (!href) return;
+
+    const title = extractTitleFromHref(href);
+    if (!title) return;
 
     setIsLoading(true);
     try {
@@ -209,6 +244,8 @@ export function GameIntroView(): React.ReactElement {
         // 클리어 처리
         navigateToDoc(title);
         completeGame();
+        // 성공 오버레이 표시
+        setShowSuccessOverlay(true);
 
         const winTalker = getWinTalker(currentElapsedMs);
         const { minutes, seconds } = formatWinTime(currentElapsedMs);
@@ -283,6 +320,12 @@ export function GameIntroView(): React.ReactElement {
 
   return (
     <div className="flex flex-col flex-1">
+      {/* 목적지 도달 성공 오버레이 */}
+      <SuccessOverlay
+        isVisible={showSuccessOverlay}
+        text={t('game.successOverlayText')}
+        onAnimationEnd={() => setShowSuccessOverlay(false)}
+      />
 
       {/* ── ready 상태: 화면 중앙 배치 ── */}
       {phase === 'ready' && (

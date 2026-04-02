@@ -4,6 +4,14 @@ import {
   authApi,
 } from './auth';
 
+// Admin feature
+import {
+  adminApi,
+  useTargetWords,
+  useAddTargetWord,
+  useDeleteTargetWord,
+} from './admin';
+
 // Wiki feature (Wikipedia API 클라이언트)
 import { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord } from './wiki';
 
@@ -31,6 +39,10 @@ export const f = {
     useUpdateNick,
     useUploadProfileImage,
     useRemoveProfileImage,
+    // Admin
+    useTargetWords,
+    useAddTargetWord,
+    useDeleteTargetWord,
   },
   api: {
     wiki: { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord },
@@ -42,6 +54,7 @@ export const f = {
       removeProfileImage,
       getProfileImageUrl,
     },
+    admin: adminApi,
   },
   ui: {
     ProfileImageEditModal,
@@ -50,6 +63,7 @@ export const f = {
 
 // 개별 export (직접 import 용도)
 export { useGoogleLogin, authApi } from './auth';
+export { adminApi, useTargetWords, useAddTargetWord, useDeleteTargetWord } from './admin';
 export { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord } from './wiki';
 
 export {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useThemeStore, useTranslation, useAuthStore, ProfileAvatar, LANGUAGES, useToast, type Theme, type Language } from '@shared';
 import { getProfileImageUrl, useUpdateNick, ProfileImageEditModal } from '@/features/account';
+import { AdminTargetWordsSection } from './AdminTargetWordsSection';
 
 // 이메일 마스킹: 첫 글자 제외 @ 이전을 ***으로 치환
 function maskEmail(email: string): string {
@@ -186,6 +187,19 @@ export function SettingsView(): React.ReactElement {
                   </div>
                 )}
 
+                {/* 관리자 배지 (관리자 계정에만 표시) */}
+                {accountInfo.is_admin && (
+                  <div className="mt-1.5">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold tracking-widest text-yellow-400 bg-gray-900 dark:bg-gray-950 border border-yellow-500/40 rounded select-none">
+                      {/* 방패 아이콘 */}
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                      </svg>
+                      {t('admin.badge')}
+                    </span>
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
@@ -267,6 +281,9 @@ export function SettingsView(): React.ReactElement {
         </div>
       </section>
 
+      {/* 관리자 전용: 제시어 관리 섹션 */}
+      {accountInfo?.is_admin && <AdminTargetWordsSection />}
+
       {/* 앱 정보 */}
       <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">
@@ -274,7 +291,7 @@ export function SettingsView(): React.ReactElement {
         </h2>
         <div className="flex items-center justify-between">
           <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-          <span className="text-gray-500 dark:text-gray-400">1.7.0</span>
+          <span className="text-gray-500 dark:text-gray-400">1.8.0</span>
         </div>
       </section>
 

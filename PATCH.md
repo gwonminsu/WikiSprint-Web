@@ -1,3 +1,24 @@
+## v1.8.0 (2026-04-02)
+
+### Added
+- Redlink(미존재 문서) 시각적 비활성화 — `sanitizeWikiHtml()`을 DOMParser 기반으로 개선, `class="new"` 또는 `redlink=1`/`action=edit` 감지 시 `href` 제거 + `data-redlink` 속성 + `wiki-redlink` 클래스 적용 (회색 텍스트, 클릭 불가)
+- Redlink 전용 안내 말풍선 — 외부 링크 메시지와 분리, `game.redlinkMessage` i18n 키 신규 추가 (ko/en/ja)
+- 성공 오버레이 애니메이션 (`SuccessOverlay`) — 목표 문서 도달 시 Impact Burst 텍스트 + Ring Pulse 5개 + Spark 파티클 16개 CSS 애니메이션 표시 후 자동 페이드아웃
+- 관리자 시스템 — `is_admin` 기반 관리자 배지(방패 아이콘 + 노란 텍스트) 및 제시어 관리 UI(`AdminTargetWordsSection`) 설정 페이지에 추가
+- `features/admin` FSD 슬라이스 신규 생성 — `adminApi` (getWords/addWord/deleteWord), `useTargetWords` / `useAddTargetWord` / `useDeleteTargetWord` TanStack Query hooks
+- 제시어 관리 UI — 언어(전체/ko/en/ja) + 난이도(전체/1/2/3) 필터, 최신순/이름순 정렬, 추가 폼(Radix Dropdown), 삭제 확인 Dialog
+- i18n `admin` 섹션 추가 — badge, targetWords, CRUD 메시지, 필터/정렬 레이블 등 24개 키 (ko/en/ja)
+- `authStore.AccountInfo`에 `is_admin: boolean` 필드 추가
+- `game.successOverlayText` i18n 키 추가 (ko/en/ja)
+
+### Changed
+- `useGoogleLogin`, `useMyAccount` — 로그인/계정 조회 응답에서 `is_admin` 저장
+- `adminApi` — `skipAuth = true` → 제거 (Authorization 헤더 미전송 버그 수정, 403 해소)
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v1.7.0 (2026-03-31)
 
 ### Added

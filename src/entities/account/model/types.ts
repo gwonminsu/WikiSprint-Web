@@ -43,4 +43,26 @@ export type AccountResponse = {
   nick: string;
   email: string;
   profile_img_url: string | null;
+  is_admin: boolean;
+};
+
+// 제시어 추가 요청
+export type AddTargetWordRequest = {
+  word: string;
+  difficulty: number;
+  lang: string;
+};
+
+// 제시어 삭제 요청
+export type DeleteTargetWordRequest = {
+  wordId: number;
+};
+
+// 제시어 정보 응답
+export type TargetWordResponse = {
+  wordId: number;
+  word: string;
+  difficulty: number;
+  lang: string;
+  createdAt: string;
 };

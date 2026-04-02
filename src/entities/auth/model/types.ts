@@ -9,4 +9,5 @@ export type GoogleLoginResponse = {
   nick: string;
   email: string;
   profile_img_url: string | null;
+  is_admin: boolean;
 };

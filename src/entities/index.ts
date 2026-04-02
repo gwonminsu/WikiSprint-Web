@@ -12,6 +12,9 @@ import type {
   UploadProfileResponse,
   RemoveProfileResponse,
   AccountResponse,
+  AddTargetWordRequest,
+  DeleteTargetWordRequest,
+  TargetWordResponse,
 } from './account';
 
 // Wiki 엔티티 타입
@@ -33,6 +36,9 @@ export const e = {
       UploadProfileResponse: UploadProfileResponse;
       RemoveProfileResponse: RemoveProfileResponse;
       AccountResponse: AccountResponse;
+      AddTargetWordRequest: AddTargetWordRequest;
+      DeleteTargetWordRequest: DeleteTargetWordRequest;
+      TargetWordResponse: TargetWordResponse;
     },
   },
   wiki: {
@@ -56,6 +62,9 @@ export type {
   UploadProfileResponse,
   RemoveProfileResponse,
   AccountResponse,
+  AddTargetWordRequest,
+  DeleteTargetWordRequest,
+  TargetWordResponse,
 } from './account';
 
 export type { WikiSummary, WikiArticle } from './wiki';

@@ -19,4 +19,10 @@ export const API_ENDPOINTS = {
     PAGE_SUMMARY: '/api/wiki/page/summary', // + /{title}
     TARGET_RANDOM: '/api/wiki/target/random',
   },
+  // 관리자 전용 엔드포인트
+  ADMIN: {
+    WORDS_LIST: '/api/admin/words/list',
+    WORDS_ADD: '/api/admin/words/add',
+    WORDS_DELETE: '/api/admin/words/delete',
+  },
 } as const;

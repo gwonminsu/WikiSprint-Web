@@ -81,7 +81,8 @@ src/
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
 │   ├── auth/               # Google OAuth (useGoogleLogin, authApi)
-│   └── account/            # 계정 관리 (닉네임, 프로필 이미지)
+│   ├── account/            # 계정 관리 (닉네임, 프로필 이미지)
+│   └── admin/              # 관리자 전용 (제시어 CRUD — adminApi, useTargetWords 등)
 │
 ├── entities/               # 도메인 모델
 │   ├── index.ts            # 네임스페이스 export (e.*)
@@ -98,8 +99,8 @@ src/
     │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
     ├── lib/                # cn, i18n (ko/en/ja)
-    ├── store/              # authStore, themeStore, gameStore
-    ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton
+    ├── store/              # authStore (is_admin 포함), themeStore, gameStore
+    ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
     └── styles/             # 전역 스타일 + 테마 CSS 변수
 ```
 
@@ -131,15 +132,16 @@ f.hook.useGoogleLogin
 f.hook.useMyAccount, f.hook.useGetAccount
 f.hook.useUpdateNick
 f.hook.useUploadProfileImage, f.hook.useRemoveProfileImage
-f.api.auth, f.api.account
+f.hook.useTargetWords, f.hook.useAddTargetWord, f.hook.useDeleteTargetWord
+f.api.auth, f.api.account, f.api.admin
 
 // e (entities)
 e.auth.type.GoogleLoginRequest, e.auth.type.GoogleLoginResponse
-e.account.type.*
+e.account.type.*  // AccountResponse(is_admin 포함), AddTargetWordRequest, DeleteTargetWordRequest, TargetWordResponse
 
 // shared
 shared.ui.Dialog, shared.ui.ToastContainer
-shared.ui.useDialog, shared.ui.useToast, shared.ui.ProfileAvatar, shared.ui.EmbossButton
+shared.ui.useDialog, shared.ui.useToast, shared.ui.ProfileAvatar, shared.ui.EmbossButton, shared.ui.SuccessOverlay
 shared.store.useAuthStore, shared.store.useThemeStore, shared.store.useGameStore
 shared.lib.cn, shared.lib.useTranslation, shared.lib.useLanguageStore, shared.lib.LANGUAGES
 shared.api.client, shared.api.getTokenStorage, shared.api.setAuthUpdateCallback

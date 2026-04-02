@@ -6,4 +6,7 @@ export type {
   UploadProfileResponse,
   RemoveProfileResponse,
   AccountResponse,
+  AddTargetWordRequest,
+  DeleteTargetWordRequest,
+  TargetWordResponse,
 } from './model/types';

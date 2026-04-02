@@ -25,6 +25,7 @@ export function useGoogleLogin(): UseMutationResult<ApiResponse<GoogleLoginRespo
           nick: response.data.nick,
           email: response.data.email,
           profile_img_url: response.data.profile_img_url,
+          is_admin: response.data.is_admin ?? false,
         });
       }
       navigate('/');

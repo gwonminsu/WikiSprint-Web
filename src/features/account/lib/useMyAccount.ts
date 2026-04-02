@@ -27,6 +27,7 @@ export function useMyAccount() {
         nick: query.data.nick,
         email: query.data.email,
         profile_img_url: query.data.profile_img_url,
+        is_admin: query.data.is_admin ?? false,
       });
     }
   }, [query.data, setAccountInfo]);

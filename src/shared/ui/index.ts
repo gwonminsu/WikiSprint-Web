@@ -4,3 +4,4 @@ export { ProfileAvatar } from './ProfileAvatar';
 export { EmbossButton } from './EmbossButton';
 export { SpeechBubble } from './SpeechBubble';
 export { Accordion } from './Accordion';
+export { SuccessOverlay } from './SuccessOverlay';
