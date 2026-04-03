@@ -1,0 +1,1 @@
+export { GameResultView } from './GameResultView';

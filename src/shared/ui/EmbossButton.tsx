@@ -18,6 +18,7 @@ export function EmbossButton({
 
   const baseStyle = `
     relative overflow-hidden
+    inline-flex items-center justify-center
     py-3 rounded-2xl font-medium
     transition-all duration-200 ease-out
     backdrop-blur-sm

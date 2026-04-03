@@ -75,8 +75,10 @@ src/
 │   ├── index.ts            # 네임스페이스 export (w.*)
 │   ├── main-layout/        # Header
 │   ├── settings/           # SettingsView
-│   └── game-intro/         # GameIntroView (Wikipedia 렌더링 + 게임 핵심 로직)
-│       └── lib/            # useTypewriter, useGameTimer
+│   ├── game-intro/         # GameIntroView (Wikipedia 렌더링 + 게임 핵심 로직)
+│   │   └── lib/            # useTypewriter, useGameTimer
+│   └── game-result/        # GameResultView (게임 결과 화면 — 카드 타임라인 + 요약)
+│       └── lib/            # useCardSequence
 │
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
@@ -126,6 +128,7 @@ import { shared } from '@shared'; // shared.ui.Dialog, shared.store.useAuthStore
 w.Header
 w.SettingsView
 w.GameIntroView
+w.GameResultView
 
 // f (features)
 f.hook.useGoogleLogin
@@ -165,6 +168,7 @@ talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talk
 ```
 
 > PrivateRoute 없음. 게임 진행 중(`playing`) 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
+> `completed`/`result` 상태에서는 확인 없이 즉시 초기화 후 이동.
 
 ---
 

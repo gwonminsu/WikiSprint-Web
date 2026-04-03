@@ -52,7 +52,7 @@ export default function HomePage(): React.ReactElement {
         </main>
       )}
 
-      {/* CC BY-SA 출처 표시 — playing/completed 단계에서만, 화면 하단 고정 */}
+      {/* CC BY-SA 출처 표시 — playing/completed 단계에서만 (result 제외), 화면 하단 고정 */}
       {(phase === 'playing' || phase === 'completed') && (
         <div className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-center gap-1.5 py-1 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
           <span className="text-xs text-gray-400 dark:text-gray-500">
@@ -73,6 +73,11 @@ export default function HomePage(): React.ReactElement {
       {/* ready/playing/completed 단계 — talker + 말풍선 + Wikipedia 문서 */}
       {(phase === 'ready' || phase === 'playing' || phase === 'completed') && (
         <w.GameIntroView />
+      )}
+
+      {/* result 단계 — 게임 결과 화면 (카드 타임라인 + 요약) */}
+      {phase === 'result' && (
+        <w.GameResultView />
       )}
     </div>
   );

@@ -1,3 +1,27 @@
+## v1.9.0 (2026-04-04)
+
+### Added
+- 게임 결과 화면 (`GameResultView`) — `phase === 'result'` 신규 단계 추가, 클리어 후 위키 문서 영역을 결과 화면으로 완전 교체
+- 문서 경로 카드 타임라인 (`PathTimeline`) — 방문 문서를 카드로 순차 등장 (짝수 index: 오른쪽, 홀수: 왼쪽, 첫 카드: scale-in, 마지막: bounce)
+- 카드 등장 속도 변화 (`useCardSequence`) — 초반(0~20%) 800ms, 중반(20~80%) 200ms, 후반(80~100%) 800ms 딜레이, 카드 30개 초과 시 중반 100ms로 자동 조정
+- 카드 간 연결선 애니메이션 — 상단에서 하단으로 scaleY 성장, 새 카드 등장 시 스크롤 자동 추적
+- 마지막 카드 도착 spark 효과 — 기존 `SuccessOverlay` 파티클 패턴 재활용, 8개 amber 계열 파티클로 축소 적용
+- 결과 요약 (`ResultSummary`) — `talkerGood` 이미지 + "이렇게 {시작문서}에서부터 총 {n}개의 경로를 거쳐 {n}분 {nn.nn}초 만에 제시어 {제시어}에 도착했습니다!" 텍스트
+- 하단 버튼 — 다시하기(게임 초기화), 다시 보기(카드 애니메이션 리마운트 재생), 카카오톡/디스코드 공유(console.log 임시)
+- "결과 확인" 버튼 — `completed` 상태의 sticky 바 타이머 자리에 표시, 클릭 시 `phase → 'result'`
+- 결과 화면 전용 CSS 애니메이션 7종 — `result-header`, `result-card-scale-in`, `result-card-from-right`, `result-card-from-left`, `result-card-arrive`, `result-connector`, `result-summary-in`
+- i18n 결과 화면 키 9개 추가 — `resultButton`, `resultHeader`, `resultTagStart`, `resultTagArrive`, `resultSummary`, `resultRestart`, `resultReplay`, `resultShareKakao`, `resultShareDiscord` (ko/en/ja)
+
+### Changed
+- `GamePhase` 타입 확장 — `'completed'` → `'completed' | 'result'`
+- `Header.guardedNavigate` — `completed`/`result` 상태에서 확인 다이얼로그 없이 즉시 `resetGame()` 후 이동 (게임 종료 후 이탈은 경고 불필요)
+- `GameIntroView` — `completed` 상태에서 타이머 자리에 "결과 확인" 버튼 렌더링
+- `HomePage` — `phase === 'result'` 분기 추가, CC BY-SA 출처 표시 result 단계에서 미표시
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v1.8.0 (2026-04-02)
 
 ### Added

@@ -21,6 +21,7 @@ export function Header(): React.ReactElement {
   const resetGame = useGameStore((s) => s.resetGame);
 
   // 게임 진행 중 페이지 이동 시 확인 다이얼로그 표시 후 이동
+  // completed/result 상태에서는 확인 없이 즉시 초기화 후 이동 (게임이 이미 끝났으므로)
   const guardedNavigate = (path: string): void => {
     if (phase === 'playing') {
       showConfirm({
@@ -30,6 +31,9 @@ export function Header(): React.ReactElement {
           navigate(path);
         },
       });
+    } else if (phase === 'completed' || phase === 'result') {
+      resetGame();
+      navigate(path);
     } else {
       navigate(path);
     }

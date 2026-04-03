@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 // 게임 진행 단계
-type GamePhase = 'intro' | 'ready' | 'playing' | 'completed';
+type GamePhase = 'intro' | 'ready' | 'playing' | 'completed' | 'result';
 
 // 게임 상태 타입
 type GameState = {

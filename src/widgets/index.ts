@@ -13,6 +13,9 @@ import { DocContentView } from './doc-content';
 // Game Intro 위젯 (홈 게임 플로우 — talker + 말풍선 + iframe)
 import { GameIntroView } from './game-intro';
 
+// Game Result 위젯 (게임 결과 화면 — 카드 타임라인 + 요약)
+import { GameResultView } from './game-result';
+
 // 네임스페이스 export
 export const w = {
   Header,
@@ -20,6 +23,7 @@ export const w = {
   DocFloatingButton,
   DocContentView,
   GameIntroView,
+  GameResultView,
 } as const;
 
 // 개별 export (직접 import 용도)
@@ -28,3 +32,4 @@ export { SettingsView } from './settings';
 export { DocFloatingButton } from './doc-button';
 export { DocContentView } from './doc-content';
 export { GameIntroView } from './game-intro';
+export { GameResultView } from './game-result';

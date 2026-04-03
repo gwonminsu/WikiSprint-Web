@@ -129,6 +129,7 @@ export function GameIntroView(): React.ReactElement {
   // elapsedMs는 구독하지 않음 — 마일스톤 체크는 1초 인터벌에서 getState()로 처리
   const phase = useGameStore((s) => s.phase);
   const targetWord = useGameStore((s) => s.targetWord);
+  const setPhase = useGameStore((s) => s.setPhase);
   const startGame = useGameStore((s) => s.startGame);
   const navigateToDoc = useGameStore((s) => s.navigateToDoc);
   const completeGame = useGameStore((s) => s.completeGame);
@@ -369,8 +370,18 @@ export function GameIntroView(): React.ReactElement {
                 highlights={speechHighlights}
               />
             </div>
-            {/* 타이머 — 가장 오른쪽 (TimerDisplay 컴포넌트로 100ms 리렌더 격리) */}
-            <TimerDisplay />
+            {/* completed 상태: "결과 확인" 버튼 / playing 상태: 타이머 표시 */}
+            {phase === 'completed' ? (
+              <EmbossButton
+                onClick={() => setPhase('result')}
+                variant="primary"
+                className="px-4 h-10 text-sm shrink-0"
+              >
+                {t('game.resultButton')}
+              </EmbossButton>
+            ) : (
+              <TimerDisplay />
+            )}
           </div>
 
           {/* 위키피디아 문서 렌더링 영역 */}
