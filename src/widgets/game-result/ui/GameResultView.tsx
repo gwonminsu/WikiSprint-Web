@@ -11,6 +11,8 @@ export function GameResultView(): React.ReactElement {
   const elapsedMs = useGameStore((s) => s.elapsedMs);
   const targetWord = useGameStore((s) => s.targetWord);
   const resetGame = useGameStore((s) => s.resetGame);
+  const [beforeTargetWord, afterTargetWord] = t('game.resultHeader').split('???');
+
 
   // 모든 카드 등장 후 결과 요약 표시 여부
   const [showSummary, setShowSummary] = useState<boolean>(false);
@@ -34,8 +36,12 @@ export function GameResultView(): React.ReactElement {
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center px-4 py-8">
           {/* 상단 헤더 메시지 */}
-          <h2 className="animate-result-header text-lg font-bold text-gray-800 dark:text-gray-100 mb-8 text-center">
-            {t('game.resultHeader')}
+          <h2 className="animate-result-header text-lg font-bold text-gray-800 dark:text-gray-100 mb-8 text-center leading-relaxed">
+            {beforeTargetWord}
+            <span className="inline-flex items-center mx-1 px-2 py-0.5 rounded-md bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-300 shadow-sm">
+              {targetWord}
+            </span>
+            {afterTargetWord}
           </h2>
 
           {/* 문서 경로 카드 타임라인 — replayKey 변경 시 리마운트하여 처음부터 재생 */}

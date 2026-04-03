@@ -1,4 +1,5 @@
 import { talkerGood, useTranslation, EmbossButton } from '@shared';
+import type { ReactNode } from 'react';
 
 // 경과 밀리초를 \"n분 nn.nn초\" 형식의 분/초로 분리
 function formatResultTime(ms: number): { minutes: number; seconds: string } {
@@ -6,6 +7,84 @@ function formatResultTime(ms: number): { minutes: number; seconds: string } {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = (totalSeconds % 60).toFixed(2).padStart(5, '0');
   return { minutes, seconds };
+}
+
+// 요약 문장을 하이라이트 포함 JSX로 렌더링하는 헬퍼
+function renderHighlightedSummary(
+  template: string,
+  {
+    startDoc,
+    pathCount,
+    minutes,
+    seconds,
+    targetWord,
+  }: {
+    startDoc: string;
+    pathCount: number;
+    minutes: number;
+    seconds: string;
+    targetWord: string;
+  }
+): ReactNode[] {
+  const tokenMap: Record<string, ReactNode> = {
+    '@@@': (
+      <span className="font-bold text-base text-blue-500 dark:text-blue-400">
+        {startDoc}
+      </span>
+    ),
+    '###': (
+      <span className="font-bold text-base text-gray-900 dark:text-gray-100">
+        {pathCount}
+      </span>
+    ),
+    '@분': (
+      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
+        {minutes}분
+      </span>
+    ),
+    '@@.@@초': (
+      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
+        {seconds}초
+      </span>
+    ),
+    '@ min': (
+      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
+        {minutes} min
+      </span>
+    ),
+    '@@.@@ sec': (
+      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
+        {seconds} sec
+      </span>
+    ),
+    '@分': (
+      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
+        {minutes}分
+      </span>
+    ),
+    '@@.@@秒': (
+      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
+        {seconds}秒
+      </span>
+    ),
+    '???': (
+      <span className="font-bold text-base text-orange-500 dark:text-orange-400">
+        {targetWord}
+      </span>
+    ),
+  };
+
+  // 긴 토큰부터 매칭해서 다국어 시간 토큰 충돌 방지
+  const tokenRegex = /(@@\.@@ sec|@@\.@@초|@@\.@@秒|@@@|###|@ min|@분|\?\?\?|@分)/g;
+
+  return template
+    .split(tokenRegex)
+    .filter(Boolean)
+    .map((part, index) => (
+      <span key={`${part}-${index}`}>
+        {tokenMap[part] ?? part}
+      </span>
+    ));
 }
 
 // ResultSummary Props
@@ -19,7 +98,14 @@ type ResultSummaryProps = {
 };
 
 // 결과 요약 영역 + 하단 버튼 (다시하기, 다시 보기, 공유하기)
-export function ResultSummary({ history, elapsedMs, targetWord, isVisible, onRestart, onReplay }: ResultSummaryProps): React.ReactElement | null {
+export function ResultSummary({
+  history,
+  elapsedMs,
+  targetWord,
+  isVisible,
+  onRestart,
+  onReplay,
+}: ResultSummaryProps): React.ReactElement | null {
   const { t } = useTranslation();
 
   if (!isVisible) return null;
@@ -28,13 +114,14 @@ export function ResultSummary({ history, elapsedMs, targetWord, isVisible, onRes
   const pathCount = history.length;
   const { minutes, seconds } = formatResultTime(elapsedMs);
 
-  // 결과 요약 텍스트 생성 — 플레이스홀더 치환
-  const summaryText = t('game.resultSummary')
-    .replace('@@@', startDoc)
-    .replace('###', String(pathCount))
-    .replace('@분', `${minutes}분`)
-    .replace('@@.@@초', `${seconds}초`)
-    .replace('???', targetWord);
+  // 문자열 replace 대신 하이라이트 JSX 생성
+  const summaryContent = renderHighlightedSummary(t('game.resultSummary'), {
+    startDoc,
+    pathCount,
+    minutes,
+    seconds,
+    targetWord,
+  });
 
   const handleShareKakao = (): void => {
     console.log('카카오톡 공유:', { history, targetWord, elapsedMs, pathCount });
@@ -54,7 +141,7 @@ export function ResultSummary({ history, elapsedMs, targetWord, isVisible, onRes
           className="w-24 h-24 object-contain"
         />
         <p className="text-center text-sm leading-relaxed text-gray-700 dark:text-gray-200 px-2">
-          {summaryText}
+          {summaryContent}
         </p>
       </div>
 

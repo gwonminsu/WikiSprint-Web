@@ -22,14 +22,14 @@ const SPARK_COLORS: string[] = [
 function generateResultSparks(): SparkItem[] {
   return Array.from({ length: 8 }, (_, i) => {
     const angle = (i / 8) * 360 + Math.random() * (360 / 8);
-    const distance = 40 + Math.random() * 40;
+    const distance = 80 + Math.random() * 80;
     const rad = (angle * Math.PI) / 180;
     return {
       id: i,
       x: `${Math.cos(rad) * distance}px`,
       y: `${Math.sin(rad) * distance}px`,
       color: SPARK_COLORS[i % SPARK_COLORS.length],
-      size: 4 + Math.random() * 4,
+      size: 8 + Math.random() * 8,
       delay: Math.random() * 0.15,
     };
   });
@@ -138,7 +138,7 @@ export function PathTimeline({ history, onAllCardsShown }: PathTimelineProps): R
                     isLast ? 'text-amber-800 dark:text-amber-200 font-bold' : '',
                     !isFirst && !isLast ? 'text-gray-800 dark:text-gray-100' : '',
                   ].join(' ')}>
-                    {title}
+                    {title.replaceAll("_"," ")}
                   </span>
                 </div>
               </div>
