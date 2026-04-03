@@ -31,6 +31,7 @@ export function Accordion({ title, children, defaultOpen = false }: Props): Reac
         type="button"
         onClick={handleToggle}
         className="
+          group
           w-full flex items-center justify-between
           px-5 py-4
           bg-white dark:bg-gray-800
@@ -39,7 +40,7 @@ export function Accordion({ title, children, defaultOpen = false }: Props): Reac
           text-left
         "
       >
-        <span className="font-semibold text-gray-800 dark:text-gray-100">{title}</span>
+        <span className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-gray-600 dark:group-hover:text-gray-800">{title}</span>
         {/* 쉐브론 아이콘 */}
         <svg
           xmlns="http://www.w3.org/2000/svg"

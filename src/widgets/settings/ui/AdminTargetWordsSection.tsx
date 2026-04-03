@@ -9,7 +9,7 @@ type LangFilter = 'all' | 'ko' | 'en' | 'ja';
 // 난이도 필터 옵션
 type DiffFilter = 0 | 1 | 2 | 3;
 // 정렬 옵션
-type SortOption = 'newest' | 'name';
+type SortOption = 'newest' | 'name' | 'difficulty';
 
 // 언어별 pill 색상
 const LANG_STYLE: Record<string, string> = {
@@ -107,8 +107,15 @@ export function AdminTargetWordsSection(): React.ReactElement {
     let result = words ?? [];
     if (filterLang !== 'all') result = result.filter((w) => w.lang === filterLang);
     if (filterDiff !== 0) result = result.filter((w) => w.difficulty === filterDiff);
-    if (sortBy === 'name') result = [...result].sort((a, b) => a.word.localeCompare(b.word));
-    else result = [...result].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    if (sortBy === 'name') {
+      result = [...result].sort((a, b) => a.word.localeCompare(b.word));
+    } else if (sortBy === 'difficulty') {
+      result = [...result].sort((a, b) => a.difficulty - b.difficulty);
+    } else {
+      result = [...result].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    };
     return result;
   }, [words, filterLang, filterDiff, sortBy]);
 
@@ -168,9 +175,9 @@ export function AdminTargetWordsSection(): React.ReactElement {
 
   // 난이도 옵션 (드롭다운용)
   const diffOptions = [
-    { value: '1', label: `1 — ${t('admin.difficultyEasy')}` },
-    { value: '2', label: `2 — ${t('admin.difficultyNormal')}` },
-    { value: '3', label: `3 — ${t('admin.difficultyHard')}` },
+    { value: '1', label: `1 - ${t('admin.difficultyEasy')}` },
+    { value: '2', label: `2 - ${t('admin.difficultyNormal')}` },
+    { value: '3', label: `3 - ${t('admin.difficultyHard')}` },
   ];
 
   // 필터 옵션
@@ -183,14 +190,15 @@ export function AdminTargetWordsSection(): React.ReactElement {
 
   const diffFilterOptions = [
     { value: '0', label: t('admin.filterAll') },
-    { value: '1', label: `1 — ${t('admin.difficultyEasy')}` },
-    { value: '2', label: `2 — ${t('admin.difficultyNormal')}` },
-    { value: '3', label: `3 — ${t('admin.difficultyHard')}` },
+    { value: '1', label: `1 - ${t('admin.difficultyEasy')}` },
+    { value: '2', label: `2 - ${t('admin.difficultyNormal')}` },
+    { value: '3', label: `3 - ${t('admin.difficultyHard')}` },
   ];
 
   const sortOptions = [
     { value: 'newest', label: t('admin.sortNewest') },
     { value: 'name', label: t('admin.sortName') },
+    { value: 'difficulty', label: '난이도' },
   ];
 
   return (

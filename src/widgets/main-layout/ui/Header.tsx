@@ -74,17 +74,7 @@ export function Header(): React.ReactElement {
             onClick={() => guardedNavigate('/')}
             className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
-            {t('nav.home')}
-          </button>
-
-          <NavDivider />
-
-          <button
-            type="button"
-            onClick={() => guardedNavigate('/settings')}
-            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
-          >
-            {t('nav.settings')}
+            🏠{t('nav.home')}
           </button>
 
           <NavDivider />
@@ -97,6 +87,16 @@ export function Header(): React.ReactElement {
           >
             <img src={tutoDoc} alt="도움말" className="w-8 h-8 object-contain" />
             {t('game.helpButton')}
+          </button>
+
+          <NavDivider />
+
+          <button
+            type="button"
+            onClick={() => guardedNavigate('/settings')}
+            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
+          >
+            ⚙️{t('nav.settings')}
           </button>
 
           <NavDivider />
