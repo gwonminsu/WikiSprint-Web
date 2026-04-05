@@ -1,5 +1,6 @@
 import { talkerGood, useTranslation, EmbossButton } from '@shared';
 import type { ReactNode } from 'react';
+import { useEffect, useRef } from 'react';
 
 // 경과 밀리초를 \"n분 nn.nn초\" 형식의 분/초로 분리
 function formatResultTime(ms: number): { minutes: number; seconds: string } {
@@ -74,7 +75,6 @@ function renderHighlightedSummary(
     ),
   };
 
-  // 긴 토큰부터 매칭해서 다국어 시간 토큰 충돌 방지
   const tokenRegex = /(@@\.@@ sec|@@\.@@초|@@\.@@秒|@@@|###|@ min|@분|\?\?\?|@分)/g;
 
   return template
@@ -97,7 +97,7 @@ type ResultSummaryProps = {
   onReplay: () => void;
 };
 
-// 결과 요약 영역 + 하단 버튼 (다시하기, 다시 보기, 공유하기)
+// 결과 요약 영역 + 하단 버튼
 export function ResultSummary({
   history,
   elapsedMs,
@@ -108,13 +108,26 @@ export function ResultSummary({
 }: ResultSummaryProps): React.ReactElement | null {
   const { t } = useTranslation();
 
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // 결과 요약 렌더링 후 자동 스크롤
+  useEffect(() => {
+    if (isVisible) {
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
+      }, 0);
+    }
+  }, [isVisible]);
+
   if (!isVisible) return null;
 
   const startDoc = history[0] ?? '';
   const pathCount = history.length;
   const { minutes, seconds } = formatResultTime(elapsedMs);
 
-  // 문자열 replace 대신 하이라이트 JSX 생성
   const summaryContent = renderHighlightedSummary(t('game.resultSummary'), {
     startDoc,
     pathCount,
@@ -147,7 +160,6 @@ export function ResultSummary({
 
       {/* 버튼 영역 */}
       <div className="flex flex-col gap-3 w-full">
-        {/* 다시하기 + 다시 보기 */}
         <div className="flex gap-3">
           <EmbossButton
             onClick={onRestart}
@@ -156,6 +168,7 @@ export function ResultSummary({
           >
             {t('game.resultRestart')}
           </EmbossButton>
+
           <EmbossButton
             onClick={onReplay}
             variant="secondary"
@@ -179,7 +192,6 @@ export function ResultSummary({
           </EmbossButton>
         </div>
 
-        {/* 공유하기 버튼들 */}
         <div className="flex gap-3">
           <EmbossButton
             onClick={handleShareKakao}
@@ -197,6 +209,9 @@ export function ResultSummary({
           </EmbossButton>
         </div>
       </div>
+
+      {/* 스크롤 기준 anchor */}
+      <div ref={bottomRef} />
     </div>
   );
 }

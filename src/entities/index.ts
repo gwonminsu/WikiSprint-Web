@@ -4,6 +4,20 @@ import type {
   GoogleLoginResponse,
 } from './auth';
 
+// GameRecord 엔티티 타입
+import type {
+  GameRecordStatus,
+  GameRecord,
+  RecordSummary,
+  GameRecordListResponse,
+  StartGameRecordRequest,
+  StartGameRecordResponse,
+  UpdatePathRequest,
+  CompleteRecordRequest,
+  AbandonRecordRequest,
+  PendingGameState,
+} from './game-record';
+
 // Account 엔티티 타입
 import type {
   Account,
@@ -47,6 +61,20 @@ export const e = {
       WikiArticle: WikiArticle;
     },
   },
+  gameRecord: {
+    type: {} as {
+      GameRecordStatus: GameRecordStatus;
+      GameRecord: GameRecord;
+      RecordSummary: RecordSummary;
+      GameRecordListResponse: GameRecordListResponse;
+      StartGameRecordRequest: StartGameRecordRequest;
+      StartGameRecordResponse: StartGameRecordResponse;
+      UpdatePathRequest: UpdatePathRequest;
+      CompleteRecordRequest: CompleteRecordRequest;
+      AbandonRecordRequest: AbandonRecordRequest;
+      PendingGameState: PendingGameState;
+    },
+  },
 } as const;
 
 // 타입 직접 export (직접 import 용도)
@@ -68,3 +96,16 @@ export type {
 } from './account';
 
 export type { WikiSummary, WikiArticle } from './wiki';
+
+export type {
+  GameRecordStatus,
+  GameRecord,
+  RecordSummary,
+  GameRecordListResponse,
+  StartGameRecordRequest,
+  StartGameRecordResponse,
+  UpdatePathRequest,
+  CompleteRecordRequest,
+  AbandonRecordRequest,
+  PendingGameState,
+} from './game-record';

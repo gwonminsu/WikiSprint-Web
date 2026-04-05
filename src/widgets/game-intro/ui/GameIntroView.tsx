@@ -16,7 +16,7 @@ import {
   useGameStore,
   useToast,
 } from '@shared';
-import { getRandomArticle, getArticleHtml, getRandomTargetWord } from '@features';
+import { getRandomArticle, getArticleHtml, getRandomTargetWord, useGameRecord } from '@features';
 import { useTypewriter, useGameTimer } from '../lib';
 
 // SpeechBubble에 전달하는 하이라이트 항목 타입
@@ -124,6 +124,7 @@ export function GameIntroView(): React.ReactElement {
   const { t, language } = useTranslation();
   const toast = useToast();
   const articleRef = useRef<HTMLDivElement>(null);
+  const { startRecord, updatePath, completeRecord, abandonRecord } = useGameRecord();
 
   // 자주 바뀌지 않는 값만 React 구독 (re-render 최소화)
   // elapsedMs는 구독하지 않음 — 마일스톤 체크는 1초 인터벌에서 getState()로 처리
@@ -133,6 +134,7 @@ export function GameIntroView(): React.ReactElement {
   const startGame = useGameStore((s) => s.startGame);
   const navigateToDoc = useGameStore((s) => s.navigateToDoc);
   const completeGame = useGameStore((s) => s.completeGame);
+  const resetGame = useGameStore((s) => s.resetGame);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [articleHtml, setArticleHtml] = useState<string>('');
@@ -154,6 +156,17 @@ export function GameIntroView(): React.ReactElement {
   // playing/completed 상태에서는 speechText 기반 typewriter (빠른 속도 30ms)
   const activeText = (phase === 'ready' || phase === 'intro') ? readyText : speechText;
   const { displayedText, isTyping } = useTypewriter(activeText, phase === 'ready' ? 60 : 30);
+
+  // 마운트 시 크래시 복구 — 이전 게임이 비정상 종료되었으면 자동 포기 처리
+  useEffect(() => {
+    const { phase: storedPhase } = useGameStore.getState();
+    if (storedPhase === 'playing') {
+      abandonRecord();
+      resetGame();
+      toast.info(t('game.autoClosed'));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 타이머 마일스톤 감시 — 1초 간격 인터벌에서 getState()로 체크 (elapsedMs 구독 없이)
   useEffect(() => {
@@ -245,6 +258,9 @@ export function GameIntroView(): React.ReactElement {
         // 클리어 처리
         navigateToDoc(title);
         completeGame();
+        const fullHistory = [...navigationHistory, title];
+        // 전적 클리어 처리 — fire-and-forget
+        completeRecord(fullHistory, currentElapsedMs);
         // 성공 오버레이 표시
         setShowSuccessOverlay(true);
 
@@ -260,11 +276,12 @@ export function GameIntroView(): React.ReactElement {
         setCurrentTalkerImage(winTalker);
 
         // 방문 경로 콘솔 출력 (시작 문서 → ... → 제시어 문서)
-        const fullHistory = [...navigationHistory, title];
         console.log(`제시어-${targetWord}, ${fullHistory.join(' -> ')}`);
       } else {
-        // 일반 문서 이동 — talker는 경과 시간 기반 이미지
+        // 일반 문서 이동 — 경로 갱신 + talker 업데이트
         navigateToDoc(title);
+        // 서버 경로 업데이트 (디바운스 적용)
+        updatePath([...navigationHistory, title], title);
 
         const talkerImg = getTalkerByElapsedMs(currentElapsedMs);
         const navigatedText = t('game.navigatedMessage')
@@ -287,7 +304,7 @@ export function GameIntroView(): React.ReactElement {
     } finally {
       setIsLoading(false);
     }
-  }, [language, phase, targetWord, navigateToDoc, completeGame, t]);
+  }, [language, phase, targetWord, navigateToDoc, completeGame, completeRecord, updatePath, t]);
 
   // 게임 시작 — DB에서 제시어 가져온 후 랜덤 시작 문서 fetch
   const handleGameStart = async (): Promise<void> => {
@@ -303,8 +320,11 @@ export function GameIntroView(): React.ReactElement {
       const html = await getArticleHtml(summary.title, language);
       setArticleHtml(sanitizeWikiHtml(html));
 
-      // 게임 시작: 스토어 초기화 + 타이머 시작
-      startGame(word, summary.title);
+      // 서버에 in_progress 전적 생성 후 recordId를 스토어에 저장
+      const recordId = await startRecord(word, summary.title);
+
+      // 게임 시작: 스토어 초기화 + 타이머 시작 (recordId 포함)
+      startGame(word, summary.title, recordId);
 
       // 초기 말풍선 설정
       const initialText = t('game.playingMessage').replace('???', word);

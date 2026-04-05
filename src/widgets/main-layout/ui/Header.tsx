@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore, useDialog, useTranslation, ProfileAvatar, getLogoByLanguage, tutoDoc, useGameStore } from '@shared';
-import { getProfileImageUrl } from '@/features/account';
+import { getProfileImageUrl, useGameRecord } from '@features';
 
 // 구분선 컴포넌트 — nav 항목 사이에 표시
 function NavDivider(): React.ReactElement {
@@ -19,6 +19,7 @@ export function Header(): React.ReactElement {
   // 게임 phase만 구독 — 다른 gameStore 상태 변경 시 Header 리렌더 방지
   const phase = useGameStore((s) => s.phase);
   const resetGame = useGameStore((s) => s.resetGame);
+  const { abandonRecord } = useGameRecord();
 
   // 게임 진행 중 페이지 이동 시 확인 다이얼로그 표시 후 이동
   // completed/result 상태에서는 확인 없이 즉시 초기화 후 이동 (게임이 이미 끝났으므로)
@@ -27,6 +28,8 @@ export function Header(): React.ReactElement {
       showConfirm({
         message: t('game.leaveConfirm'),
         onConfirm: () => {
+          // 포기 처리 — recordId는 useGameRecord 내부에서 gameStore에서 조회
+          abandonRecord();
           resetGame();
           navigate(path);
         },
@@ -108,14 +111,21 @@ export function Header(): React.ReactElement {
           {/* 사용자 메뉴 */}
           {accountInfo ? (
             <div className="flex items-center gap-3">
-              <ProfileAvatar
-                imageUrl={profileImageUrl}
-                name={accountInfo.nick}
-                size="sm"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-200">
-                {accountInfo.nick}
-              </span>
+              {/* 프로필 클릭 → 전적 페이지 이동 */}
+              <button
+                type="button"
+                onClick={() => guardedNavigate('/record')}
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
+                <ProfileAvatar
+                  imageUrl={profileImageUrl}
+                  name={accountInfo.nick}
+                  size="sm"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-200">
+                  {accountInfo.nick}
+                </span>
+              </button>
               <NavDivider />
               <button
                 type="button"

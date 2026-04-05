@@ -29,6 +29,17 @@ import {
   ProfileImageEditModal,
 } from './account';
 
+// GameRecord feature
+import {
+  startGameRecord,
+  updateRecordPath,
+  completeGameRecord,
+  abandonGameRecord,
+  getGameRecords,
+  useGameRecord,
+  useGameRecords,
+} from './game-record';
+
 // 네임스페이스 export
 export const f = {
   hook: {
@@ -43,6 +54,9 @@ export const f = {
     useTargetWords,
     useAddTargetWord,
     useDeleteTargetWord,
+    // GameRecord
+    useGameRecord,
+    useGameRecords,
   },
   api: {
     wiki: { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord },
@@ -55,6 +69,13 @@ export const f = {
       getProfileImageUrl,
     },
     admin: adminApi,
+    gameRecord: {
+      startGameRecord,
+      updateRecordPath,
+      completeGameRecord,
+      abandonGameRecord,
+      getGameRecords,
+    },
   },
   ui: {
     ProfileImageEditModal,
@@ -78,3 +99,13 @@ export {
   useRemoveProfileImage,
   ProfileImageEditModal,
 } from './account';
+
+export {
+  startGameRecord,
+  updateRecordPath,
+  completeGameRecord,
+  abandonGameRecord,
+  getGameRecords,
+  useGameRecord,
+  useGameRecords,
+} from './game-record';

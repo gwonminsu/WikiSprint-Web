@@ -16,6 +16,9 @@ import { GameIntroView } from './game-intro';
 // Game Result 위젯 (게임 결과 화면 — 카드 타임라인 + 요약)
 import { GameResultView } from './game-result';
 
+// Game Record 위젯 (전적 페이지 — 요약 + 카드 리스트)
+import { GameRecordView } from './game-record';
+
 // 네임스페이스 export
 export const w = {
   Header,
@@ -24,6 +27,7 @@ export const w = {
   DocContentView,
   GameIntroView,
   GameResultView,
+  GameRecordView,
 } as const;
 
 // 개별 export (직접 import 용도)
@@ -33,3 +37,4 @@ export { DocFloatingButton } from './doc-button';
 export { DocContentView } from './doc-content';
 export { GameIntroView } from './game-intro';
 export { GameResultView } from './game-result';
+export { GameRecordView } from './game-record';

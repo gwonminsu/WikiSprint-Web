@@ -1,3 +1,27 @@
+## v2.0.0 (2026-04-06)
+
+### Added
+- 게임 전적 시스템 (`features/game-record`) — 게임 시작 시 즉시 `in_progress` 전적 생성, 문서 이동마다 경로 갱신(500ms 디바운스), 클리어/포기 시 최종 상태 전환
+- `useGameRecord` hook — `startRecord` / `updatePath` / `completeRecord` / `abandonRecord` 4개 액션, 로그인 여부에 따라 서버 API 또는 `pendingRecordStore` 분기
+- 크래시 복구 — `gameStore` persist 미들웨어 추가, 재접속 시 `phase === 'playing'` 감지 후 자동 포기 처리 + toast 안내
+- 비로그인 전적 보관 (`pendingRecordStore`) — 게스트 플레이 시 전적 임시 저장, 로그인 후 서버 동기화
+- 전적 페이지 (`widgets/game-record`) — `RecordSummaryBar`(누적 통계), `RecordCard`(상태별 카드), `RecordPathSegment`(경로 아코디언), `EmptyRecordView`
+- 전적 카드 애니메이션 2종 — `animate-record-fade-up`(stagger), `animate-record-summary-in`
+- `gameStore`에 `recordId`, `gameStartedAt` 필드 추가 — persist 대상 포함
+- i18n 키 추가 — `record.*` 섹션 전체(totalPlays, clearCount, giveUpCount, bestTime 등), `game.autoClosed`
+
+### Changed
+- `GameIntroView` — `handleGameStart`: `startRecord()` → `startGame(recordId)` 순서로 서버 전적 먼저 생성, `handleArticleClick`: 일반 이동 시 `updatePath()` 호출 추가
+- `Header.guardedNavigate` — playing 이탈 시 `abandonRecord()` 단일 호출로 단순화 (기존 스냅샷 + saveRecord 제거)
+- `useGoogleLogin` — 로그인 후 `pendingGame` 동기화: start → complete or abandon 순서로 서버 전적 생성
+- `GameRecordStatus` 타입 추가 — `'in_progress' | 'cleared' | 'abandoned'`
+- 기존 `useSaveRecord` / `saveGameRecord` API 제거 → `useGameRecord` / `startGameRecord` 등으로 교체
+- `endpoints.ts` RECORD 상수 — `SAVE` 제거, `START` / `UPDATE_PATH` / `COMPLETE` / `ABANDON` / `LIST` 추가
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v1.9.0 (2026-04-04)
 
 ### Added

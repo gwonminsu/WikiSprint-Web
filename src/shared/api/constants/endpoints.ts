@@ -25,4 +25,12 @@ export const API_ENDPOINTS = {
     WORDS_ADD: '/api/admin/words/add',
     WORDS_DELETE: '/api/admin/words/delete',
   },
+  // 게임 전적 엔드포인트
+  RECORD: {
+    START: '/api/record/start',
+    UPDATE_PATH: '/api/record/update-path',
+    COMPLETE: '/api/record/complete',
+    ABANDON: '/api/record/abandon',
+    LIST: '/api/record/list',
+  },
 } as const;

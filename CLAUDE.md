@@ -77,19 +77,24 @@ src/
 │   ├── settings/           # SettingsView
 │   ├── game-intro/         # GameIntroView (Wikipedia 렌더링 + 게임 핵심 로직)
 │   │   └── lib/            # useTypewriter, useGameTimer
-│   └── game-result/        # GameResultView (게임 결과 화면 — 카드 타임라인 + 요약)
-│       └── lib/            # useCardSequence
+│   ├── game-result/        # GameResultView (게임 결과 화면 — 카드 타임라인 + 요약)
+│   │   └── lib/            # useCardSequence
+│   └── game-record/        # GameRecordView (전적 페이지 — 요약 바 + 카드 리스트)
+│       ├── ui/             # GameRecordView, RecordSummaryBar, RecordCard, RecordPathSegment, EmptyRecordView
+│       └── lib/            # formatRecordTime
 │
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
 │   ├── auth/               # Google OAuth (useGoogleLogin, authApi)
 │   ├── account/            # 계정 관리 (닉네임, 프로필 이미지)
-│   └── admin/              # 관리자 전용 (제시어 CRUD — adminApi, useTargetWords 등)
+│   ├── admin/              # 관리자 전용 (제시어 CRUD — adminApi, useTargetWords 등)
+│   └── game-record/        # 게임 전적 (useGameRecord, useGameRecords, gameRecordApi)
 │
 ├── entities/               # 도메인 모델
 │   ├── index.ts            # 네임스페이스 export (e.*)
 │   ├── auth/               # GoogleLoginRequest, GoogleLoginResponse
-│   └── account/            # Account, AccountResponse 등
+│   ├── account/            # Account, AccountResponse 등
+│   └── game-record/        # GameRecord, RecordSummary, GameRecordListResponse 등
 │
 └── shared/                 # 공용 코드
     ├── index.ts            # 네임스페이스 export (shared.*)
@@ -101,7 +106,7 @@ src/
     │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
     ├── lib/                # cn, i18n (ko/en/ja)
-    ├── store/              # authStore (is_admin 포함), themeStore, gameStore
+    ├── store/              # authStore (is_admin 포함), themeStore, gameStore (persist), pendingRecordStore
     ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
     └── styles/             # 전역 스타일 + 테마 CSS 변수
 ```
@@ -136,16 +141,19 @@ f.hook.useMyAccount, f.hook.useGetAccount
 f.hook.useUpdateNick
 f.hook.useUploadProfileImage, f.hook.useRemoveProfileImage
 f.hook.useTargetWords, f.hook.useAddTargetWord, f.hook.useDeleteTargetWord
-f.api.auth, f.api.account, f.api.admin
+f.hook.useGameRecord   // startRecord / updatePath / completeRecord / abandonRecord
+f.hook.useGameRecords  // 전적 목록 + 통계 조회 (TanStack Query)
+f.api.auth, f.api.account, f.api.admin, f.api.gameRecord
 
 // e (entities)
 e.auth.type.GoogleLoginRequest, e.auth.type.GoogleLoginResponse
 e.account.type.*  // AccountResponse(is_admin 포함), AddTargetWordRequest, DeleteTargetWordRequest, TargetWordResponse
+e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordListResponse, StartGameRecordRequest 등
 
 // shared
 shared.ui.Dialog, shared.ui.ToastContainer
 shared.ui.useDialog, shared.ui.useToast, shared.ui.ProfileAvatar, shared.ui.EmbossButton, shared.ui.SuccessOverlay
-shared.store.useAuthStore, shared.store.useThemeStore, shared.store.useGameStore
+shared.store.useAuthStore, shared.store.useThemeStore, shared.store.useGameStore, shared.store.usePendingRecordStore
 shared.lib.cn, shared.lib.useTranslation, shared.lib.useLanguageStore, shared.lib.LANGUAGES
 shared.api.client, shared.api.getTokenStorage, shared.api.setAuthUpdateCallback
 shared.config.queryClient
@@ -169,6 +177,7 @@ talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talk
 
 > PrivateRoute 없음. 게임 진행 중(`playing`) 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
 > `completed`/`result` 상태에서는 확인 없이 즉시 초기화 후 이동.
+> 새로고침/탭 종료 후 재접속 시 `phase === 'playing'`이 감지되면 자동 포기 처리 후 toast 표시.
 
 ---
 

@@ -587,3 +587,26 @@ body {
 .dark .wiki-article img {
   background-color: #e8e8e8;
 }
+
+/* ===== 전적 페이지 애니메이션 ===== */
+
+/* 카드 stagger fade-up (각 카드에 animation-delay 조합) */
+@keyframes record-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-record-fade-up {
+  animation: record-fade-up 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* 요약 바 슬라이드인 */
+@keyframes record-summary-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-record-summary-in {
+  animation: record-summary-in 0.35s ease-out forwards;
+}
