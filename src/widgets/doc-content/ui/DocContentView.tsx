@@ -92,6 +92,10 @@ export function DocContentView(): React.ReactElement {
           <EmbossButton onClick={handleGoHome} variant="primary" className="px-8">
             🏠 {t('doc.goHome')}
           </EmbossButton>
+          {/* Wikipedia CC BY-SA 라이선스 표시 */}
+          <p className="mt-4 text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
+            {t('doc.wikiLicense')}
+          </p>
         </div>
       </section>
 
@@ -170,6 +174,8 @@ export function DocContentView(): React.ReactElement {
           </div>
         </Accordion>
       </section>
+
+
 
     </div>
   );

@@ -89,6 +89,7 @@ export const en = {
     inspirationVideo: '침착맨 Namuwiki Speedrun Video',
     backToHome: 'Press the home button to go back and play the game',
     goHome: 'Back to Home',
+    wikiLicense: 'This game uses content from Wikipedia. Content is available under the CC BY-SA license.',
   },
   game: {
     readyMessage: 'Press this button to start the game!',
@@ -104,6 +105,7 @@ export const en = {
     helpButton: 'Help!',
     externalLinkMessage: '[Target-???] Red links are external links and cannot be followed.',
     redlinkMessage: '[Target-???] This document link does not exist on Wikipedia and cannot be followed.',
+    fetchErrorMessage: '[Target-???] Unable to navigate due to a temporary error. Please try again shortly or use a different link!',
     leaveConfirm: 'Navigating away will forcibly end your current game. Are you sure you want to leave?',
     startError: 'Unable to start the game. Please try again in a moment!',
     successOverlayText: 'Destination Reached!',

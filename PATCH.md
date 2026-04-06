@@ -1,3 +1,25 @@
+## v2.1.0 (2026-04-06)
+
+### Added
+- `GameIntroView` — 문서 내 각주/앵커 링크 클릭 시 스크롤 이동 구현
+  - `#fragment` (bare) 및 `./Title#fragment` 형태 모두 처리
+  - 현재 문서와 동일한 문서의 fragment는 API 호출 없이 해당 ID 요소로 smooth scroll
+- `sanitizeWikiHtml` — 프론트엔드 HTML 캐시(`sanitizedHtmlCache`) 추가
+  - 세션 내 재방문 시 DOMParser 재처리 생략, 즉시 반환
+- `sanitizeWikiHtml` — 이미지 `loading="lazy"` + `decoding="async"` 적용 (초기 렌더링 부담 감소)
+- `sanitizeWikiHtml` — Wikipedia 메타데이터/네비게이션 요소 제거 (`.navbox`, `.authority-control`, `.mbox-small`, `.ambox` 등 DOM 노드 낭비 요소)
+- i18n `game.fetchErrorMessage` 키 추가 (ko/en/ja) — API 오류 시 전용 일시적 오류 안내 메시지
+- i18n `doc.wikiLicense` 키 추가 (ko/en/ja) — CC BY-SA 라이선스 표시 문구
+
+### Changed
+- `GameIntroView` catch 블록 — `externalLinkMessage` → `fetchErrorMessage`로 교체 (API 오류 시 올바른 안내)
+- `vite.config.ts` — `server.port: 5969` 고정 (기존 CLI 옵션 방식에서 설정 파일로 변경)
+- 앱 버전 2.0.0 → **2.1.0**
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.0.0 (2026-04-06)
 
 ### Added

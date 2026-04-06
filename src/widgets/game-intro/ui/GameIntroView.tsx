@@ -25,8 +25,15 @@ type HighlightItem = {
   color: 'red' | 'blue';
 };
 
+// 문서 제목 → sanitized HTML 프론트엔드 캐시 (세션 내 재방문 시 DOMParser 재실행 방지)
+const sanitizedHtmlCache = new Map<string, string>();
+
 // Wikipedia HTML에서 브라우저에 영향을 주는 태그 제거 + redlink 비활성화 처리
-function sanitizeWikiHtml(html: string): string {
+function sanitizeWikiHtml(html: string, cacheKey?: string): string {
+  if (cacheKey) {
+    const cached = sanitizedHtmlCache.get(cacheKey);
+    if (cached !== undefined) return cached;
+  }
   // 기본 태그 정제
   const cleaned = html
     .replace(/<base[^>]*>/gi, '')
@@ -63,8 +70,27 @@ function sanitizeWikiHtml(html: string): string {
     }
   });
 
+  // 이미지 lazy loading — 대형 문서에서 초기 렌더링 부담 감소
+  doc.querySelectorAll('img').forEach((img: HTMLImageElement) => {
+    img.setAttribute('loading', 'lazy');
+    img.setAttribute('decoding', 'async');
+  });
+
+  // Wikipedia 메타데이터/네비게이션 요소 제거 (문서 콘텐츠 섹션 아님, DOM 노드만 낭비)
+  const metaSelectors = [
+    '.navbox', '.navbox-inner', '.navbox-subgroup',  // 하단 네비게이션 박스
+    '.authority-control',                              // 전거 통제
+    '.sistersitebox',                                  // 자매 사이트 박스
+    '.mbox-small', '.ambox', '.tmbox', '.ombox',       // 알림 박스
+    '.metadata',                                       // 메타데이터 박스
+    '.printfooter',                                    // 인쇄 푸터
+  ];
+  doc.querySelectorAll(metaSelectors.join(', ')).forEach((el: Element) => el.remove());
+
   // 직렬화하여 반환 (<body> 내부만 추출)
-  return doc.body.innerHTML;
+  const result = doc.body.innerHTML;
+  if (cacheKey) sanitizedHtmlCache.set(cacheKey, result);
+  return result;
 }
 
 // 위키피디아 문서 링크 클릭 시 제목 추출
@@ -235,13 +261,47 @@ export function GameIntroView(): React.ReactElement {
     const href = anchor.getAttribute('href');
     if (!href) return;
 
-    const title = extractTitleFromHref(href);
-    if (!title) return;
+    // bare #fragment 앵커 이동 (목차 등)
+    if (href.startsWith('#')) {
+      const fragment = decodeURIComponent(href.slice(1));
+      articleRef.current?.querySelector(`[id="${CSS.escape(fragment)}"]`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    const rawTitle = extractTitleFromHref(href);
+    if (!rawTitle) return;
+
+    // ./Title#fragment 형태에서 fragment 분리
+    const hashIdx = rawTitle.indexOf('#');
+    const title = hashIdx !== -1 ? rawTitle.slice(0, hashIdx) : rawTitle;
+    const fragment = hashIdx !== -1 ? rawTitle.slice(hashIdx + 1) : null;
+
+    // fragment만 있고 같은 문서 내 이동 (각주 역방향 포함)
+    if (fragment !== null && title === '') {
+      articleRef.current?.querySelector(`[id="${CSS.escape(fragment)}"]`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    // fragment가 있어도 title이 있으면 → title로 이동 후 fragment 스크롤
+    // fragment만 있는 경우(각주 등)는 API 호출 없이 스크롤만
+    if (fragment !== null) {
+      // 현재 문서와 같은 문서인지 확인 — 같으면 스크롤만
+      const { navigationHistory } = useGameStore.getState();
+      const currentDoc = navigationHistory[navigationHistory.length - 1] ?? '';
+      if (normalizeTitle(title) === normalizeTitle(currentDoc)) {
+        articleRef.current?.querySelector(`[id="${CSS.escape(fragment)}"]`)
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      // 다른 문서 + fragment → 문서만 이동 (fragment는 무시)
+    }
 
     setIsLoading(true);
     try {
       const html = await getArticleHtml(title, language);
-      const sanitizedHtml = sanitizeWikiHtml(html);
+      const sanitizedHtml = sanitizeWikiHtml(html, `${language}:${title}`);
       setArticleHtml(sanitizedHtml);
 
       // 페이지 + 문서 영역 스크롤 최상단으로
@@ -296,8 +356,8 @@ export function GameIntroView(): React.ReactElement {
         setCurrentTalkerImage(talkerImg);
       }
     } catch {
-      // API 호출 실패 시 (빨간 링크 등) — 경고 말풍선으로 안전하게 처리
-      const warnText = t('game.externalLinkMessage').replace('???', targetWord);
+      // API 호출 실패 시 (타임아웃, 네트워크 오류 등) — 일시적 오류 말풍선으로 안내
+      const warnText = t('game.fetchErrorMessage').replace('???', targetWord);
       setSpeechText(warnText);
       setSpeechHighlights([{ word: targetWord, color: 'red' }]);
       setCurrentTalkerImage(talkerWarn);
@@ -318,7 +378,7 @@ export function GameIntroView(): React.ReactElement {
       // 시작 문서는 제시어와 관계없는 랜덤 문서
       const summary = await getRandomArticle(language);
       const html = await getArticleHtml(summary.title, language);
-      setArticleHtml(sanitizeWikiHtml(html));
+      setArticleHtml(sanitizeWikiHtml(html, `${language}:${summary.title}`));
 
       // 서버에 in_progress 전적 생성 후 recordId를 스토어에 저장
       const recordId = await startRecord(word, summary.title);

@@ -7,6 +7,7 @@ import path from 'path';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    port: 5969,
     headers: {
       // Vite 7.x 기본 COOP(same-origin) 설정이 Google OAuth postMessage를 차단하므로 완화
       'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',

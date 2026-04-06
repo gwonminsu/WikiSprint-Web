@@ -89,6 +89,7 @@ export const ja = {
     inspirationVideo: '침착맨 ナムウィキスピードラン動画',
     backToHome: 'ゲームをプレイするにはホームボタンを押して戻ってください',
     goHome: 'ホームに戻る',
+    wikiLicense: 'このゲームはWikipediaのコンテンツを使用しています。コンテンツはCC BY-SAライセンスの下で提供されています。',
   },
   game: {
     readyMessage: 'このボタンを押すとゲームが始まります！',
@@ -104,6 +105,7 @@ export const ja = {
     helpButton: 'ヘルプ！',
     externalLinkMessage: '[お題-???] 赤いリンクは外部リンクのため移動できません。',
     redlinkMessage: '[お題-???] この文書リンクは現在ウィキペディアに存在しないため移動できません。',
+    fetchErrorMessage: '[お題-???] 一時的なエラーにより移動できません。しばらくしてから再度クリックするか、他のリンクをご利用ください！',
     leaveConfirm: 'ページ移動すると進行中のゲームが強制終了されます。移動しますか？',
     startError: 'ゲームを開始できません。しばらくしてからもう一度お試しください！',
     successOverlayText: '目的地に到着！',
