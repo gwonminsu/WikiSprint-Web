@@ -4,6 +4,9 @@ import { persist } from 'zustand/middleware';
 // 게임 진행 단계
 type GamePhase = 'intro' | 'ready' | 'playing' | 'completed' | 'result';
 
+// 난이도 타입 (0: 오마카세/전체 랜덤, 1: 쉬움, 2: 보통, 3: 어려움)
+export type Difficulty = 0 | 1 | 2 | 3;
+
 // 게임 상태 타입
 type GameState = {
   phase: GamePhase;
@@ -14,6 +17,7 @@ type GameState = {
   isTimerRunning: boolean;
   recordId: string | null;      // 서버 전적 ID (로그인 시 게임 시작과 함께 설정)
   gameStartedAt: number | null; // Date.now() — 비정상 종료 감지용
+  difficulty: Difficulty;       // 선택된 난이도 (0: 오마카세, 1~3: 쉬움/보통/어려움)
 
   // 액션
   setPhase: (phase: GamePhase) => void;
@@ -22,6 +26,7 @@ type GameState = {
   tickTimer: (elapsedMs: number) => void;
   completeGame: () => void;
   resetGame: () => void;
+  setDifficulty: (difficulty: Difficulty) => void;
 };
 
 // 초기 상태
@@ -34,6 +39,7 @@ const initialState = {
   isTimerRunning: false,
   recordId: null,
   gameStartedAt: null,
+  difficulty: 0 as Difficulty,
 };
 
 // 게임 진행 상태 스토어
@@ -79,9 +85,14 @@ export const useGameStore = create<GameState>()(
         set({ phase: 'completed', isTimerRunning: false });
       },
 
-      // 게임 초기화: 모든 상태를 초기값으로 리셋
+      // 게임 초기화: difficulty를 제외한 상태를 초기값으로 리셋
       resetGame: (): void => {
-        set({ ...initialState });
+        set((state) => ({ ...initialState, difficulty: state.difficulty }));
+      },
+
+      // 난이도 설정 (게임 리셋과 독립적으로 유지)
+      setDifficulty: (difficulty: Difficulty): void => {
+        set({ difficulty });
       },
     }),
     {
@@ -94,6 +105,7 @@ export const useGameStore = create<GameState>()(
         navigationHistory: state.navigationHistory,
         recordId: state.recordId,
         gameStartedAt: state.gameStartedAt,
+        difficulty: state.difficulty,
       }),
     }
   )

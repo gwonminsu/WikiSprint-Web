@@ -31,9 +31,13 @@ export async function getArticleSummary(title: string, lang: Language): Promise<
   return (res as unknown as WikiResponse<WikiSummary>).data;
 }
 
-// 랜덤 제시어 조회 (DB에서 관리, 언어별)
-export async function getRandomTargetWord(lang: Language): Promise<TargetWordResponse> {
-  const endpoint = `${API_ENDPOINTS.WIKI.TARGET_RANDOM}?lang=${lang}`;
+// 랜덤 제시어 조회 (DB에서 관리, 언어별 + 선택적 난이도 필터)
+// difficulty: 미전달 또는 0이면 오마카세(전체 풀), 1~3이면 해당 난이도만
+export async function getRandomTargetWord(lang: Language, difficulty?: number): Promise<TargetWordResponse> {
+  let endpoint = `${API_ENDPOINTS.WIKI.TARGET_RANDOM}?lang=${lang}`;
+  if (difficulty !== undefined && difficulty >= 1 && difficulty <= 3) {
+    endpoint += `&difficulty=${difficulty}`;
+  }
   const res = await apiClient.get<TargetWordResponse>(endpoint, true);
   return (res as unknown as WikiResponse<TargetWordResponse>).data;
 }

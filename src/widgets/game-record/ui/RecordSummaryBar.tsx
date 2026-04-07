@@ -17,7 +17,7 @@ type StatCardProps = {
 function StatCard({ label, value, colorClass, icon }: StatCardProps): React.ReactElement {
   return (
     <div className="flex-1 min-w-20 flex flex-col items-center gap-1 bg-white dark:bg-gray-800 rounded-xl px-3 py-3 border border-gray-100 dark:border-gray-700 shadow-sm">
-      <span className="text-lg">{icon}</span>
+      <span className="text-xl">{icon}</span>
       <span className={`text-lg font-bold tabular-nums ${colorClass}`}>{value}</span>
       <span className="text-[11px] text-gray-400 dark:text-gray-500 text-center leading-tight">
         {label}
@@ -56,8 +56,8 @@ export function RecordSummaryBar({ summary }: RecordSummaryBarProps): React.Reac
       <StatCard
         label={t('record.bestTime')}
         value={bestTimeStr}
-        colorClass="text-blue-600 dark:text-blue-400"
-        icon="⚡"
+        colorClass="text-amber-500 dark:text-amber-400 font-extrabold"
+        icon="🏆"
       />
     </div>
   );

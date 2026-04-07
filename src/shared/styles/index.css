@@ -206,6 +206,43 @@
   background: rgba(255, 215, 0, 0.25);
 }
 
+/* ===== 난이도 드롭다운 애니메이션 ===== */
+
+/* 패널 전체: 위에서 떨어지며 2~3번 바운스 후 안착 */
+@keyframes dropdown-gravity-drop {
+  0%   { opacity: 0; transform: translateY(-14px) scaleY(0.75); transform-origin: top center; }
+  28%  { opacity: 1; transform: translateY(7px) scaleY(1.03); transform-origin: top center; }
+  52%  { transform: translateY(-3px) scaleY(0.99); transform-origin: top center; }
+  72%  { transform: translateY(1.5px) scaleY(1.005); transform-origin: top center; }
+  86%  { transform: translateY(-0.5px) scaleY(1); transform-origin: top center; }
+  100% { opacity: 1; transform: translateY(0) scaleY(1); transform-origin: top center; }
+}
+
+/* 패널 닫힘: 위로 슬라이드 */
+@keyframes dropdown-gravity-up {
+  from { opacity: 1; transform: translateY(0) scaleY(1); transform-origin: top center; }
+  to   { opacity: 0; transform: translateY(-8px) scaleY(0.9); transform-origin: top center; }
+}
+
+/* 내부 옵션 stagger fade */
+@keyframes dropdown-item-fade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-dropdown-gravity-drop {
+  animation: dropdown-gravity-drop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-dropdown-gravity-up {
+  animation: dropdown-gravity-up 0.18s ease-in forwards;
+}
+
+.animate-dropdown-item-fade {
+  animation: dropdown-item-fade 0.22s ease-out forwards;
+  opacity: 0;
+}
+
 /* ===== 기본 스타일 ===== */
 body {
   background-color: rgb(var(--background));

@@ -18,6 +18,7 @@ import {
 } from '@shared';
 import { getRandomArticle, getArticleHtml, getRandomTargetWord, useGameRecord } from '@features';
 import { useTypewriter, useGameTimer } from '../lib';
+import { DifficultyDropdown } from './DifficultyDropdown';
 
 // SpeechBubble에 전달하는 하이라이트 항목 타입
 type HighlightItem = {
@@ -156,11 +157,13 @@ export function GameIntroView(): React.ReactElement {
   // elapsedMs는 구독하지 않음 — 마일스톤 체크는 1초 인터벌에서 getState()로 처리
   const phase = useGameStore((s) => s.phase);
   const targetWord = useGameStore((s) => s.targetWord);
+  const difficulty = useGameStore((s) => s.difficulty);
   const setPhase = useGameStore((s) => s.setPhase);
   const startGame = useGameStore((s) => s.startGame);
   const navigateToDoc = useGameStore((s) => s.navigateToDoc);
   const completeGame = useGameStore((s) => s.completeGame);
   const resetGame = useGameStore((s) => s.resetGame);
+  const setDifficulty = useGameStore((s) => s.setDifficulty);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [articleHtml, setArticleHtml] = useState<string>('');
@@ -372,7 +375,17 @@ export function GameIntroView(): React.ReactElement {
     // 마일스톤 초기화
     shownMilestones.current = new Set();
     try {
-      const targetWordData = await getRandomTargetWord(language);
+      // 선택된 난이도 파라미터 결정 (오마카세=0이면 파라미터 미전송)
+      const { difficulty: currentDifficulty } = useGameStore.getState();
+      const difficultyParam = currentDifficulty === 0 ? undefined : currentDifficulty;
+
+      let targetWordData = await getRandomTargetWord(language, difficultyParam);
+      // 선택한 난이도에 제시어가 없으면 오마카세로 자동 전환
+      if (!targetWordData) {
+        toast.warning(t('game.difficultyNoWord'));
+        setDifficulty(0);
+        targetWordData = await getRandomTargetWord(language);
+      }
       const word = targetWordData.word;
 
       // 시작 문서는 제시어와 관계없는 랜덤 문서
@@ -391,8 +404,30 @@ export function GameIntroView(): React.ReactElement {
       setSpeechText(initialText);
       setSpeechHighlights([{ word, color: 'red' }]);
       setCurrentTalkerImage(talkerFinger);
-    } catch {
-      // 게임 시작 실패 (타임아웃, 네트워크 오류 등) — 토스트 알림
+    } catch (err) {
+      // 404: 해당 난이도에 제시어 없음 — 오마카세로 전환 후 재시도
+      const isNotFound = err instanceof Error && err.message.includes('404');
+      if (isNotFound) {
+        toast.warning(t('game.difficultyNoWord'));
+        setDifficulty(0);
+        try {
+          const fallbackData = await getRandomTargetWord(language);
+          const word = fallbackData.word;
+          const summary = await getRandomArticle(language);
+          const html = await getArticleHtml(summary.title, language);
+          setArticleHtml(sanitizeWikiHtml(html, `${language}:${summary.title}`));
+          const recordId = await startRecord(word, summary.title);
+          startGame(word, summary.title, recordId);
+          const initialText = t('game.playingMessage').replace('???', word);
+          setSpeechText(initialText);
+          setSpeechHighlights([{ word, color: 'red' }]);
+          setCurrentTalkerImage(talkerFinger);
+          return;
+        } catch {
+          // 오마카세 폴백도 실패
+        }
+      }
+      // 그 외 게임 시작 실패 (타임아웃, 네트워크 오류 등) — 토스트 알림
       toast.error(t('game.startError'));
     } finally {
       setIsLoading(false);
@@ -410,7 +445,31 @@ export function GameIntroView(): React.ReactElement {
 
       {/* ── ready 상태: 화면 중앙 배치 ── */}
       {phase === 'ready' && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 pb-8">
+        <div className="relative flex-1 flex flex-col items-center justify-center gap-6 px-4 pb-8">
+          {/* 난이도 선택 드롭다운 (우상단 배치) */}
+          <div className="absolute top-4 right-4">
+            <p className="font-medium text-sm mb-2 text-gray-700 dark:text-gray-300 truncate">난이도 선택</p>
+            <DifficultyDropdown />
+          </div>
+
+          {/* 현재 난이도 pill 태그 (말풍선 바로 위) */}
+          <div className="flex items-center gap-1.5 -mt-3">
+            {difficulty === 0 ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">
+                🎲 {t('game.difficultyOmakase')}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/50">
+                {difficulty === 1 ? '🟢' : difficulty === 2 ? '🟡' : '🔴'}
+                {' '}{t('game.currentDifficulty')}: {t(
+                  difficulty === 1 ? 'game.difficultyEasy' :
+                  difficulty === 2 ? 'game.difficultyNormal' :
+                  'game.difficultyHard'
+                )}
+              </span>
+            )}
+          </div>
+
           {/* 말풍선 */}
           <SpeechBubble text={displayedText} isTyping={isTyping} />
 

@@ -106,7 +106,7 @@ src/
     │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
     ├── lib/                # cn, i18n (ko/en/ja)
-    ├── store/              # authStore (is_admin 포함), themeStore, gameStore (persist), pendingRecordStore
+    ├── store/              # authStore (is_admin 포함), themeStore, gameStore (difficulty 포함, persist), pendingRecordStore
     ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
     └── styles/             # 전역 스타일 + 테마 CSS 변수
 ```
@@ -132,7 +132,7 @@ import { shared } from '@shared'; // shared.ui.Dialog, shared.store.useAuthStore
 // w (widgets)
 w.Header
 w.SettingsView
-w.GameIntroView
+w.GameIntroView  // DifficultyDropdown 포함 (ready 상태 우상단 난이도 선택)
 w.GameResultView
 
 // f (features)
@@ -154,6 +154,7 @@ e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordL
 shared.ui.Dialog, shared.ui.ToastContainer
 shared.ui.useDialog, shared.ui.useToast, shared.ui.ProfileAvatar, shared.ui.EmbossButton, shared.ui.SuccessOverlay
 shared.store.useAuthStore, shared.store.useThemeStore, shared.store.useGameStore, shared.store.usePendingRecordStore
+// Difficulty 타입 (0=오마카세, 1=쉬움, 2=보통, 3=어려움) — shared에서 직접 import 가능
 shared.lib.cn, shared.lib.useTranslation, shared.lib.useLanguageStore, shared.lib.LANGUAGES
 shared.api.client, shared.api.getTokenStorage, shared.api.setAuthUpdateCallback
 shared.config.queryClient
