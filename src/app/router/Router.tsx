@@ -4,6 +4,7 @@ import HomePage from '@/pages/HomePage';
 import SettingsPage from '@/pages/SettingsPage';
 import DocPage from '@/pages/DocPage';
 import RecordPage from '@/pages/RecordPage';
+import RankingPage from '@/pages/RankingPage';
 
 // 앱 라우터
 export function Router(): React.ReactElement {
@@ -15,6 +16,7 @@ export function Router(): React.ReactElement {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/doc" element={<DocPage />} />
         <Route path="/record" element={<RecordPage />} />
+        <Route path="/ranking" element={<RankingPage />} />
       </Routes>
     </BrowserRouter>
   );

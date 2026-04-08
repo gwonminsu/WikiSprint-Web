@@ -40,6 +40,9 @@ import {
   useGameRecords,
 } from './game-record';
 
+// Ranking feature
+import { getRanking, useRanking } from './ranking';
+
 // 네임스페이스 export
 export const f = {
   hook: {
@@ -57,6 +60,8 @@ export const f = {
     // GameRecord
     useGameRecord,
     useGameRecords,
+    // Ranking
+    useRanking,
   },
   api: {
     wiki: { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord },
@@ -76,6 +81,7 @@ export const f = {
       abandonGameRecord,
       getGameRecords,
     },
+    ranking: { getRanking },
   },
   ui: {
     ProfileImageEditModal,
@@ -109,3 +115,5 @@ export {
   useGameRecord,
   useGameRecords,
 } from './game-record';
+
+export { getRanking, useRanking } from './ranking';

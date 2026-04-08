@@ -69,7 +69,8 @@ src/
 │   ├── AuthPage.tsx        # Google OAuth 로그인
 │   ├── HomePage.tsx
 │   ├── SettingsPage.tsx
-│   └── DocPage.tsx         # WikiSprint 소개 문서
+│   ├── DocPage.tsx         # WikiSprint 소개 문서
+│   └── RankingPage.tsx     # 랭킹 페이지
 │
 ├── widgets/                # 독립적 UI 블록
 │   ├── index.ts            # 네임스페이스 export (w.*)
@@ -79,22 +80,26 @@ src/
 │   │   └── lib/            # useTypewriter, useGameTimer
 │   ├── game-result/        # GameResultView (게임 결과 화면 — 카드 타임라인 + 요약)
 │   │   └── lib/            # useCardSequence
-│   └── game-record/        # GameRecordView (전적 페이지 — 요약 바 + 카드 리스트)
-│       ├── ui/             # GameRecordView, RecordSummaryBar, RecordCard, RecordPathSegment, EmptyRecordView
-│       └── lib/            # formatRecordTime
+│   ├── game-record/        # GameRecordView (전적 페이지 — 요약 바 + 카드 리스트)
+│   │   ├── ui/             # GameRecordView, RecordSummaryBar, RecordCard, RecordPathSegment, EmptyRecordView
+│   │   └── lib/            # formatRecordTime
+│   └── ranking/            # RankingView (랭킹 페이지 — 아케이드 스타일 리더보드)
+│       └── ui/             # RankingView, RankingCard, RankingTabs, RankingMedalFrame, MyRankingCard
 │
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
 │   ├── auth/               # Google OAuth (useGoogleLogin, authApi)
 │   ├── account/            # 계정 관리 (닉네임, 프로필 이미지)
 │   ├── admin/              # 관리자 전용 (제시어 CRUD — adminApi, useTargetWords 등)
-│   └── game-record/        # 게임 전적 (useGameRecord, useGameRecords, gameRecordApi)
+│   ├── game-record/        # 게임 전적 (useGameRecord, useGameRecords, gameRecordApi)
+│   └── ranking/            # 랭킹 조회 (getRanking, useRanking)
 │
 ├── entities/               # 도메인 모델
 │   ├── index.ts            # 네임스페이스 export (e.*)
 │   ├── auth/               # GoogleLoginRequest, GoogleLoginResponse
 │   ├── account/            # Account, AccountResponse 등
-│   └── game-record/        # GameRecord, RecordSummary, GameRecordListResponse 등
+│   ├── game-record/        # GameRecord, RecordSummary, GameRecordListResponse 등
+│   └── ranking/            # RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse 등
 │
 └── shared/                 # 공용 코드
     ├── index.ts            # 네임스페이스 export (shared.*)
@@ -134,6 +139,8 @@ w.Header
 w.SettingsView
 w.GameIntroView  // DifficultyDropdown 포함 (ready 상태 우상단 난이도 선택)
 w.GameResultView
+w.GameRecordView
+w.RankingView    // 기간×난이도 Top 100 리더보드
 
 // f (features)
 f.hook.useGoogleLogin
@@ -143,12 +150,15 @@ f.hook.useUploadProfileImage, f.hook.useRemoveProfileImage
 f.hook.useTargetWords, f.hook.useAddTargetWord, f.hook.useDeleteTargetWord
 f.hook.useGameRecord   // startRecord / updatePath / completeRecord / abandonRecord
 f.hook.useGameRecords  // 전적 목록 + 통계 조회 (TanStack Query)
+f.hook.useRanking      // 기간×난이도 Top 100 조회 (TanStack Query, staleTime 30s)
 f.api.auth, f.api.account, f.api.admin, f.api.gameRecord
+f.api.ranking          // getRanking (POST /api/ranking/list)
 
 // e (entities)
 e.auth.type.GoogleLoginRequest, e.auth.type.GoogleLoginResponse
 e.account.type.*  // AccountResponse(is_admin 포함), AddTargetWordRequest, DeleteTargetWordRequest, TargetWordResponse
 e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordListResponse, StartGameRecordRequest 등
+e.ranking.type.*     // RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse, RankingListRequest
 
 // shared
 shared.ui.Dialog, shared.ui.ToastContainer
@@ -174,6 +184,7 @@ talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talk
 /auth       → AuthPage      (로그인 페이지)
 /settings   → SettingsPage  (게스트 포함 누구나 접근 가능)
 /doc        → DocPage       (WikiSprint 소개)
+/ranking    → RankingPage   (게스트 포함 누구나 접근 가능)
 ```
 
 > PrivateRoute 없음. 게임 진행 중(`playing`) 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.

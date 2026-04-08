@@ -100,6 +100,16 @@ export function Header(): React.ReactElement {
 
           <button
             type="button"
+            onClick={() => guardedNavigate('/ranking')}
+            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
+          >
+            🏆{t('nav.ranking')}
+          </button>
+
+          <NavDivider />
+
+          <button
+            type="button"
             onClick={() => guardedNavigate('/settings')}
             className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >

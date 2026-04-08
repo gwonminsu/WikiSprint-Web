@@ -19,6 +19,9 @@ import { GameResultView } from './game-result';
 // Game Record 위젯 (전적 페이지 — 요약 + 카드 리스트)
 import { GameRecordView } from './game-record';
 
+// Ranking 위젯 (랭킹 페이지 — 아케이드 스타일 리더보드)
+import { RankingView } from './ranking';
+
 // 네임스페이스 export
 export const w = {
   Header,
@@ -28,6 +31,7 @@ export const w = {
   GameIntroView,
   GameResultView,
   GameRecordView,
+  RankingView,
 } as const;
 
 // 개별 export (직접 import 용도)
@@ -38,3 +42,4 @@ export { DocContentView } from './doc-content';
 export { GameIntroView } from './game-intro';
 export { GameResultView } from './game-result';
 export { GameRecordView } from './game-record';
+export { RankingView } from './ranking';

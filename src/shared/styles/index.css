@@ -648,3 +648,659 @@ body {
 .animate-record-summary-in {
   animation: record-summary-in 0.35s ease-out forwards;
 }
+
+/* ===== 랭킹 페이지 애니메이션 ===== */
+
+/* 카드 위에서 떨어지는 bounce 등장 */
+@keyframes ranking-drop {
+  0%   { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  55%  { opacity: 1; transform: translateY(4px) scale(1.01); }
+  75%  { transform: translateY(-2px) scale(0.995); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-ranking-drop {
+  animation: ranking-drop 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+/* Top 3 금속 테두리 광택 회전 (gloss sweep) */
+@keyframes medal-gloss {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* 1위 glow pulse */
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 8px 2px rgba(251, 191, 36, 0.4); }
+  50%       { box-shadow: 0 0 18px 6px rgba(251, 191, 36, 0.75); }
+}
+
+.animate-gold-glow {
+  animation: gold-glow 2s ease-in-out infinite;
+}
+
+/* 카드 확장 scale */
+/* @keyframes ranking-expand {
+  from { opacity: 0; transform: scaleY(0.95); transform-origin: top; }
+  to   { opacity: 1; transform: scaleY(1); transform-origin: top; }
+}
+
+.animate-ranking-expand {
+  animation: ranking-expand 0.2s ease-out forwards;
+} */
+
+/* ===== 리더보드 카드 확장/축소 애니메이션 ===== */
+
+/* 열림/닫힘을 위해 항상 DOM 유지, grid row로 높이 애니메이션 */
+.ranking-expand-wrapper {
+  display: grid;
+  transition:
+    grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    margin-top 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s ease;
+}
+
+.ranking-expand-wrapper--closed {
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  opacity: 0;
+}
+
+.ranking-expand-wrapper--open {
+  grid-template-rows: 1fr;
+  margin-top: 0.75rem;
+  opacity: 1;
+}
+
+/* 내부 내용 잘리게 */
+.ranking-expand-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* 실제 패널에 opacity/translate 애니메이션 추가 */
+.ranking-expand-panel {
+  border-radius: 0.9rem;
+  padding: 0.8rem 0.9rem;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  transform-origin: top;
+  transition:
+    opacity 0.24s ease,
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* 닫힐 때 살짝 위로 접히는 느낌 */
+.ranking-expand-wrapper--closed .ranking-expand-panel {
+  opacity: 0;
+  transform: translateY(-6px) scaleY(0.96);
+  pointer-events: none;
+}
+
+/* 열릴 때 자연스럽게 등장 */
+.ranking-expand-wrapper--open .ranking-expand-panel {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+}
+
+.dark .ranking-expand-panel {
+  background: rgba(17, 24, 39, 0.5);
+  border-color: rgba(55, 65, 81, 0.9);
+}
+
+/* ===== 랭킹 탭 스타일 업그레이드 ===== */
+
+/* 탭 전체 컨테이너 */
+.ranking-tabs-shell {
+  position: relative;
+  display: flex;
+  gap: 0.375rem;
+  padding: 0.35rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.dark .ranking-tabs-shell {
+  border-color: rgba(55, 65, 81, 0.95);
+  background:
+    linear-gradient(180deg, rgba(31, 41, 55, 0.94), rgba(17, 24, 39, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+/* 기간 탭 컨테이너는 살짝 더 존재감 있게 */
+.ranking-tabs-shell--period::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0),
+    rgba(59, 130, 246, 0.55),
+    rgba(168, 85, 247, 0.55),
+    rgba(59, 130, 246, 0)
+  );
+  opacity: 0.8;
+}
+
+/* 난이도 탭 컨테이너는 조금 더 얌전하게 */
+.ranking-tabs-shell--difficulty {
+  padding: 0.3rem;
+  border-radius: 0.95rem;
+}
+
+/* 공통 탭 버튼 */
+.ranking-tab-btn {
+  position: relative;
+  flex: 1;
+  border-radius: 0.8rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+/* hover 시 너무 과하지 않은 반응 */
+.ranking-tab-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* 기간 탭 크기 */
+.ranking-tab-btn--period {
+  min-height: 2.7rem;
+  font-size: 0.92rem;
+}
+
+/* 난이도 탭 크기 */
+.ranking-tab-btn--difficulty {
+  min-height: 2.2rem;
+  font-size: 0.78rem;
+}
+
+/* 활성 탭 */
+.ranking-tab-btn--active {
+  color: rgb(79 70 229);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
+  box-shadow:
+    0 6px 16px rgba(79, 70, 229, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.ranking-tab-btn--active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.55),
+    rgba(168, 85, 247, 0.45),
+    rgba(34, 211, 238, 0.35)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.ranking-tab-btn--active::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 12%;
+  width: 76%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0)
+  );
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.dark .ranking-tab-btn--active {
+  color: rgb(165 180 252);
+  background:
+    linear-gradient(180deg, rgba(55, 65, 81, 0.98), rgba(31, 41, 55, 0.96));
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* 비활성 탭 */
+.ranking-tab-btn--inactive {
+  color: rgb(107 114 128);
+  background: transparent;
+}
+
+.ranking-tab-btn--inactive:hover {
+  color: rgb(55 65 81);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.dark .ranking-tab-btn--inactive {
+  color: rgb(156 163 175);
+}
+
+.dark .ranking-tab-btn--inactive:hover {
+  color: rgb(229 231 235);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ===== 리더보드 카드 스타일 업그레이드 ===== */
+
+/* 기본 카드 입체감 + 은은한 상단 그라데이션 */
+.ranking-card-base {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 1));
+  box-shadow:
+    0 6px 18px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.dark .ranking-card-base {
+  background:
+    linear-gradient(180deg, rgba(31, 41, 55, 0.96), rgba(31, 41, 55, 1));
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* 카드 상단에 아주 얇은 장식 라인 */
+.ranking-card-base::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0),
+    rgba(59, 130, 246, 0.5),
+    rgba(168, 85, 247, 0.5),
+    rgba(59, 130, 246, 0)
+  );
+  opacity: 0.7;
+}
+
+/* hover 시 너무 과하지 않게 */
+.ranking-card-base:hover {
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.dark .ranking-card-base:hover {
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* 내 기록 카드일 때는 과하지 않은 강조 */
+.ranking-card-me {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 1));
+  box-shadow:
+    0 8px 22px rgba(37, 99, 235, 0.10),
+    inset 0 0 0 1px rgba(59, 130, 246, 0.06);
+}
+
+.dark .ranking-card-me {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(31, 41, 55, 0.98), rgba(31, 41, 55, 1));
+  box-shadow:
+    0 10px 24px rgba(37, 99, 235, 0.12),
+    inset 0 0 0 1px rgba(59, 130, 246, 0.08);
+}
+
+/* 확장 상태에서 카드가 열린 느낌 */
+.ranking-card-expanded {
+  border-color: rgba(99, 102, 241, 0.28);
+}
+
+/* 4위 이하 순위 pill */
+.ranking-rank-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 1.6rem;
+  padding: 0 0.45rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: rgb(75 85 99);
+  background: rgb(243 244 246);
+  border: 1px solid rgb(229 231 235);
+}
+
+.dark .ranking-rank-pill {
+  color: rgb(209 213 219);
+  background: rgba(55, 65, 81, 0.85);
+  border-color: rgba(75, 85, 99, 0.85);
+}
+
+/* 아바타에 가벼운 링 */
+.ranking-avatar-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(168, 85, 247, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
+  flex-shrink: 0;
+}
+
+/* 시간 강조 pill */
+.ranking-time-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 1.9rem;
+  padding: 0 0.7rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: rgb(5 150 105);
+  background: rgba(16, 185, 129, 0.10);
+  border: 1px solid rgba(16, 185, 129, 0.18);
+}
+
+.dark .ranking-time-pill {
+  color: rgb(74 222 128);
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.22);
+}
+
+/* 화살표 hover 반응 */
+.ranking-card-base:hover .ranking-chevron {
+  color: rgb(99 102 241);
+  transform: translateY(1px);
+}
+
+/* 확장 패널 배경 */
+.ranking-expand-panel {
+  border-radius: 0.9rem;
+  padding: 0.8rem 0.9rem;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.dark .ranking-expand-panel {
+  background: rgba(17, 24, 39, 0.5);
+  border-color: rgba(55, 65, 81, 0.9);
+}
+
+/* ===== 내 랭킹 카드 전용 스타일 ===== */
+
+/* 수정: 기본값을 라이트 모드 기준으로 재설계 */
+.my-rank-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  padding: 1rem;
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  background:
+    radial-gradient(circle at top left, rgba(14, 165, 233, 0.14), transparent 34%),
+    radial-gradient(circle at top right, rgba(168, 85, 247, 0.10), transparent 28%),
+    linear-gradient(135deg, rgba(248, 250, 252, 0.98), rgba(255, 255, 255, 0.98));
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(14, 165, 233, 0.04);
+}
+
+/* 수정: 다크 모드에서 기존 분위기 유지 */
+.dark .my-rank-panel {
+  border-color: rgba(34, 211, 238, 0.24);
+  background:
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.22), transparent 34%),
+    radial-gradient(circle at top right, rgba(168, 85, 247, 0.18), transparent 28%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96));
+  box-shadow:
+    0 10px 30px rgba(8, 15, 35, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(34, 211, 238, 0.06);
+}
+
+/* 상단 장식 라인 */
+.my-rank-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(14, 165, 233, 0),
+    rgba(14, 165, 233, 0.85),
+    rgba(245, 158, 11, 0.85),
+    rgba(14, 165, 233, 0)
+  );
+  opacity: 0.92;
+}
+
+.dark .my-rank-panel::before {
+  background: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 0),
+    rgba(34, 211, 238, 0.95),
+    rgba(250, 204, 21, 0.95),
+    rgba(34, 211, 238, 0)
+  );
+  opacity: 0.95;
+}
+
+/* 배경 장식 */
+.my-rank-panel::after {
+  content: '';
+  position: absolute;
+  right: -24px;
+  bottom: -24px;
+  width: 140px;
+  height: 140px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.12), transparent 58%);
+  pointer-events: none;
+}
+
+.dark .my-rank-panel::after {
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.14), transparent 58%);
+}
+
+/* 수정: 게스트 패널도 라이트/다크 분리 */
+.my-rank-panel--guest {
+  background:
+    radial-gradient(circle at top left, rgba(148, 163, 184, 0.10), transparent 34%),
+    linear-gradient(135deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.98));
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+.dark .my-rank-panel--guest {
+  background:
+    radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 34%),
+    linear-gradient(135deg, rgba(31, 41, 55, 0.96), rgba(17, 24, 39, 0.96));
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+.my-rank-panel__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.my-rank-panel__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 1.6rem;
+  padding: 0 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(14, 165, 233, 0.22);
+  background: rgba(14, 165, 233, 0.08);
+  color: rgba(3, 105, 161, 0.95);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.dark .my-rank-panel__badge {
+  border-color: rgba(34, 211, 238, 0.3);
+  background: rgba(34, 211, 238, 0.12);
+  color: rgba(207, 250, 254, 0.95);
+}
+
+.my-rank-panel__status {
+  color: rgba(180, 83, 9, 0.98);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.12);
+}
+
+.dark .my-rank-panel__status {
+  color: rgba(250, 204, 21, 0.98);
+  text-shadow: 0 0 14px rgba(250, 204, 21, 0.22);
+}
+
+.my-rank-panel__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.my-rank-panel__avatar-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.18), rgba(245, 158, 11, 0.16));
+  box-shadow:
+    0 0 0 1px rgba(14, 165, 233, 0.08),
+    0 8px 18px rgba(14, 165, 233, 0.08);
+  flex-shrink: 0;
+}
+
+.dark .my-rank-panel__avatar-ring {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.35), rgba(250, 204, 21, 0.22));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 18px rgba(34, 211, 238, 0.12);
+}
+
+.my-rank-panel__time-box {
+  position: relative;
+  min-width: 118px;
+  padding: 0.8rem 0.9rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(245, 158, 11, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(248, 250, 252, 0.94));
+  text-align: right;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 6px 14px rgba(15, 23, 42, 0.05);
+}
+
+.dark .my-rank-panel__time-box {
+  border-color: rgba(250, 204, 21, 0.2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.my-rank-panel__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(148, 163, 184, 0.28);
+  font-size: 0.74rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.dark .my-rank-panel__footer {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+/* 내 카드만 살짝 떠있는 듯한 전용 애니메이션 */
+@keyframes my-rank-float {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow:
+      0 10px 28px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 0 0 1px rgba(14, 165, 233, 0.04);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow:
+      0 14px 34px rgba(15, 23, 42, 0.10),
+      0 0 0 1px rgba(14, 165, 233, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+}
+
+.dark .animate-my-rank-float {
+  animation: my-rank-float-dark 3s ease-in-out infinite;
+}
+
+@keyframes my-rank-float-dark {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow:
+      0 10px 30px rgba(8, 15, 35, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 0 1px rgba(34, 211, 238, 0.06);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow:
+      0 14px 36px rgba(8, 15, 35, 0.38),
+      0 0 0 1px rgba(34, 211, 238, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+}
+
+.animate-my-rank-float {
+  animation: my-rank-float 3s ease-in-out infinite;
+}

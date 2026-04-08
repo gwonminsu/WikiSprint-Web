@@ -33,4 +33,8 @@ export const API_ENDPOINTS = {
     ABANDON: '/api/record/abandon',
     LIST: '/api/record/list',
   },
+  // 랭킹 엔드포인트
+  RANKING: {
+    LIST: '/api/ranking/list',
+  },
 } as const;

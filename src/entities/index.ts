@@ -34,6 +34,15 @@ import type {
 // Wiki 엔티티 타입
 import type { WikiSummary, WikiArticle } from './wiki';
 
+// Ranking 엔티티 타입
+import type {
+  RankingPeriod,
+  RankingDifficulty,
+  RankingRecord,
+  RankingListResponse,
+  RankingListRequest,
+} from './ranking/types';
+
 // 네임스페이스 export
 export const e = {
   auth: {
@@ -59,6 +68,15 @@ export const e = {
     type: {} as {
       WikiSummary: WikiSummary;
       WikiArticle: WikiArticle;
+    },
+  },
+  ranking: {
+    type: {} as {
+      RankingPeriod: RankingPeriod;
+      RankingDifficulty: RankingDifficulty;
+      RankingRecord: RankingRecord;
+      RankingListResponse: RankingListResponse;
+      RankingListRequest: RankingListRequest;
     },
   },
   gameRecord: {
@@ -96,6 +114,14 @@ export type {
 } from './account';
 
 export type { WikiSummary, WikiArticle } from './wiki';
+
+export type {
+  RankingPeriod,
+  RankingDifficulty,
+  RankingRecord,
+  RankingListResponse,
+  RankingListRequest,
+} from './ranking/types';
 
 export type {
   GameRecordStatus,

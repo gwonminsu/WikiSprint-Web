@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { useAuthStore, useGameStore, usePendingRecordStore } from '@shared';
+import { queryClient } from '@/shared/config/queryClient';
 import {
   startGameRecord,
   updateRecordPath,
@@ -88,6 +89,9 @@ export function useGameRecord(): {
         recordId,
         navPath: JSON.stringify(navPath),
         elapsedMs,
+      }).then(() => {
+        // 클리어 후 랭킹 캐시 무효화 (즉시 반영)
+        queryClient.invalidateQueries({ queryKey: ['ranking'] });
       }).catch(() => {});
     } else {
       usePendingRecordStore.getState().completePendingGame(elapsedMs);

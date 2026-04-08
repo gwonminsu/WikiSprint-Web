@@ -1,3 +1,25 @@
+## v2.3.0 (2026-04-08)
+
+### Added
+- 랭킹 페이지 (`/ranking`) 신규 추가 — 기간(일·주·월) × 난이도(전체·쉬움·보통·어려움) Top 100 리더보드
+  - `widgets/ranking/` — `RankingView`, `RankingCard`, `RankingTabs`, `RankingMedalFrame`, `MyRankingCard`
+  - `features/ranking/` — `getRanking` API + `useRanking` 훅 (TanStack Query staleTime 30s)
+  - `entities/ranking/types.ts` — `RankingPeriod`, `RankingDifficulty`, `RankingRecord`, `RankingListResponse`, `RankingListRequest`
+  - `pages/RankingPage.tsx`
+- 네임스페이스 등록 — `e.ranking.*`, `f.hook.useRanking`, `f.api.ranking.getRanking`, `w.RankingView`
+- `RANKING.LIST` 엔드포인트 상수 추가 (`/api/ranking/list`)
+- Header — 🏆 랭킹 네비게이션 버튼 추가
+- i18n ko/en/ja — `ranking.*` 키 30종, `nav.ranking` 추가
+- 아케이드 스타일 리더보드 CSS 추가 (656줄)
+
+### Changed
+- 게임 클리어 시 `queryClient.invalidateQueries({ queryKey: ['ranking'] })` 추가 → 클리어 즉시 랭킹 반영
+- 앱 버전 2.2.0 → **2.3.0**
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.2.0 (2026-04-07)
 
 ### Added
