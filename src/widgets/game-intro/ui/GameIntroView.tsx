@@ -169,6 +169,8 @@ export function GameIntroView(): React.ReactElement {
   const [articleHtml, setArticleHtml] = useState<string>('');
   // 성공 오버레이 표시 여부
   const [showSuccessOverlay, setShowSuccessOverlay] = useState<boolean>(false);
+  // 링크 없는 문서 진입 시 뒤로가기 버튼 표시 여부
+  const [showBackButton, setShowBackButton] = useState<boolean>(false);
 
   // 현재 말풍선 텍스트 (플레이스홀더 치환 완료)
   const [speechText, setSpeechText] = useState<string>('');
@@ -196,6 +198,31 @@ export function GameIntroView(): React.ReactElement {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 문서 로드 후 이동 가능한 링크가 없으면 talkerFinger + 뒤로가기 버튼 표시
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    if (!articleHtml) return;
+
+    // DOM 렌더 완료 후 카운트
+    const rafId = requestAnimationFrame(() => {
+      const root = articleRef.current;
+      if (!root) return;
+      const navigableCount = root.querySelectorAll(
+        'a[href]:not([data-redlink]):not([data-external-link])'
+      ).length;
+      if (navigableCount === 0) {
+        const { navigationHistory } = useGameStore.getState();
+        const text = t('game.noLinksMessage').replace('???', targetWord);
+        setSpeechText(text);
+        setSpeechHighlights([{ word: targetWord, color: 'red' }]);
+        setCurrentTalkerImage(talkerFinger);
+        setShowBackButton(navigationHistory.length > 1);
+      }
+    });
+
+    return () => cancelAnimationFrame(rafId);
+  }, [articleHtml, phase, targetWord, t]);
 
   // 타이머 마일스톤 감시 — 1초 간격 인터벌에서 getState()로 체크 (elapsedMs 구독 없이)
   useEffect(() => {
@@ -306,6 +333,8 @@ export function GameIntroView(): React.ReactElement {
       const html = await getArticleHtml(title, language);
       const sanitizedHtml = sanitizeWikiHtml(html, `${language}:${title}`);
       setArticleHtml(sanitizedHtml);
+      // 새 문서로 이동했으므로 뒤로가기 버튼 초기화 (링크 없음 useEffect가 재판단)
+      setShowBackButton(false);
 
       // 페이지 + 문서 영역 스크롤 최상단으로
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -369,11 +398,51 @@ export function GameIntroView(): React.ReactElement {
     }
   }, [language, phase, targetWord, navigateToDoc, completeGame, completeRecord, updatePath, t]);
 
+  // 뒤로가기 버튼 클릭 — 직전 문서로 복귀하고 talker를 경과시간 기반 이미지로 재설정
+  const handleGoBack = useCallback(async (): Promise<void> => {
+    const { navigationHistory, elapsedMs } = useGameStore.getState();
+    if (navigationHistory.length <= 1) return;
+
+    const prevHistory = navigationHistory.slice(0, -1);
+    const prevTitle = prevHistory[prevHistory.length - 1];
+    setIsLoading(true);
+    try {
+      const html = await getArticleHtml(prevTitle, language);
+      setArticleHtml(sanitizeWikiHtml(html, `${language}:${prevTitle}`));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      articleRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 스토어 히스토리에서 마지막 항목 제거
+      useGameStore.getState().popDoc();
+      updatePath(prevHistory, prevTitle);
+
+      // 이전 문서 도착 시 표시되었어야 할 말풍선·talker 복원
+      const navigatedText = t('game.navigatedMessage')
+        .replace('???', targetWord)
+        .replace('@@@', prevTitle);
+      setSpeechText(navigatedText);
+      setSpeechHighlights([
+        { word: targetWord, color: 'red' },
+        { word: prevTitle, color: 'blue' },
+      ]);
+      setCurrentTalkerImage(getTalkerByElapsedMs(elapsedMs));
+      setShowBackButton(false);
+    } catch {
+      const warnText = t('game.fetchErrorMessage').replace('???', targetWord);
+      setSpeechText(warnText);
+      setSpeechHighlights([{ word: targetWord, color: 'red' }]);
+      setCurrentTalkerImage(talkerWarn);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [language, targetWord, updatePath, t]);
+
   // 게임 시작 — DB에서 제시어 가져온 후 랜덤 시작 문서 fetch
   const handleGameStart = async (): Promise<void> => {
     setIsLoading(true);
-    // 마일스톤 초기화
+    // 마일스톤·뒤로가기 버튼 초기화
     shownMilestones.current = new Set();
+    setShowBackButton(false);
     try {
       // 선택된 난이도 파라미터 결정 (오마카세=0이면 파라미터 미전송)
       const { difficulty: currentDifficulty } = useGameStore.getState();
@@ -403,7 +472,7 @@ export function GameIntroView(): React.ReactElement {
       const initialText = t('game.playingMessage').replace('???', word);
       setSpeechText(initialText);
       setSpeechHighlights([{ word, color: 'red' }]);
-      setCurrentTalkerImage(talkerFinger);
+      setCurrentTalkerImage(talkerIdle);
     } catch (err) {
       // 404: 해당 난이도에 제시어 없음 — 오마카세로 전환 후 재시도
       const isNotFound = err instanceof Error && err.message.includes('404');
@@ -502,12 +571,26 @@ export function GameIntroView(): React.ReactElement {
               alt="talker"
               className="w-16 h-16 min-w-16 min-h-16 object-contain shrink-0"
             />
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 flex items-center gap-2">
               <SpeechBubble
                 text={displayedText}
                 isTyping={isTyping}
                 highlights={speechHighlights}
               />
+              {/* 링크 없는 문서 진입 시 뒤로가기 버튼 */}
+              {showBackButton && (
+                <button
+                  type="button"
+                  onClick={handleGoBack}
+                  aria-label={t('game.goBack')}
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white dark:bg-gray-700 shadow border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 12H5" />
+                    <path d="M12 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
             </div>
             {/* completed 상태: "결과 확인" 버튼 / playing 상태: 타이머 표시 */}
             {phase === 'completed' ? (

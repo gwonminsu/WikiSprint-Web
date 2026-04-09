@@ -130,6 +130,8 @@ export const ja = {
     difficultyHardToast: '難しいお題が提供されます。頑張ってください！',
     difficultyNoWord: 'この難易度のお題がありません。おまかせに切り替えます。',
     currentDifficulty: '現在の難易度',
+    noLinksMessage: '[お題-???] え？この記事には移動できるリンクがないですよ？特別に戻るボタンを提供します！',
+    goBack: '戻る',
   },
   record: {
     title: 'ゲーム記録',

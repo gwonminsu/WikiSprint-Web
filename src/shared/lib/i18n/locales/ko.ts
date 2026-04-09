@@ -130,6 +130,8 @@ export const ko = {
     difficultyHardToast: '어려움으로 분류된 제시어를 제공합니다.',
     difficultyNoWord: '해당 난이도의 제시어가 없습니다. 오마카세로 전환합니다.',
     currentDifficulty: '현재 난이도',
+    noLinksMessage: '[제시어-???] 아? 이 문서엔 이동 가능한 링크가 없네요? 특별히 뒤로가기 버튼을 제공하겠습니다!',
+    goBack: '뒤로가기',
   },
   record: {
     title: '게임 기록',

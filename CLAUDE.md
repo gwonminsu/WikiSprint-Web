@@ -111,7 +111,7 @@ src/
     │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
     ├── lib/                # cn, i18n (ko/en/ja)
-    ├── store/              # authStore (is_admin 포함), themeStore, gameStore (difficulty 포함, persist), pendingRecordStore
+    ├── store/              # authStore (is_admin 포함), themeStore, gameStore (difficulty·popDoc 포함, persist), pendingRecordStore
     ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
     └── styles/             # 전역 스타일 + 테마 CSS 변수
 ```

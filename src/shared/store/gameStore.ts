@@ -23,6 +23,7 @@ type GameState = {
   setPhase: (phase: GamePhase) => void;
   startGame: (targetWord: string, startDocTitle: string, recordId: string | null) => void;
   navigateToDoc: (docTitle: string) => void;
+  popDoc: () => void;
   tickTimer: (elapsedMs: number) => void;
   completeGame: () => void;
   resetGame: () => void;
@@ -73,6 +74,18 @@ export const useGameStore = create<GameState>()(
           currentDocTitle: docTitle,
           navigationHistory: [...state.navigationHistory, docTitle],
         }));
+      },
+
+      // 뒤로가기: 히스토리 마지막 항목 제거 후 직전 문서로 복귀
+      popDoc: (): void => {
+        set((state) => {
+          if (state.navigationHistory.length <= 1) return state;
+          const newHistory = state.navigationHistory.slice(0, -1);
+          return {
+            navigationHistory: newHistory,
+            currentDocTitle: newHistory[newHistory.length - 1],
+          };
+        });
       },
 
       // 타이머 틱: 경과 시간 업데이트

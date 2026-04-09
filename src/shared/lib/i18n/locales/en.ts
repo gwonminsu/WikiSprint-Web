@@ -130,6 +130,8 @@ export const en = {
     difficultyHardToast: 'Hard difficulty words will be provided. Good luck!',
     difficultyNoWord: 'No words found for this difficulty. Switching to Omakase.',
     currentDifficulty: 'Difficulty',
+    noLinksMessage: '[Target-???] Huh? There are no clickable links in this article! I\'ll grant you a back button just this once!',
+    goBack: 'Go back',
   },
   record: {
     title: 'Game Records',
