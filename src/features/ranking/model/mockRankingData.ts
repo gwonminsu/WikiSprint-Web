@@ -202,7 +202,6 @@ function getFixedMe(
   period: RankingPeriod,
   difficulty: RankingDifficulty,
 ): RankingRecord | null {
-  const bucketDate = getBucketDate(period);
 
   if (difficulty !== 'easy' && difficulty !== 'all') {
     return null;

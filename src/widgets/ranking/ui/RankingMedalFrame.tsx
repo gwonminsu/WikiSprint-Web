@@ -24,7 +24,7 @@ export function RankingMedalFrame({ rank, children }: RankingMedalFrameProps): R
   return (
     <div
       className={[
-        'relative overflow-hidden rounded-xl',
+        'relative overflow-hidden rounded-2xl',
         medalBorder,
         medalGloss,
         isFirst ? 'animate-gold-glow' : '',

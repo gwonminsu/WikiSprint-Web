@@ -855,6 +855,9 @@ body {
     rgba(168, 85, 247, 0.45),
     rgba(34, 211, 238, 0.35)
   );
+  mask: 
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);

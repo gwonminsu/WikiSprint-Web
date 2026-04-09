@@ -21,7 +21,7 @@ export function RankingView(): React.ReactElement {
 
   const { data: apiData, isLoading, isError } = useRanking(period, difficulty);
 
-  const useMock = true;
+  const useMock = false;
   const data = useMock ? mockRankingData[period][difficulty] : apiData;
 
   console.log(data);
