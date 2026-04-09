@@ -18,6 +18,9 @@ import { queryClient } from './config';
 
 // 네임스페이스 export
 export const shared = {
+  esset: {
+    getLogoByLanguage,
+  },
   ui: {
     Dialog,
     ToastContainer,
