@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryProvider } from './providers/QueryProvider';
 import { Router } from './router/Router';
-import { Dialog, ToastContainer, useThemeStore, useAuthStore } from '@shared';
+import { Dialog, ToastContainer, useThemeStore, useAuthStore, useViewportScale } from '@shared';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
 
@@ -47,6 +47,12 @@ function AuthInitializer(): null {
   return null;
 }
 
+// 좁은 뷰포트 축소 처리 컴포넌트
+function ViewportScaleInitializer(): null {
+  useViewportScale();
+  return null;
+}
+
 // 메인 앱 컴포넌트
 export function App(): React.ReactElement {
   return (
@@ -54,6 +60,7 @@ export function App(): React.ReactElement {
       <QueryProvider>
         <ThemeInitializer />
         <AuthInitializer />
+        <ViewportScaleInitializer />
         <Router />
         <Dialog />
         <ToastContainer />

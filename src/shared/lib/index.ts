@@ -6,3 +6,4 @@ export {
   LANGUAGES,
   type Language,
 } from './i18n';
+export { useViewportScale } from './useViewportScale';
