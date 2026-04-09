@@ -65,7 +65,7 @@ export function Header(): React.ReactElement {
         <button
           type="button"
           onClick={() => guardedNavigate('/')}
-          className="hover:opacity-80 transition-opacity"
+          className="hover:opacity-80 transition-opacity shrink-0"
         >
           <img
             src={getLogoByLanguage(language)}
@@ -79,7 +79,7 @@ export function Header(): React.ReactElement {
           <button
             type="button"
             onClick={() => guardedNavigate('/')}
-            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
+            className="whitespace-nowrap text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
             🏠{t('nav.home')}
           </button>
@@ -90,7 +90,7 @@ export function Header(): React.ReactElement {
           <button
             type="button"
             onClick={() => guardedNavigate('/doc')}
-            className="flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors px-1"
+            className="whitespace-nowrap flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors px-1"
           >
             <img src={tutoDoc} alt="도움말" className="w-8 h-8 object-contain" />
             {t('game.helpButton')}
@@ -101,7 +101,7 @@ export function Header(): React.ReactElement {
           <button
             type="button"
             onClick={() => guardedNavigate('/ranking')}
-            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
+            className="whitespace-nowrap text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
             🏆{t('nav.ranking')}
           </button>
@@ -111,7 +111,7 @@ export function Header(): React.ReactElement {
           <button
             type="button"
             onClick={() => guardedNavigate('/settings')}
-            className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
+            className="whitespace-nowrap text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
             ⚙️{t('nav.settings')}
           </button>
@@ -132,7 +132,7 @@ export function Header(): React.ReactElement {
                   name={accountInfo.nick}
                   size="sm"
                 />
-                <span className="text-sm text-gray-700 dark:text-gray-200">
+                <span className="whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
                   {accountInfo.nick}
                 </span>
               </button>
@@ -140,7 +140,7 @@ export function Header(): React.ReactElement {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="text-sm text-red-400 hover:font-bold transition-all"
+                className="whitespace-nowrap text-sm text-red-400 hover:font-bold transition-all"
               >
                 {t('auth.logout')}
               </button>
@@ -154,14 +154,14 @@ export function Header(): React.ReactElement {
                   <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9 1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z" />
                 </svg>
               </div>
-              <span className="text-sm text-gray-700 dark:text-gray-200">
+              <span className="whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
                 {t('auth.guest')}
               </span>
               <NavDivider />
               <button
                 type="button"
                 onClick={() => guardedNavigate('/auth')}
-                className="text-sm text-red-400 hover:font-bold transition-all"
+                className="whitespace-nowrap text-sm text-red-400 hover:font-bold transition-all"
               >
                 {t('auth.login')}
               </button>
