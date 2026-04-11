@@ -295,7 +295,7 @@ export function ProfileImageEditModal({
                       type="button"
                       onClick={() => void handleApply()}
                       disabled={isProcessing}
-                      className="w-full py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+                      className="w-full py-2.5 rounded-xl bg-primary text-gray-700 dark:text-white text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
                     >
                       {isProcessing ? t('common.loading') : t('profile.apply')}
                     </button>
