@@ -62,6 +62,11 @@ export const ko = {
     removeSuccess: '프로필 이미지가 삭제되었습니다',
     removeFail: '프로필 이미지 삭제에 실패했습니다',
     showEmail: '이메일 보기',
+    nationality: '국적',
+    nationalityUpdateSuccess: '국적이 변경되었습니다',
+    nationalityUpdateFail: '국적 변경에 실패했습니다',
+    stateless: '미설정',
+    selectNationality: '국적 선택',
   },
   time: {
     justNow: '방금 전',

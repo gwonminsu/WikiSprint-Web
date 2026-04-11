@@ -1,4 +1,11 @@
-import { useTranslation, useAuthStore, ProfileAvatar } from '@shared';
+import {
+  useTranslation,
+  useAuthStore,
+  ProfileAvatar,
+  // 수정: countryCodeToEmoji 제거
+  getCountryFlagUrl,
+  getCountryFlagSrcSet,
+} from '@shared';
 import { getProfileImageUrl } from '@features';
 import type { RankingRecord } from '@/entities/ranking/types';
 
@@ -55,6 +62,13 @@ export function MyRankingCard({
 
   const nickname = accountInfo?.nick ?? me?.nickname ?? '?';
 
+  // 수정: 분기 전에 국적 코드 먼저 안전하게 계산
+  const myNationality: string | null = accountInfo?.nationality ?? me?.nationality ?? null;
+
+  // 수정: 분기 전에 국기 이미지 URL / srcSet 계산
+  const myFlagUrl: string | null = getCountryFlagUrl(myNationality);
+  const myFlagSrcSet: string | undefined = getCountryFlagSrcSet(myNationality);
+
   if (!isAuthenticated) {
     // 비로그인 상태도 패널형 안내로 표시
     return (
@@ -93,12 +107,28 @@ export function MyRankingCard({
         <div className="my-rank-panel__body">
           <div className="flex items-center gap-3 min-w-0">
             <div className="my-rank-panel__avatar-ring">
-              <ProfileAvatar imageUrl={profileImageUrl} name={nickname} size="md" />
+              <ProfileAvatar imageUrl={profileImageUrl} name={nickname} size="rg" />
             </div>
 
             <div className="min-w-0">
-              <p className="text-base font-extrabold text-gray-900 dark:text-white truncate tracking-tight">
-                {nickname}
+              <p className="text-base font-extrabold text-gray-900 dark:text-white truncate tracking-tight flex items-center gap-1">
+                {/* 국기 이미지 */}
+                {myFlagUrl ? (
+                  <img
+                    src={myFlagUrl}
+                    srcSet={myFlagSrcSet}
+                    alt={myNationality ?? 'flag'}
+                    width={16}
+                    height={12}
+                    className="shrink-0 rounded-xs object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  // 국적이 없으면 지구본 유지
+                  <span className="shrink-0 text-xs leading-none">🌐</span>
+                )}
+
+                <span className="truncate ml-1">{nickname}</span>
               </p>
 
               <p className="text-xs text-sky-700/80 dark:text-cyan-100/80 truncate">
@@ -113,6 +143,10 @@ export function MyRankingCard({
             </p>
 
             <p className="text-lg font-black font-mono tabular-nums text-amber-600 dark:text-yellow-300 whitespace-nowrap">
+              --
+            </p>
+
+            <p className="mt-1 text-[10px] leading-none text-gray-500 dark:text-gray-400 whitespace-nowrap">
               --
             </p>
           </div>
@@ -140,8 +174,24 @@ export function MyRankingCard({
           </div>
 
           <div className="min-w-0">
-            <p className="text-base font-extrabold text-gray-900 dark:text-white truncate tracking-tight">
-              {nickname}
+            <p className="text-base font-extrabold text-gray-900 dark:text-white truncate tracking-tight flex items-center gap-1">
+              {/* 수정: 닉네임 앞 국기 이미지 추가 */}
+              {myFlagUrl ? (
+                <img
+                  src={myFlagUrl}
+                  srcSet={myFlagSrcSet}
+                  alt={myNationality ?? 'flag'} // 수정: 공통 변수 재사용
+                  width={16}
+                  height={12}
+                  className="shrink-0 rounded-xs object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                // 국적이 없으면 지구본 유지
+                <span className="shrink-0 text-xs leading-none">🌐</span>
+              )}
+
+              <span className="truncate ml-1">{nickname}</span>
             </p>
 
             {myRank === null && diffSec !== null && (
@@ -185,7 +235,7 @@ export function MyRankingCard({
             {formatMs(me.elapsedMs)}
           </p>
           <p className="mt-1 text-[10px] leading-none text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            {formatRankCreatedAt(me.createdAt)} {/* 수정된 부분 */}
+            {formatRankCreatedAt(me.createdAt)}
           </p>
         </div>
       </div>

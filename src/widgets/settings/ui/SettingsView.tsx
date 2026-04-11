@@ -1,7 +1,20 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useThemeStore, useTranslation, useAuthStore, ProfileAvatar, LANGUAGES, useToast, type Theme, type Language } from '@shared';
-import { getProfileImageUrl, useUpdateNick, ProfileImageEditModal } from '@/features/account';
+import {
+  useThemeStore,
+  useTranslation,
+  useAuthStore,
+  ProfileAvatar,
+  LANGUAGES,
+  useToast,
+  type Theme,
+  type Language,
+  getCountryFlagUrl,
+  getCountryFlagSrcSet,
+  COUNTRY_LIST,
+  type CountryOption,
+} from '@shared';
+import { getProfileImageUrl, useUpdateNick, useUpdateNationality, ProfileImageEditModal } from '@/features/account';
 import { AdminTargetWordsSection } from './AdminTargetWordsSection';
 
 // 이메일 마스킹: 첫 글자 제외 @ 이전을 ***으로 치환
@@ -18,6 +31,7 @@ export function SettingsView(): React.ReactElement {
   const { accountInfo, setAccountInfo } = useAuthStore();
   const { success: toastSuccess, error: toastError } = useToast();
   const updateNickMutation = useUpdateNick();
+  const updateNationalityMutation = useUpdateNationality();
   const navigate = useNavigate();
 
   const profileImageUrl = accountInfo?.profile_img_url
@@ -32,6 +46,10 @@ export function SettingsView(): React.ReactElement {
   const [isEmailRevealed, setIsEmailRevealed] = useState<boolean>(false);
   // 프로필 이미지 모달 상태
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+  // 국적 드롭다운 상태
+  const [isNationalityOpen, setIsNationalityOpen] = useState<boolean>(false);
+  const [nationalitySearch, setNationalitySearch] = useState<string>('');
+  const nationalityRef = useRef<HTMLDivElement>(null);
 
   // 닉네임 편집 시작
   const startEditNick = (): void => {
@@ -64,6 +82,60 @@ export function SettingsView(): React.ReactElement {
       setIsEditingNick(false);
     }
   };
+
+  // 국적 드롭다운 외부 클릭 시 닫기
+  useEffect((): (() => void) => {
+    const handleClickOutside = (e: MouseEvent): void => {
+      if (nationalityRef.current && !nationalityRef.current.contains(e.target as Node)) {
+        setIsNationalityOpen(false);
+        setNationalitySearch('');
+      }
+    };
+    if (isNationalityOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return (): void => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isNationalityOpen]);
+
+  // 국적 선택 (null = 무국적)
+  const selectNationality = async (code: string | null): Promise<void> => {
+    setIsNationalityOpen(false);
+    setNationalitySearch('');
+    try {
+      const response = await updateNationalityMutation.mutateAsync({ nationality: code });
+      if (accountInfo) {
+        setAccountInfo({ ...accountInfo, nationality: response.nationality });
+      }
+      toastSuccess(t('profile.nationalityUpdateSuccess'));
+    } catch {
+      toastError(t('profile.nationalityUpdateFail'));
+    }
+  };
+
+  // 국가 목록 필터링 (검색어 기반)
+  const filteredCountries: CountryOption[] = COUNTRY_LIST.filter((c: CountryOption): boolean => {
+    if (!nationalitySearch) return true;
+    const q = nationalitySearch.toLowerCase();
+    return (
+      c.code.toLowerCase().includes(q) ||
+      c.nameKo.toLowerCase().includes(q) ||
+      c.nameEn.toLowerCase().includes(q) ||
+      c.nameJa.toLowerCase().includes(q)
+    );
+  });
+
+  // 현재 국적의 국가 정보
+  const currentCountry: CountryOption | undefined = COUNTRY_LIST.find(
+    (c: CountryOption): boolean => c.code === accountInfo?.nationality
+  );
+
+  // 현재 국적 국기 이미지 URL 계산
+  const currentFlagUrl: string | null = getCountryFlagUrl(accountInfo?.nationality);
+
+  // 현재 국적 국기 srcSet 계산
+  const currentFlagSrcSet: string | undefined = getCountryFlagSrcSet(accountInfo?.nationality);
 
   // 테마 옵션
   const themeOptions: { value: Theme; label: string }[] = [
@@ -187,6 +259,123 @@ export function SettingsView(): React.ReactElement {
                   </div>
                 )}
 
+                {/* 국적 */}
+                <div className="relative flex items-center gap-1 mt-0.5" ref={nationalityRef}>
+                  {/* 국기 이미지 */}
+                  {currentFlagUrl ? (
+                    <img
+                      src={currentFlagUrl}
+                      srcSet={currentFlagSrcSet}
+                      alt={
+                        currentCountry
+                          ? (language === 'ja'
+                              ? currentCountry.nameJa
+                              : language === 'en'
+                                ? currentCountry.nameEn
+                                : currentCountry.nameKo)
+                          : 'flag'
+                      }
+                      width={16}
+                      height={12}
+                      className="shrink-0 rounded-xs object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="text-sm text-gray-500 dark:text-gray-400">🌐</span>
+                  )}
+
+                  <span className="text-sm text-gray-500 dark:text-gray-400 truncate ml-1">
+                    {currentCountry
+                      ? (language === 'ja' ? currentCountry.nameJa : language === 'en' ? currentCountry.nameEn : currentCountry.nameKo)
+                      : t('profile.stateless')}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsNationalityOpen((prev: boolean) => !prev);
+                      setNationalitySearch('');
+                    }}
+                    className="p-1 text-gray-400 hover:text-primary rounded transition-colors shrink-0"
+                    aria-label={t('profile.selectNationality')}
+                  >
+                    {/* 연필 아이콘 */}
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+
+                  {/* 국적 선택 드롭다운 */}
+                  {isNationalityOpen && (
+                    <div
+                      className="absolute z-50 mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg overflow-hidden"
+                      style={{ top: '100%', left: 0 }}
+                    >
+                      {/* 검색 입력 */}
+                      <div className="p-2 border-b border-gray-100 dark:border-gray-700">
+                        <input
+                          type="text"
+                          value={nationalitySearch}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNationalitySearch(e.target.value)}
+                          placeholder={t('profile.selectNationality')}
+                          autoFocus
+                          className="w-full text-xs px-2 py-1.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg outline-none focus:border-primary text-gray-900 dark:text-white"
+                        />
+                      </div>
+                      {/* 국가 목록 */}
+                      <ul className="max-h-48 overflow-y-auto">
+                        {/* 무국적 옵션 */}
+                        <li>
+                          <button
+                            type="button"
+                            onClick={() => void selectNationality(null)}
+                            className={`w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-colors text-left ${
+                              !accountInfo.nationality ? 'text-primary font-semibold' : 'text-gray-700 dark:text-gray-300'
+                            }`}
+                          >
+                            <span>🌐</span>
+                            <span>{t('profile.stateless')}</span>
+                          </button>
+                        </li>
+
+                        {/* 국가 목록 */}
+                        {filteredCountries.map((c: CountryOption) => (
+                          <li key={c.code}>
+                            <button
+                              type="button"
+                              onClick={() => void selectNationality(c.code)}
+                              className={`w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-colors text-left ${
+                                accountInfo.nationality === c.code ? 'text-primary font-semibold' : 'text-gray-700 dark:text-gray-300'
+                              }`}
+                            >
+                              {/* 국기 이미지 */}
+                              <img
+                                src={getCountryFlagUrl(c.code) ?? undefined}
+                                srcSet={getCountryFlagSrcSet(c.code)}
+                                alt={language === 'ja' ? c.nameJa : language === 'en' ? c.nameEn : c.nameKo}
+                                width={16}
+                                height={12}
+                                className="shrink-0 rounded-xs object-cover mr-1"
+                                loading="lazy"
+                              />
+
+                              <span className="truncate">
+                                {language === 'ja' ? c.nameJa : language === 'en' ? c.nameEn : c.nameKo}
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+
+                        {filteredCountries.length === 0 && (
+                          <li className="px-3 py-3 text-xs text-gray-400 text-center">
+                            검색 결과 없음
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
                 {/* 관리자 배지 (관리자 계정에만 표시) */}
                 {accountInfo.is_admin && (
                   <div className="mt-1.5">
@@ -291,7 +480,7 @@ export function SettingsView(): React.ReactElement {
         </h2>
         <div className="flex items-center justify-between">
           <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-          <span className="text-gray-500 dark:text-gray-400">2.3.1</span>
+          <span className="text-gray-500 dark:text-gray-400">2.4.0</span>
         </div>
       </section>
 

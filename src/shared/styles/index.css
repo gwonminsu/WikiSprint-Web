@@ -50,6 +50,16 @@ html.dark {
   background-color: #111827; /* gray-900 */
 }
 
+/* ===== 국기 렌더링 폰트 설정 ===== */
+.flag-emoji {
+  font-family:
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Noto Color Emoji",
+    system-ui,
+    sans-serif;
+}
+
 /* ===== 커스텀 애니메이션 ===== */
 @keyframes fade-in {
   from { opacity: 0; }

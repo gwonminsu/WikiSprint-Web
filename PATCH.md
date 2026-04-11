@@ -1,3 +1,30 @@
+## v2.4.0 (2026-04-12)
+
+### Added
+- 국적 설정 기능 추가 (설정 페이지 프로필 섹션)
+  - 이메일 행 아래에 국적 행 신규 배치, 연필 아이콘 클릭 시 검색 가능 드롭다운 표시
+  - 50개국 목록 (`shared/lib/countryUtils.ts`) — ISO 3166-1 alpha-2 코드 기반
+  - flagcdn.com 국기 이미지 + 고해상도 srcSet 지원 (`getCountryFlagUrl`, `getCountryFlagSrcSet`)
+  - 무국적 상태는 🌐 지구본으로 표시, 드롭다운 최상단 "미설정" 옵션으로 복원 가능
+  - 국가명 다국어 표시 (한국어·영어·일본어, 현재 언어 설정 연동)
+- 랭킹 카드 국기 표시 (`RankingCard`, `MyRankingCard`)
+  - 닉네임 왼쪽에 소형 국기 이미지 (16×12px, 2x/3x srcSet) 표시
+  - 국적 미설정 시 🌐 폴백
+- `useUpdateNationality` 훅 신규 추가 (`features/account/lib/`)
+- `UpdateNationalityRequest` / `UpdateNationalityResponse` 타입 추가 (`entities/account/model/types.ts`)
+- `AccountInfo`, `AccountResponse`, `Account` — `nationality: string | null` 필드 추가
+- `RankingRecord` — `nationality: string | null` 필드 추가
+- `ACCOUNT.UPDATE_NATIONALITY` 엔드포인트 상수 추가
+- i18n ko/en/ja — `profile.nationality`, `nationalityUpdateSuccess/Fail`, `stateless`, `selectNationality` 키 추가
+- `mockRankingData.ts` 삭제 (불필요한 더미 데이터 파일 정리)
+
+### Changed
+- 앱 버전 2.3.1 → **2.4.0**
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.3.1 (2026-04-09)
 
 ### Added

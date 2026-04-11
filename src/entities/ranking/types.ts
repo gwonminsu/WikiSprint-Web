@@ -8,6 +8,7 @@ export interface RankingRecord {
   accountId: string;
   nickname: string;
   profileImageUrl: string | null;
+  nationality: string | null;
   periodType: RankingPeriod;
   difficulty: RankingDifficulty;
   elapsedMs: number;

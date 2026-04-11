@@ -62,6 +62,11 @@ export const en = {
     removeSuccess: 'Profile image removed',
     removeFail: 'Failed to remove profile image',
     showEmail: 'Show email',
+    nationality: 'Nationality',
+    nationalityUpdateSuccess: 'Nationality updated',
+    nationalityUpdateFail: 'Failed to update nationality',
+    stateless: 'Not set',
+    selectNationality: 'Select nationality',
   },
   time: {
     justNow: 'Just now',

@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { useTranslation, ProfileAvatar } from '@shared';
+import {
+  useTranslation,
+  ProfileAvatar,
+  getCountryFlagUrl,
+  getCountryFlagSrcSet,
+} from '@shared';
 import { getProfileImageUrl } from '@features';
 import type { RankingRecord } from '@/entities/ranking/types';
 import { RankingMedalFrame } from './RankingMedalFrame';
@@ -62,6 +67,12 @@ export function RankingCard({
     ? getProfileImageUrl(record.profileImageUrl)
     : null;
 
+  // 국기 이미지 URL 계산
+  const flagUrl = getCountryFlagUrl(record.nationality);
+
+  // 국기 이미지 srcSet 계산
+  const flagSrcSet = getCountryFlagSrcSet(record.nationality);
+
   const cardBody = (
     <div
       className={[
@@ -111,11 +122,28 @@ export function RankingCard({
         <div className="flex-1 min-w-0">
           <p
             className={[
-              'text-sm font-semibold truncate tracking-tight',
+              // 국기 이미지와 닉네임 세로 정렬 위해 flex 추가
+              'text-sm font-semibold truncate tracking-tight flex items-center gap-1',
               isMe ? 'text-primary' : 'text-gray-900 dark:text-white',
             ].join(' ')}
           >
-            {record.nickname}
+            {/* 국기 이미지*/}
+            {flagUrl ? (
+              <img
+                src={flagUrl}
+                srcSet={flagSrcSet}
+                alt={record.nationality ?? 'flag'}
+                width={16}
+                height={12}
+                className="shrink-0 rounded-xs object-cover"
+                loading="lazy"
+              />
+            ) : (
+              // 국적이 없으면 기존처럼 지구본 유지
+              <span className="shrink-0 text-xs leading-none">🌐</span>
+            )}
+
+            <span className="truncate ml-1">{record.nickname}</span>
           </p>
 
           <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate">

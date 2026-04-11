@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     UPDATE_NICK: '/api/account/nick/update',
     UPLOAD_PROFILE: '/api/account/profile/upload',
     REMOVE_PROFILE: '/api/account/profile/remove',
+    UPDATE_NATIONALITY: '/api/account/nationality/update',
   },
   // Wikipedia API 프록시 엔드포인트
   WIKI: {

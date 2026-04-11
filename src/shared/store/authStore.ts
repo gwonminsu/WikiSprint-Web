@@ -9,6 +9,7 @@ type AccountInfo = {
   email: string;
   profile_img_url: string | null;
   is_admin: boolean;
+  nationality: string | null;
 };
 
 // 인증 상태 타입

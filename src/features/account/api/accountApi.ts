@@ -3,6 +3,8 @@ import type {
   AccountDetailRequest,
   UpdateNickRequest,
   UpdateNickResponse,
+  UpdateNationalityRequest,
+  UpdateNationalityResponse,
   UploadProfileResponse,
   RemoveProfileResponse,
   AccountResponse,
@@ -27,6 +29,15 @@ export const getAccount = async (request: AccountDetailRequest): Promise<Account
 export const updateNick = async (request: UpdateNickRequest): Promise<UpdateNickResponse> => {
   const response = await apiClient.post<UpdateNickResponse>(
     API_ENDPOINTS.ACCOUNT.UPDATE_NICK,
+    request
+  );
+  return response.data!;
+};
+
+// 국적 변경
+export const updateNationality = async (request: UpdateNationalityRequest): Promise<UpdateNationalityResponse> => {
+  const response = await apiClient.post<UpdateNationalityResponse>(
+    API_ENDPOINTS.ACCOUNT.UPDATE_NATIONALITY,
     request
   );
   return response.data!;

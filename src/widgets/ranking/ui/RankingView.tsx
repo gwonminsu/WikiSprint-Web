@@ -5,8 +5,6 @@ import type { RankingPeriod, RankingDifficulty } from '@/entities/ranking/types'
 import { RankingTabs } from './RankingTabs';
 import { MyRankingCard } from './MyRankingCard';
 import { RankingCard } from './RankingCard';
-import { mockRankingData } from '@/features/ranking/model/mockRankingData';
-
 
 const INITIAL_SHOW = 10;
 
@@ -19,12 +17,7 @@ export function RankingView(): React.ReactElement {
   const [difficulty, setDifficulty] = useState<RankingDifficulty>('all');
   const [showAll, setShowAll] = useState(false);
 
-  const { data: apiData, isLoading, isError } = useRanking(period, difficulty);
-
-  const useMock = false;
-  const data = useMock ? mockRankingData[period][difficulty] : apiData;
-
-  console.log(data);
+  const { data, isLoading, isError } = useRanking(period, difficulty);
 
   // 리더보드 시작 위치로 스크롤하기 위한 ref
   const leaderboardRef = useRef<HTMLDivElement | null>(null);

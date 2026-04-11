@@ -1,4 +1,5 @@
 export { useUpdateNick } from './useUpdateNick';
+export { useUpdateNationality } from './useUpdateNationality';
 export { useUploadProfileImage } from './useUploadProfileImage';
 export { useRemoveProfileImage } from './useRemoveProfileImage';
 export { useMyAccount } from './useMyAccount';

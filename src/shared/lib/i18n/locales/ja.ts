@@ -62,6 +62,11 @@ export const ja = {
     removeSuccess: 'プロフィール画像が削除されました',
     removeFail: 'プロフィール画像の削除に失敗しました',
     showEmail: 'メールを表示',
+    nationality: '国籍',
+    nationalityUpdateSuccess: '国籍が変更されました',
+    nationalityUpdateFail: '国籍の変更に失敗しました',
+    stateless: '未設定',
+    selectNationality: '国籍を選択',
   },
   time: {
     justNow: 'たった今',

@@ -5,6 +5,7 @@ export type Account = {
   email: string;
   nick: string;
   profile_img_url: string | null;
+  nationality: string | null;
   lastLogin: string;
   createdAt: string;
   updatedAt: string;
@@ -44,6 +45,18 @@ export type AccountResponse = {
   email: string;
   profile_img_url: string | null;
   is_admin: boolean;
+  nationality: string | null;
+};
+
+// 국적 변경 요청
+export type UpdateNationalityRequest = {
+  nationality: string | null;
+};
+
+// 국적 변경 응답
+export type UpdateNationalityResponse = {
+  message: string;
+  nationality: string | null;
 };
 
 // 제시어 추가 요청
