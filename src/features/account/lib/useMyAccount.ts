@@ -25,6 +25,7 @@ export function useMyAccount() {
       setAccountInfo({
         uuid: query.data.uuid,
         nick: query.data.nick,
+        nationality: query.data.nationality ?? null,
         email: query.data.email,
         profile_img_url: query.data.profile_img_url,
         is_admin: query.data.is_admin ?? false,

@@ -30,6 +30,7 @@ export function useGoogleLogin(): UseMutationResult<ApiResponse<GoogleLoginRespo
         setAccountInfo({
           uuid: response.data.uuid,
           nick: response.data.nick,
+          nationality: response.data.nationality ?? null,
           email: response.data.email,
           profile_img_url: response.data.profile_img_url,
           is_admin: response.data.is_admin ?? false,

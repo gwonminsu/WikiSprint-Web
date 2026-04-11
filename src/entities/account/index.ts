@@ -9,4 +9,6 @@ export type {
   AddTargetWordRequest,
   DeleteTargetWordRequest,
   TargetWordResponse,
+  UpdateNationalityRequest,
+  UpdateNationalityResponse,
 } from './model/types';

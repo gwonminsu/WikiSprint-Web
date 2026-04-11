@@ -10,4 +10,5 @@ export type GoogleLoginResponse = {
   email: string;
   profile_img_url: string | null;
   is_admin: boolean;
+  nationality: string | null;
 };
