@@ -1,62 +1,47 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { useGoogleLogin } from '@features';
-import { getTokenStorage, useToast, useTranslation, getLogoByLanguage } from '@shared';
+import { getTokenStorage, useAuthStore, useToast, useTranslation, getLogoByLanguage } from '@shared';
+import { authApi } from '@features/auth/api/authApi';
+import type { GoogleLoginResponse } from '@entities';
+import type { ApiResponse } from '@shared';
 
-// JWT exp 클레임으로 토큰 만료 여부 확인 (라이브러리 없이 base64 디코딩)
+// JWT exp 클레임으로 토큰 만료 여부 확인
 function isTokenExpired(token: string): boolean {
   try {
     const payload = JSON.parse(atob(token.split('.')[1])) as { exp?: number };
     return typeof payload.exp === 'number' && payload.exp * 1000 < Date.now();
   } catch {
-    return true; // 파싱 실패 시 만료로 처리
+    return true;
   }
 }
 
 // iOS 감지 — Safari, Chrome 모두 WebKit 기반이라 팝업 postMessage 불가
 function isIOS(): boolean {
   const ua = navigator.userAgent;
-
-  const isIOSDevice = /iPad|iPhone|iPod/.test(ua);
-  const isIpadOS = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
-
-  return isIOSDevice || isIpadOS;
+  return /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
 }
 
-// 디버깅 메시지 길이 제한용 헬퍼
-function debugToast(showInfo: (message: string) => void, label: string, value: string): void {
-  const shortValue = value.length > 120 ? `${value.slice(0, 120)}...` : value;
-  showInfo(`[DEBUG] ${label}: ${shortValue}`);
-}
-
-// iOS 전용: Google OAuth2 implicit flow 리다이렉트 URL 생성
-// 팝업 대신 전체 페이지 리다이렉트 → Google 인증 → id_token과 함께 /auth로 복귀
-function buildGoogleOAuth2Url(showInfo: (message: string) => void): string {
+// iOS 전용: Google OAuth2 authorization code flow URL 생성
+// response_type=id_token은 Google 정책상 차단됨 → code flow 사용
+function buildGoogleOAuth2Url(): string {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
   const redirectUri = window.location.origin + '/auth';
-  const nonce = crypto.randomUUID();
 
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
-    response_type: 'id_token',
+    response_type: 'code',
     scope: 'openid email profile',
-    nonce,
     prompt: 'select_account',
+    access_type: 'online',
   });
 
-  const url = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-
-  debugToast(showInfo, 'origin', window.location.origin);
-  debugToast(showInfo, 'redirectUri', redirectUri);
-  debugToast(showInfo, 'clientId', clientId);
-  debugToast(showInfo, 'oauthUrl', url);
-
-  return url;
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 }
 
-// Google 'G' 로고 SVG (iOS 전용 버튼에 사용)
+// Google 'G' 로고 SVG
 function GoogleIcon(): React.ReactElement {
   return (
     <svg width="18" height="18" viewBox="0 0 48 48">
@@ -71,55 +56,66 @@ function GoogleIcon(): React.ReactElement {
 // 인증 페이지 (Google OAuth)
 export default function AuthPage(): React.ReactElement {
   const navigate = useNavigate();
-
-  // 수정: iOS 디버깅용 info 토스트 추가
-  const { error: showError, info: showInfo } = useToast();
-
+  const { error: showError } = useToast();
   const { t, language } = useTranslation();
   const { mutate: googleLogin, isPending } = useGoogleLogin();
+  const { setAccountInfo, checkAuth } = useAuthStore();
+  // code 교환 중복 실행 방지 (React Strict Mode 이중 마운트 대응)
+  const isProcessingCode = useRef(false);
 
   useEffect(() => {
-    // 수정: 콘솔로그 대신 토스트로 현재 환경 확인
-    debugToast(showInfo, 'isIOS', String(isIOS()));
-    // 수정: 콘솔로그 대신 토스트로 현재 href 확인
-    debugToast(showInfo, 'href', window.location.href);
-    // 수정: 콘솔로그 대신 토스트로 현재 origin 확인
-    debugToast(showInfo, 'origin', window.location.origin);
+    // iOS OAuth2 code flow 콜백: ?code= 쿼리 파라미터 확인
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get('code');
+    const oauthError = searchParams.get('error');
 
-    // iOS OAuth2 redirect 콜백 처리: URL 해시에서 id_token 추출
-    const hash = window.location.hash;
-    if (hash.length > 1) {
-      const params = new URLSearchParams(hash.substring(1));
-      const idToken = params.get('id_token');
-      const error = params.get('error');
-
-      // 콜백 해시 디버깅 토스트
-      debugToast(showInfo, 'hash', hash);
-
-      if (error) {
-        // 에러값 확인용 토스트
-        debugToast(showInfo, 'oauthError', error);
-
-        window.history.replaceState(null, '', window.location.pathname);
-        showError(t('auth.googleLoginFail'));
-        return;
-      }
-
-      if (idToken) {
-        // id_token 수신 여부 확인용 토스트
-        debugToast(showInfo, 'idTokenReceived', 'true');
-
-        window.history.replaceState(null, '', window.location.pathname);
-        googleLogin({ credential: idToken });
-        return;
-      }
+    if (oauthError) {
+      window.history.replaceState(null, '', window.location.pathname);
+      showError(t('auth.googleLoginFail'));
+      return;
     }
 
+    if (code && !isProcessingCode.current) {
+      isProcessingCode.current = true;
+      // URL 즉시 클리어 (code 재사용 방지)
+      window.history.replaceState(null, '', window.location.pathname);
+
+      const redirectUri = window.location.origin + '/auth';
+
+      authApi.googleLoginWithCode({ code, redirectUri })
+        .then((response: ApiResponse<GoogleLoginResponse>) => {
+          if (response.auth?.accessToken && response.auth?.refreshToken) {
+            getTokenStorage().setTokens(response.auth.accessToken, response.auth.refreshToken);
+          }
+          if (response.data) {
+            setAccountInfo({
+              uuid: response.data.uuid,
+              nick: response.data.nick,
+              nationality: response.data.nationality ?? null,
+              email: response.data.email,
+              profile_img_url: response.data.profile_img_url,
+              is_admin: response.data.is_admin ?? false,
+            });
+          }
+          checkAuth();
+          navigate('/');
+        })
+        .catch(() => {
+          isProcessingCode.current = false;
+          showError(t('auth.googleLoginFail'));
+        });
+
+      return;
+    }
+
+    // 이미 로그인된 경우 홈으로 이동
     const token = getTokenStorage().getAccessToken();
     if (token && !isTokenExpired(token)) {
       navigate('/');
     }
-  }, [navigate, googleLogin, showError, showInfo, t]);
+  // 마운트 1회만 실행 — code/token 처리는 mount 시점에만 필요
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleGoogleSuccess = (credentialResponse: CredentialResponse): void => {
     if (!credentialResponse.credential) {
@@ -133,16 +129,15 @@ export default function AuthPage(): React.ReactElement {
     showError(t('auth.googleLoginFail'));
   };
 
-  // iOS: 팝업 대신 전체 페이지 리다이렉트로 Google OAuth2 인증
+  // iOS: 전체 페이지 리다이렉트로 Google OAuth2 code flow 시작
   const handleIOSGoogleLogin = (): void => {
-    // 클릭 시점 디버깅 토스트
-    debugToast(showInfo, 'iosLoginClick', 'clicked');
-
-    window.location.href = buildGoogleOAuth2Url(showInfo);
+    window.location.href = buildGoogleOAuth2Url();
   };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
+
+      {/* 배경 패턴 레이어 */}
       <div className="absolute inset-0 pointer-events-none pattern-bg" />
 
       <div className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 text-center">
@@ -162,6 +157,7 @@ export default function AuthPage(): React.ReactElement {
         ) : (
           <div className="flex justify-center">
             {isIOS() ? (
+              // iOS: 팝업 postMessage 불가 → authorization code flow 전체 페이지 리다이렉트
               <button
                 type="button"
                 onClick={handleIOSGoogleLogin}
@@ -171,6 +167,7 @@ export default function AuthPage(): React.ReactElement {
                 <span>Google로 로그인</span>
               </button>
             ) : (
+              // Android / Desktop: 기존 GIS 팝업 방식
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
