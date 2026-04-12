@@ -18,18 +18,21 @@ function isTokenExpired(token: string): boolean {
 function isIOS(): boolean {
   const ua = navigator.userAgent;
 
-  // navigator.platform 제거
   const isIOSDevice = /iPad|iPhone|iPod/.test(ua);
-
-  // iPadOS (Mac처럼 보이는 경우) 대응
   const isIpadOS = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
 
   return isIOSDevice || isIpadOS;
 }
 
+// 디버깅 메시지 길이 제한용 헬퍼
+function debugToast(showInfo: (message: string) => void, label: string, value: string): void {
+  const shortValue = value.length > 120 ? `${value.slice(0, 120)}...` : value;
+  showInfo(`[DEBUG] ${label}: ${shortValue}`);
+}
+
 // iOS 전용: Google OAuth2 implicit flow 리다이렉트 URL 생성
 // 팝업 대신 전체 페이지 리다이렉트 → Google 인증 → id_token과 함께 /auth로 복귀
-function buildGoogleOAuth2Url(): string {
+function buildGoogleOAuth2Url(showInfo: (message: string) => void): string {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
   const redirectUri = window.location.origin + '/auth';
   const nonce = crypto.randomUUID();
@@ -43,7 +46,14 @@ function buildGoogleOAuth2Url(): string {
     prompt: 'select_account',
   });
 
-  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+
+  debugToast(showInfo, 'origin', window.location.origin);
+  debugToast(showInfo, 'redirectUri', redirectUri);
+  debugToast(showInfo, 'clientId', clientId);
+  debugToast(showInfo, 'oauthUrl', url);
+
+  return url;
 }
 
 // Google 'G' 로고 SVG (iOS 전용 버튼에 사용)
@@ -61,11 +71,21 @@ function GoogleIcon(): React.ReactElement {
 // 인증 페이지 (Google OAuth)
 export default function AuthPage(): React.ReactElement {
   const navigate = useNavigate();
-  const { error: showError } = useToast();
+
+  // 수정: iOS 디버깅용 info 토스트 추가
+  const { error: showError, info: showInfo } = useToast();
+
   const { t, language } = useTranslation();
   const { mutate: googleLogin, isPending } = useGoogleLogin();
 
   useEffect(() => {
+    // 수정: 콘솔로그 대신 토스트로 현재 환경 확인
+    debugToast(showInfo, 'isIOS', String(isIOS()));
+    // 수정: 콘솔로그 대신 토스트로 현재 href 확인
+    debugToast(showInfo, 'href', window.location.href);
+    // 수정: 콘솔로그 대신 토스트로 현재 origin 확인
+    debugToast(showInfo, 'origin', window.location.origin);
+
     // iOS OAuth2 redirect 콜백 처리: URL 해시에서 id_token 추출
     const hash = window.location.hash;
     if (hash.length > 1) {
@@ -73,27 +93,33 @@ export default function AuthPage(): React.ReactElement {
       const idToken = params.get('id_token');
       const error = params.get('error');
 
+      // 콜백 해시 디버깅 토스트
+      debugToast(showInfo, 'hash', hash);
+
       if (error) {
+        // 에러값 확인용 토스트
+        debugToast(showInfo, 'oauthError', error);
+
         window.history.replaceState(null, '', window.location.pathname);
         showError(t('auth.googleLoginFail'));
         return;
       }
 
       if (idToken) {
-        // 해시 즉시 클리어 (토큰 노출 방지)
+        // id_token 수신 여부 확인용 토스트
+        debugToast(showInfo, 'idTokenReceived', 'true');
+
         window.history.replaceState(null, '', window.location.pathname);
-        // 기존 googleLogin mutation 재사용 — 백엔드 동일 엔드포인트 호출
         googleLogin({ credential: idToken });
         return;
       }
     }
 
-    // 이미 로그인된 경우 홈으로 이동
     const token = getTokenStorage().getAccessToken();
     if (token && !isTokenExpired(token)) {
       navigate('/');
     }
-  }, [navigate, googleLogin, showError, t]);
+  }, [navigate, googleLogin, showError, showInfo, t]);
 
   const handleGoogleSuccess = (credentialResponse: CredentialResponse): void => {
     if (!credentialResponse.credential) {
@@ -109,17 +135,16 @@ export default function AuthPage(): React.ReactElement {
 
   // iOS: 팝업 대신 전체 페이지 리다이렉트로 Google OAuth2 인증
   const handleIOSGoogleLogin = (): void => {
-    window.location.href = buildGoogleOAuth2Url();
+    // 클릭 시점 디버깅 토스트
+    debugToast(showInfo, 'iosLoginClick', 'clicked');
+
+    window.location.href = buildGoogleOAuth2Url(showInfo);
   };
 
   return (
-    // relative + overflow-hidden 추가
     <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
-
-      {/* 배경 패턴 레이어 */}
       <div className="absolute inset-0 pointer-events-none pattern-bg" />
 
-      {/* 기존 컨텐츠 (z-index 위해 relative 유지) */}
       <div className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 text-center">
         <img
           src={getLogoByLanguage(language)}
@@ -137,7 +162,6 @@ export default function AuthPage(): React.ReactElement {
         ) : (
           <div className="flex justify-center">
             {isIOS() ? (
-              // iOS: 팝업 불가 → OAuth2 implicit flow 전체 페이지 리다이렉트
               <button
                 type="button"
                 onClick={handleIOSGoogleLogin}
@@ -147,7 +171,6 @@ export default function AuthPage(): React.ReactElement {
                 <span>Google로 로그인</span>
               </button>
             ) : (
-              // Android / Desktop: 기존 팝업 방식
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
