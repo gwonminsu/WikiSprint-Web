@@ -70,6 +70,8 @@ export default function AuthPage(): React.ReactElement {
               onError={handleGoogleError}
               size="large"
               shape="rectangular"
+              use_fedcm_for_prompt={false}
+              itp_support
             />
           </div>
         )}
