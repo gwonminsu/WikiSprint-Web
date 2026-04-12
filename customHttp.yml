@@ -1,0 +1,7 @@
+customHeaders:
+  - pattern: '**/*'
+    headers:
+      # Google OAuth 팝업의 postMessage 통신을 허용하기 위해 COOP 완화
+      # 기본값(same-origin)은 팝업의 postMessage를 차단해 iOS에서 Google 로그인 실패 유발
+      - key: Cross-Origin-Opener-Policy
+        value: same-origin-allow-popups
