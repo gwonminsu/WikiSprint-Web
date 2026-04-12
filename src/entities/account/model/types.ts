@@ -70,12 +70,3 @@ export type AddTargetWordRequest = {
 export type DeleteTargetWordRequest = {
   wordId: number;
 };
-
-// 제시어 정보 응답
-export type TargetWordResponse = {
-  wordId: number;
-  word: string;
-  difficulty: number;
-  lang: string;
-  createdAt: string;
-};

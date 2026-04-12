@@ -8,7 +8,7 @@ import {
   startGameRecord,
   completeGameRecord,
   abandonGameRecord,
-} from '../../game-record/api/gameRecordApi';
+} from '../../game-record';
 
 // Google 로그인 mutation 훅
 export function useGoogleLogin(): UseMutationResult<ApiResponse<GoogleLoginResponse>, Error, GoogleLoginRequest> {

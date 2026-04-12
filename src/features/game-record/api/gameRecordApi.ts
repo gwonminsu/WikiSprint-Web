@@ -1,4 +1,4 @@
-import { apiClient, API_ENDPOINTS } from '@/shared/api';
+import { apiClient, API_ENDPOINTS, ApiException } from '@/shared/api';
 import type {
   StartGameRecordRequest,
   StartGameRecordResponse,
@@ -16,7 +16,8 @@ export const startGameRecord = async (
     API_ENDPOINTS.RECORD.START,
     request
   );
-  return response.data!;
+  if (!response.data) throw new ApiException('게임 시작 응답이 없습니다.', 0);
+  return response.data;
 };
 
 // 경로 업데이트 (문서 이동 시 디바운스 호출)
@@ -39,7 +40,8 @@ export const getGameRecords = async (): Promise<GameRecordListResponse> => {
   const response = await apiClient.post<GameRecordListResponse>(
     API_ENDPOINTS.RECORD.LIST
   );
-  const raw = response.data!;
+  if (!response.data) throw new ApiException('전적 목록을 불러올 수 없습니다.', 0);
+  const raw = response.data;
 
   // navPath는 서버에서 JSON 문자열로 오므로 배열로 파싱
   const records = raw.records.map((r) => ({

@@ -28,11 +28,10 @@ import type {
   AccountResponse,
   AddTargetWordRequest,
   DeleteTargetWordRequest,
-  TargetWordResponse,
 } from './account';
 
 // Wiki 엔티티 타입
-import type { WikiSummary, WikiArticle } from './wiki';
+import type { WikiSummary, WikiArticle, TargetWordResponse } from './wiki';
 
 // Ranking 엔티티 타입
 import type {
@@ -110,10 +109,9 @@ export type {
   AccountResponse,
   AddTargetWordRequest,
   DeleteTargetWordRequest,
-  TargetWordResponse,
 } from './account';
 
-export type { WikiSummary, WikiArticle } from './wiki';
+export type { WikiSummary, WikiArticle, TargetWordResponse } from './wiki';
 
 export type {
   RankingPeriod,

@@ -1,3 +1,3 @@
 export { createApiClient, type ApiClient } from './interceptor';
 export { createLocalStorageTokenStorage } from './token';
-export { apiClient, setAuthUpdateCallback, getTokenStorage } from './client';
+export { apiClient, setAuthUpdateCallback, setAuthFailureCallback, getTokenStorage } from './client';

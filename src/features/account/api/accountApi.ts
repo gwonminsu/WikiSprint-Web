@@ -1,4 +1,4 @@
-import { apiClient, API_ENDPOINTS, API_BASE_URL } from '@/shared/api';
+import { apiClient, API_ENDPOINTS, API_BASE_URL, ApiException } from '@/shared/api';
 import type {
   AccountDetailRequest,
   UpdateNickRequest,
@@ -13,7 +13,8 @@ import type {
 // 내 계정 정보 조회
 export const getMyAccount = async (): Promise<AccountResponse> => {
   const response = await apiClient.get<AccountResponse>(API_ENDPOINTS.ACCOUNT.ME);
-  return response.data!;
+  if (!response.data) throw new ApiException('계정 정보를 불러올 수 없습니다.', 0);
+  return response.data;
 };
 
 // 특정 계정 정보 조회
@@ -22,7 +23,8 @@ export const getAccount = async (request: AccountDetailRequest): Promise<Account
     API_ENDPOINTS.ACCOUNT.DETAIL,
     request
   );
-  return response.data!;
+  if (!response.data) throw new ApiException('계정 정보를 불러올 수 없습니다.', 0);
+  return response.data;
 };
 
 // 닉네임 변경
@@ -31,7 +33,8 @@ export const updateNick = async (request: UpdateNickRequest): Promise<UpdateNick
     API_ENDPOINTS.ACCOUNT.UPDATE_NICK,
     request
   );
-  return response.data!;
+  if (!response.data) throw new ApiException('닉네임 변경 응답이 없습니다.', 0);
+  return response.data;
 };
 
 // 국적 변경
@@ -40,7 +43,8 @@ export const updateNationality = async (request: UpdateNationalityRequest): Prom
     API_ENDPOINTS.ACCOUNT.UPDATE_NATIONALITY,
     request
   );
-  return response.data!;
+  if (!response.data) throw new ApiException('국적 변경 응답이 없습니다.', 0);
+  return response.data;
 };
 
 // 프로필 이미지 업로드 (multipart/form-data)
@@ -56,7 +60,8 @@ export const uploadProfileImage = async (file: File): Promise<UploadProfileRespo
     createFormData
   );
 
-  return response.data!;
+  if (!response.data) throw new ApiException('프로필 이미지 업로드 응답이 없습니다.', 0);
+  return response.data;
 };
 
 // 프로필 이미지 제거
@@ -64,7 +69,8 @@ export const removeProfileImage = async (): Promise<RemoveProfileResponse> => {
   const response = await apiClient.post<RemoveProfileResponse>(
     API_ENDPOINTS.ACCOUNT.REMOVE_PROFILE
   );
-  return response.data!;
+  if (!response.data) throw new ApiException('프로필 이미지 제거 응답이 없습니다.', 0);
+  return response.data;
 };
 
 // 프로필 이미지 URL 생성

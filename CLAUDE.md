@@ -156,7 +156,8 @@ f.api.ranking          // getRanking (POST /api/ranking/list)
 
 // e (entities)
 e.auth.type.GoogleLoginRequest, e.auth.type.GoogleLoginResponse
-e.account.type.*  // AccountResponse(is_admin 포함), AddTargetWordRequest, DeleteTargetWordRequest, TargetWordResponse
+e.account.type.*  // AccountResponse(is_admin 포함), AddTargetWordRequest, DeleteTargetWordRequest
+e.wiki.type.*     // WikiSummary, WikiArticle, TargetWordResponse
 e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordListResponse, StartGameRecordRequest 등
 e.ranking.type.*     // RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse, RankingListRequest
 
@@ -168,7 +169,7 @@ shared.store.useAuthStore, shared.store.useThemeStore, shared.store.useGameStore
 shared.lib.cn, shared.lib.useTranslation, shared.lib.useLanguageStore, shared.lib.LANGUAGES
 // countryUtils — 국가 코드 유틸 (직접 import)
 getCountryFlagUrl, getCountryFlagSrcSet, COUNTRY_LIST  // 국기 이미지 URL + 국가 목록
-shared.api.client, shared.api.getTokenStorage, shared.api.setAuthUpdateCallback
+shared.api.client, shared.api.getTokenStorage, shared.api.setAuthUpdateCallback, shared.api.setAuthFailureCallback
 shared.config.queryClient
 
 // 개별 export (직접 import)

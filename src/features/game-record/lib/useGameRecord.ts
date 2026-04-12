@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { useAuthStore, useGameStore, usePendingRecordStore } from '@shared';
+import { useAuthStore, useGameStore, usePendingRecordStore, useToastStore } from '@shared';
 import { queryClient } from '@/shared/config/queryClient';
 import {
   startGameRecord,
@@ -92,7 +92,10 @@ export function useGameRecord(): {
       }).then(() => {
         // 클리어 후 랭킹 캐시 무효화 (즉시 반영)
         queryClient.invalidateQueries({ queryKey: ['ranking'] });
-      }).catch(() => {});
+      }).catch((err: unknown) => {
+        console.error('[useGameRecord] 클리어 전적 저장 실패:', err);
+        useToastStore.getState().add({ message: '전적 저장에 실패했습니다.', type: 'error', duration: 4000 });
+      });
     } else {
       usePendingRecordStore.getState().completePendingGame(elapsedMs);
     }
@@ -109,7 +112,9 @@ export function useGameRecord(): {
     if (isAuthRef.current) {
       const recordId = useGameStore.getState().recordId;
       if (!recordId) return;
-      abandonGameRecord({ recordId }).catch(() => {});
+      abandonGameRecord({ recordId }).catch((err: unknown) => {
+        console.error('[useGameRecord] 포기 전적 저장 실패:', err);
+      });
     } else {
       usePendingRecordStore.getState().abandonPendingGame();
     }

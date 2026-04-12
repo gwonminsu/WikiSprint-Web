@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import {
   SpeechBubble,
   EmbossButton,
@@ -27,7 +28,17 @@ type HighlightItem = {
 };
 
 // 문서 제목 → sanitized HTML 프론트엔드 캐시 (세션 내 재방문 시 DOMParser 재실행 방지)
+// Map은 삽입 순서를 유지하므로, 최대 크기 초과 시 가장 먼저 삽입된 항목을 제거하는 FIFO 방식 사용
 const sanitizedHtmlCache = new Map<string, string>();
+const MAX_HTML_CACHE_SIZE = 50;
+
+function setCachedHtml(key: string, value: string): void {
+  if (sanitizedHtmlCache.size >= MAX_HTML_CACHE_SIZE) {
+    const firstKey = sanitizedHtmlCache.keys().next().value;
+    if (firstKey !== undefined) sanitizedHtmlCache.delete(firstKey);
+  }
+  sanitizedHtmlCache.set(key, value);
+}
 
 // Wikipedia HTML에서 브라우저에 영향을 주는 태그 제거 + redlink 비활성화 처리
 function sanitizeWikiHtml(html: string, cacheKey?: string): string {
@@ -88,10 +99,14 @@ function sanitizeWikiHtml(html: string, cacheKey?: string): string {
   ];
   doc.querySelectorAll(metaSelectors.join(', ')).forEach((el: Element) => el.remove());
 
-  // 직렬화하여 반환 (<body> 내부만 추출)
-  const result = doc.body.innerHTML;
-  if (cacheKey) sanitizedHtmlCache.set(cacheKey, result);
-  return result;
+  // 직렬화 후 DOMPurify로 최종 XSS 방어 (script, iframe, onerror 등 악성 태그/속성 제거)
+  const sanitized = DOMPurify.sanitize(doc.body.innerHTML, {
+    USE_PROFILES: { html: true },
+    FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
+    FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onmouseout'],
+  });
+  if (cacheKey) setCachedHtml(cacheKey, sanitized);
+  return sanitized;
 }
 
 // 위키피디아 문서 링크 클릭 시 제목 추출

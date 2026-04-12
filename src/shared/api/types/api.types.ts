@@ -22,10 +22,8 @@ export type ApiResponse<T> = {
   usedRefreshToken?: boolean;
 };
 
-// 인증 응답 데이터
+// 인증 응답 데이터 (auth 필드에는 토큰 정보만 포함)
 export type AuthResponseData = {
   accessToken?: string;
   refreshToken?: string;
-  user?: unknown;
-  account?: unknown;
 };

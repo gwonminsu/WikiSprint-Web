@@ -1,3 +1,39 @@
+## v2.5.0 (2026-04-12)
+
+### Added
+- 페이지 코드 스플리팅 (`lazy()` + `Suspense`) 적용 — 초기 번들 크기 절감
+  - AuthPage, HomePage, SettingsPage, DocPage, RecordPage, RankingPage 모두 지연 로딩
+- DOMPurify 도입으로 Wikipedia HTML XSS 방어 강화 (`sanitizeWikiHtml`)
+  - `FORBID_TAGS`: script, iframe, object, embed, form, input 차단
+  - `FORBID_ATTR`: onerror, onload, onclick, onmouseover, onmouseout 차단
+- 인증 실패 시 SPA 내 `react-router navigate` 처리 (`window.location.href` 대체)
+  - `setAuthFailureCallback` 함수 + `AuthFailureHandler` 컴포넌트 추가
+  - Router 마운트 시 navigate 등록, 미등록 시 window.location.href 폴백
+- AuthPage — JWT 만료 토큰 검증 추가 (`isTokenExpired`, base64 디코딩)
+  - 만료된 access token이 있어도 홈으로 리다이렉트되지 않도록 수정
+- sanitizedHtmlCache 최대 크기 50건 FIFO 제한 (`setCachedHtml` 함수)
+
+### Changed
+- API 응답 null-assertion(`!`) 전면 제거 → `ApiException` throw로 안전한 에러 처리 통일
+  - 대상: `accountApi`, `gameRecordApi`, `wikiApi`
+- `TargetWordResponse` 타입 `account` 엔티티 → `wiki` 엔티티로 이동 (도메인 정합성)
+- `WikiResponse<T>` 내부 래퍼 타입 제거, `apiClient` 응답 직접 참조
+- `AuthResponseData` — 미사용 `user`, `account` 필드 제거
+- `useSystemThemeListener` 훅 제거 (App.tsx `ThemeInitializer`로 이전됨)
+- `apiClient.post/put` 시그니처 `unknown` → `object` 타입 강화
+- Dialog ESC 키 핸들러 — stale closure 수정 (`useDialogStore.getState()` 직접 참조)
+- `filteredCountries` → `useMemo` 적용 (검색어 변경 시만 재계산)
+- useGameRecord — catch 블록 에러 로깅 + 실패 토스트 추가
+- useGoogleLogin import 경로 정리 (gameRecordApi 직접 → index 경유)
+- AuthPage 주석 이모지 제거
+- token.ts — localStorage 보안 한계 및 httpOnly 쿠키 전환 권장 주석 추가
+- package.json version `0.0.0` → `2.4.0` → `2.5.0`
+- 앱 버전 2.4.0 → **2.5.0**
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.4.0 (2026-04-12)
 
 ### Added

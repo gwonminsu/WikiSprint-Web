@@ -4,6 +4,16 @@ import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { useGoogleLogin } from '@features';
 import { getTokenStorage, useToast, useTranslation, getLogoByLanguage } from '@shared';
 
+// JWT exp 클레임으로 토큰 만료 여부 확인 (라이브러리 없이 base64 디코딩)
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1])) as { exp?: number };
+    return typeof payload.exp === 'number' && payload.exp * 1000 < Date.now();
+  } catch {
+    return true; // 파싱 실패 시 만료로 처리
+  }
+}
+
 // 인증 페이지 (Google OAuth)
 export default function AuthPage(): React.ReactElement {
   const navigate = useNavigate();
@@ -12,7 +22,9 @@ export default function AuthPage(): React.ReactElement {
   const { mutate: googleLogin, isPending } = useGoogleLogin();
 
   useEffect(() => {
-    if (getTokenStorage().getAccessToken()) {
+    const token = getTokenStorage().getAccessToken();
+    // 토큰이 존재하고 만료되지 않은 경우에만 홈으로 리다이렉트
+    if (token && !isTokenExpired(token)) {
       navigate('/');
     }
   }, [navigate]);
@@ -30,13 +42,13 @@ export default function AuthPage(): React.ReactElement {
   };
 
   return (
-    // 🔥 [수정] relative + overflow-hidden 추가
+    // relative + overflow-hidden 추가
     <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
       
-      {/* 🔥 [추가] 배경 패턴 레이어 */}
+      {/* 배경 패턴 레이어 */}
       <div className="absolute inset-0 pointer-events-none pattern-bg" />
 
-      {/* 🔥 기존 컨텐츠 (z-index 위해 relative 유지) */}
+      {/* 기존 컨텐츠 (z-index 위해 relative 유지) */}
       <div className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 text-center">
         <img
           src={getLogoByLanguage(language)}

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   useThemeStore,
@@ -114,17 +114,20 @@ export function SettingsView(): React.ReactElement {
     }
   };
 
-  // 국가 목록 필터링 (검색어 기반)
-  const filteredCountries: CountryOption[] = COUNTRY_LIST.filter((c: CountryOption): boolean => {
-    if (!nationalitySearch) return true;
-    const q = nationalitySearch.toLowerCase();
-    return (
-      c.code.toLowerCase().includes(q) ||
-      c.nameKo.toLowerCase().includes(q) ||
-      c.nameEn.toLowerCase().includes(q) ||
-      c.nameJa.toLowerCase().includes(q)
-    );
-  });
+  // 국가 목록 필터링 (검색어 기반) — 검색어가 바뀔 때만 재계산
+  const filteredCountries: CountryOption[] = useMemo(() =>
+    COUNTRY_LIST.filter((c: CountryOption): boolean => {
+      if (!nationalitySearch) return true;
+      const q = nationalitySearch.toLowerCase();
+      return (
+        c.code.toLowerCase().includes(q) ||
+        c.nameKo.toLowerCase().includes(q) ||
+        c.nameEn.toLowerCase().includes(q) ||
+        c.nameJa.toLowerCase().includes(q)
+      );
+    }),
+    [nationalitySearch]
+  );
 
   // 현재 국적의 국가 정보
   const currentCountry: CountryOption | undefined = COUNTRY_LIST.find(
@@ -480,7 +483,7 @@ export function SettingsView(): React.ReactElement {
         </h2>
         <div className="flex items-center justify-between">
           <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-          <span className="text-gray-500 dark:text-gray-400">2.4.0</span>
+          <span className="text-gray-500 dark:text-gray-400">2.5.0</span>
         </div>
       </section>
 

@@ -4,9 +4,9 @@ import { ApiException } from '../types';
 // API 클라이언트 타입 정의
 export type ApiClient = {
   get: <T>(endpoint: string, skipAuth?: boolean) => Promise<ApiResponse<T>>;
-  post: <T>(endpoint: string, body?: unknown, skipAuth?: boolean) => Promise<ApiResponse<T>>;
+  post: <T>(endpoint: string, body?: object, skipAuth?: boolean) => Promise<ApiResponse<T>>;
   postFormData: <T>(endpoint: string, createFormData: () => FormData) => Promise<ApiResponse<T>>;
-  put: <T>(endpoint: string, body?: unknown) => Promise<ApiResponse<T>>;
+  put: <T>(endpoint: string, body?: object) => Promise<ApiResponse<T>>;
   delete: <T>(endpoint: string) => Promise<ApiResponse<T>>;
   fetchBinary: (endpoint: string, options?: RequestInit) => Promise<Response>;
 };
@@ -310,7 +310,7 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
     get: <T>(endpoint: string, skipAuth?: boolean): Promise<ApiResponse<T>> =>
       interceptedFetch<T>(endpoint, { method: 'GET' }, skipAuth),
 
-    post: <T>(endpoint: string, body?: unknown, skipAuth?: boolean): Promise<ApiResponse<T>> =>
+    post: <T>(endpoint: string, body?: object, skipAuth?: boolean): Promise<ApiResponse<T>> =>
       interceptedFetch<T>(
         endpoint,
         {
@@ -323,7 +323,7 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
     postFormData: <T>(endpoint: string, createFormData: () => FormData): Promise<ApiResponse<T>> =>
       interceptedFetchFormData<T>(endpoint, createFormData),
 
-    put: <T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> =>
+    put: <T>(endpoint: string, body?: object): Promise<ApiResponse<T>> =>
       interceptedFetch<T>(endpoint, {
         method: 'PUT',
         body: body ? JSON.stringify(body) : undefined,

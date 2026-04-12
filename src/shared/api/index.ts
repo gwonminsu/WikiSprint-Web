@@ -2,6 +2,7 @@
 export {
   apiClient,
   setAuthUpdateCallback,
+  setAuthFailureCallback,
   getTokenStorage,
   createApiClient,
   createLocalStorageTokenStorage,

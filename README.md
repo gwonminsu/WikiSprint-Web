@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.3.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.5.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 - 게임 시작 버튼을 누르는 순간 타이머가 시작됩니다
 - 문서 내 링크만을 이용해 제시어 문서까지 이동해야 합니다
-- 비로그인 상태로도 플레이 가능, 랭킹 등록·댓글은 로그인 필요
+- 비로그인 상태로도 플레이 가능, 랭킹 등록은 로그인 필요
 
 > 📄 콘텐츠 출처: [Wikipedia](https://ko.wikipedia.org/) (CC BY-SA 3.0)
 
@@ -36,9 +36,14 @@
 
 | 기능 | 설명 |
 |------|------|
+| 🎮 위키 스피드런 게임 | 랜덤 문서에서 제시어까지 링크만으로 도달, 타이머 측정 |
+| 🎯 난이도 선택 | 쉬움 / 보통 / 어려움 / 오마카세(랜덤) 4단계 |
+| 📊 전적 관리 | 게임 기록 자동 저장, 클리어/포기 통계 조회 |
+| 🏆 랭킹 시스템 | 일간·주간·월간 × 난이도 Top 100 리더보드 |
 | 🔐 Google OAuth 로그인 | Google 계정으로 원클릭 로그인 및 자동 회원가입 |
 | 🔄 JWT 자동 갱신 | Access Token 만료 시 Refresh Token으로 자동 재발급 |
 | 👤 계정 관리 | 닉네임 변경, 프로필 이미지 업로드/삭제 |
+| 🏳️ 국적 설정 | 프로필 국기 표시, 랭킹 카드 국기 반영 |
 | 🌍 다국어 지원 | 한국어 · 영어 · 일본어 (i18n) |
 | 🎨 테마 지원 | 라이트 / 다크 / 시스템 자동 테마 |
 | 📱 웹뷰 호환 | `window.alert` 없이 커스텀 Dialog/Toast 사용 |
@@ -58,6 +63,7 @@
 | 라우팅 | react-router-dom | 7.x |
 | Google OAuth | @react-oauth/google | 최신 |
 | UI 프리미티브 | Radix UI | 최신 |
+| XSS 방어 | DOMPurify | 최신 |
 
 ---
 
@@ -74,8 +80,8 @@ app → pages → widgets → features → entities → shared
 ### 네임스페이스 import 패턴
 
 ```typescript
-import { w }      from '@widgets';  // w.Header, w.SettingsView
-import { f }      from '@features'; // f.hook.useGoogleLogin, f.api.auth
+import { w }      from '@widgets';  // w.Header, w.SettingsView, w.GameIntroView
+import { f }      from '@features'; // f.hook.useGoogleLogin, f.api.gameRecord
 import { e }      from '@entities'; // e.auth.type.GoogleLoginRequest
 import { shared } from '@shared';   // shared.ui.Dialog, shared.store.useAuthStore
 ```
@@ -96,27 +102,41 @@ WikiSprint-Web/
     │
     ├── pages/
     │   ├── AuthPage.tsx          # Google OAuth 로그인 페이지
-    │   ├── HomePage.tsx
-    │   └── SettingsPage.tsx
+    │   ├── HomePage.tsx          # 게임 메인 페이지
+    │   ├── SettingsPage.tsx      # 설정 페이지
+    │   ├── DocPage.tsx           # WikiSprint 소개 문서
+    │   ├── RecordPage.tsx        # 전적 조회 페이지
+    │   └── RankingPage.tsx       # 랭킹 페이지
     │
     ├── widgets/
     │   ├── main-layout/          # Header 네비게이션
-    │   └── settings/             # SettingsView
+    │   ├── settings/             # SettingsView (프로필·테마·언어·관리자)
+    │   ├── game-intro/           # GameIntroView (게임 진행 화면 + Wikipedia 렌더링)
+    │   ├── game-result/          # GameResultView (게임 결과 카드 타임라인)
+    │   ├── game-record/          # GameRecordView (전적 목록 + 통계 바)
+    │   └── ranking/              # RankingView (기간×난이도 리더보드)
     │
     ├── features/
     │   ├── auth/                 # Google OAuth 로그인 훅 & API
-    │   └── account/              # 계정 관리 훅 & API
+    │   ├── account/              # 계정 관리 훅 & API
+    │   ├── wiki/                 # Wikipedia API 클라이언트
+    │   ├── admin/                # 관리자 제시어 CRUD
+    │   ├── game-record/          # 게임 전적 훅 & API
+    │   └── ranking/              # 랭킹 조회 훅 & API
     │
     ├── entities/
     │   ├── auth/                 # GoogleLoginRequest/Response 타입
-    │   └── account/              # Account, AccountResponse 타입
+    │   ├── account/              # Account, AccountResponse 타입
+    │   ├── wiki/                 # WikiSummary, TargetWordResponse 타입
+    │   ├── game-record/          # GameRecord, RecordSummary 타입
+    │   └── ranking/              # RankingRecord, RankingListResponse 타입
     │
     └── shared/
         ├── api/                  # JWT 인터셉터, API 클라이언트, 엔드포인트
         ├── config/               # QueryClient 설정
-        ├── lib/                  # cn 유틸, i18n (ko/en/ja)
-        ├── store/                # authStore, themeStore (Zustand)
-        ├── ui/                   # Dialog, Toast, ProfileAvatar, EmbossButton
+        ├── lib/                  # cn 유틸, i18n (ko/en/ja), countryUtils (국기 이미지)
+        ├── store/                # authStore, themeStore, gameStore, pendingRecordStore
+        ├── ui/                   # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
         └── styles/               # 전역 스타일 + 테마 CSS 변수
 ```
 
@@ -127,7 +147,7 @@ WikiSprint-Web/
 ### 요구사항
 
 - Node.js 20+
-- npm 또는 pnpm
+- pnpm
 
 ### 설치 및 실행
 
@@ -137,17 +157,17 @@ git clone https://github.com/your-org/WikiSprint.git
 cd WikiSprint/WikiSprint-Web
 
 # 의존성 설치
-npm install
+pnpm install
 
 # 개발 서버 실행 (포트 5969)
-npm run dev -- --port 5969
+pnpm dev -- --port 5969
 ```
 
 ### 빌드
 
 ```bash
-npm run build
-npm run preview
+pnpm build
+pnpm preview
 ```
 
 ---
@@ -158,13 +178,11 @@ npm run preview
 
 ```env
 VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-VITE_API_BASE_URL=http://localhost:8585
 ```
 
 | 환경변수 | 설명 |
 |---------|------|
 | `VITE_GOOGLE_CLIENT_ID` | Google OAuth 클라이언트 ID |
-| `VITE_API_BASE_URL` | 백엔드 API 주소 |
 
 ---
 
@@ -172,9 +190,14 @@ VITE_API_BASE_URL=http://localhost:8585
 
 | 경로 | 페이지 | 인증 필요 |
 |------|--------|----------|
-| `/` | `HomePage` | ✅ |
+| `/` | `HomePage` | ❌ (게스트 포함) |
 | `/auth` | `AuthPage` | ❌ |
-| `/settings` | `SettingsPage` | ✅ |
+| `/settings` | `SettingsPage` | ❌ (게스트 포함) |
+| `/doc` | `DocPage` | ❌ |
+| `/record` | `RecordPage` | ✅ |
+| `/ranking` | `RankingPage` | ❌ (게스트 포함) |
+
+> PrivateRoute 없음. 게임 진행 중 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
 
 ---
 

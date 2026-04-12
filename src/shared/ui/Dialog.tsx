@@ -53,10 +53,13 @@ export function Dialog(): React.ReactElement | null {
   const { t } = useTranslation();
 
   // ESC 키로 닫기
+  // useDialogStore.getState()로 최신 options/close를 직접 읽어 stale closure 방지
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent): void => {
       if (e.key === 'Escape' && isOpen) {
-        handleCancel();
+        const { options: latestOptions, close } = useDialogStore.getState();
+        latestOptions?.onCancel?.();
+        close();
       }
     };
     window.addEventListener('keydown', handleKeyDown);

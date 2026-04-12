@@ -55,23 +55,4 @@ export const useThemeStore = create<ThemeState>()(
   )
 );
 
-// 시스템 테마 변경 감지 훅
-export function useSystemThemeListener(): void {
-  const { theme } = useThemeStore();
-
-  // 컴포넌트 마운트 시 시스템 테마 변경 리스너 등록
-  if (typeof window !== 'undefined') {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const handleChange = (): void => {
-      if (theme === 'system') {
-        applyTheme('system');
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-
-    // 초기 테마 적용
-    applyTheme(theme);
-  }
-}
+// 시스템 테마 감지는 App.tsx의 ThemeInitializer 컴포넌트에서 useEffect로 처리
