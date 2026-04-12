@@ -14,6 +14,50 @@ function isTokenExpired(token: string): boolean {
   }
 }
 
+// iOS 감지 — Safari, Chrome 모두 WebKit 기반이라 팝업 postMessage 불가
+function isIOS(): boolean {
+  const ua = navigator.userAgent;
+
+  // navigator.platform 제거
+  const isIOSDevice = /iPad|iPhone|iPod/.test(ua);
+
+  // iPadOS (Mac처럼 보이는 경우) 대응
+  const isIpadOS = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+
+  return isIOSDevice || isIpadOS;
+}
+
+// iOS 전용: Google OAuth2 implicit flow 리다이렉트 URL 생성
+// 팝업 대신 전체 페이지 리다이렉트 → Google 인증 → id_token과 함께 /auth로 복귀
+function buildGoogleOAuth2Url(): string {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
+  const redirectUri = window.location.origin + '/auth';
+  const nonce = crypto.randomUUID();
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: 'id_token',
+    scope: 'openid email profile',
+    nonce,
+    prompt: 'select_account',
+  });
+
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+
+// Google 'G' 로고 SVG (iOS 전용 버튼에 사용)
+function GoogleIcon(): React.ReactElement {
+  return (
+    <svg width="18" height="18" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+  );
+}
+
 // 인증 페이지 (Google OAuth)
 export default function AuthPage(): React.ReactElement {
   const navigate = useNavigate();
@@ -22,12 +66,34 @@ export default function AuthPage(): React.ReactElement {
   const { mutate: googleLogin, isPending } = useGoogleLogin();
 
   useEffect(() => {
+    // iOS OAuth2 redirect 콜백 처리: URL 해시에서 id_token 추출
+    const hash = window.location.hash;
+    if (hash.length > 1) {
+      const params = new URLSearchParams(hash.substring(1));
+      const idToken = params.get('id_token');
+      const error = params.get('error');
+
+      if (error) {
+        window.history.replaceState(null, '', window.location.pathname);
+        showError(t('auth.googleLoginFail'));
+        return;
+      }
+
+      if (idToken) {
+        // 해시 즉시 클리어 (토큰 노출 방지)
+        window.history.replaceState(null, '', window.location.pathname);
+        // 기존 googleLogin mutation 재사용 — 백엔드 동일 엔드포인트 호출
+        googleLogin({ credential: idToken });
+        return;
+      }
+    }
+
+    // 이미 로그인된 경우 홈으로 이동
     const token = getTokenStorage().getAccessToken();
-    // 토큰이 존재하고 만료되지 않은 경우에만 홈으로 리다이렉트
     if (token && !isTokenExpired(token)) {
       navigate('/');
     }
-  }, [navigate]);
+  }, [navigate, googleLogin, showError, t]);
 
   const handleGoogleSuccess = (credentialResponse: CredentialResponse): void => {
     if (!credentialResponse.credential) {
@@ -41,10 +107,15 @@ export default function AuthPage(): React.ReactElement {
     showError(t('auth.googleLoginFail'));
   };
 
+  // iOS: 팝업 대신 전체 페이지 리다이렉트로 Google OAuth2 인증
+  const handleIOSGoogleLogin = (): void => {
+    window.location.href = buildGoogleOAuth2Url();
+  };
+
   return (
     // relative + overflow-hidden 추가
     <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
-      
+
       {/* 배경 패턴 레이어 */}
       <div className="absolute inset-0 pointer-events-none pattern-bg" />
 
@@ -65,14 +136,25 @@ export default function AuthPage(): React.ReactElement {
           </div>
         ) : (
           <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              size="large"
-              shape="rectangular"
-              use_fedcm_for_prompt={false}
-              itp_support
-            />
+            {isIOS() ? (
+              // iOS: 팝업 불가 → OAuth2 implicit flow 전체 페이지 리다이렉트
+              <button
+                type="button"
+                onClick={handleIOSGoogleLogin}
+                className="flex items-center gap-3 rounded-md border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              >
+                <GoogleIcon />
+                <span>Google로 로그인</span>
+              </button>
+            ) : (
+              // Android / Desktop: 기존 팝업 방식
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                size="large"
+                shape="rectangular"
+              />
+            )}
           </div>
         )}
       </div>
