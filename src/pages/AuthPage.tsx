@@ -64,7 +64,6 @@ export default function AuthPage(): React.ReactElement {
   const isProcessingCode = useRef(false);
 
   useEffect(() => {
-    // iOS OAuth2 code flow 콜백: ?code= 쿼리 파라미터 확인
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get('code');
     const oauthError = searchParams.get('error');
@@ -75,47 +74,68 @@ export default function AuthPage(): React.ReactElement {
       return;
     }
 
-    if (code && !isProcessingCode.current) {
+    // code 처리 로직을 async 함수로 분리
+    const handleCodeLogin = async (): Promise<void> => {
+      if (!code || isProcessingCode.current) return;
+
       isProcessingCode.current = true;
-      // URL 즉시 클리어 (code 재사용 방지)
       window.history.replaceState(null, '', window.location.pathname);
 
-      const redirectUri = window.location.origin + '/auth';
+      try {
+        const redirectUri = window.location.origin + '/auth';
 
-      authApi.googleLoginWithCode({ code, redirectUri })
-        .then((response: ApiResponse<GoogleLoginResponse>) => {
-          if (response.auth?.accessToken && response.auth?.refreshToken) {
-            getTokenStorage().setTokens(response.auth.accessToken, response.auth.refreshToken);
-          }
-          if (response.data) {
-            setAccountInfo({
-              uuid: response.data.uuid,
-              nick: response.data.nick,
-              nationality: response.data.nationality ?? null,
-              email: response.data.email,
-              profile_img_url: response.data.profile_img_url,
-              is_admin: response.data.is_admin ?? false,
-            });
-          }
-          checkAuth();
-          navigate('/');
-        })
-        .catch(() => {
-          isProcessingCode.current = false;
-          showError(t('auth.googleLoginFail'));
+        // 수정: API 응답 받기
+        const response: ApiResponse<GoogleLoginResponse> = await authApi.googleLoginWithCode({
+          code,
+          redirectUri,
         });
 
-      return;
-    }
+        // 응답 자체 검증
+        if (!response) {
+          throw new Error('google/code 응답이 비어있음');
+        }
 
-    // 이미 로그인된 경우 홈으로 이동
+        // 토큰 검증
+        if (!response.auth?.accessToken || !response.auth?.refreshToken) {
+          throw new Error('auth 토큰이 응답에 없음');
+        }
+
+        getTokenStorage().setTokens(response.auth.accessToken, response.auth.refreshToken);
+
+        // 계정 정보 세팅 전 검증
+        if (!response.data) {
+          throw new Error('response.data가 없음');
+        }
+
+        setAccountInfo({
+          uuid: response.data.uuid,
+          nick: response.data.nick,
+          nationality: response.data.nationality ?? null,
+          email: response.data.email,
+          profile_img_url: response.data.profile_img_url,
+          is_admin: response.data.is_admin ?? false,
+        });
+
+        // checkAuth가 비동기일 가능성 고려
+        await Promise.resolve(checkAuth());
+
+        navigate('/');
+      } catch (error) {
+        // 어디서 터졌는지 임시 토스트로 노출
+        const message = error instanceof Error ? error.message : 'unknown error';
+        showError(`iOS 로그인 후처리 실패: ${message}`);
+        isProcessingCode.current = false;
+      }
+    };
+
+    void handleCodeLogin();
+
     const token = getTokenStorage().getAccessToken();
     if (token && !isTokenExpired(token)) {
       navigate('/');
     }
-  // 마운트 1회만 실행 — code/token 처리는 mount 시점에만 필요
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+  }, [checkAuth, navigate, setAccountInfo, showError, t]);
 
   const handleGoogleSuccess = (credentialResponse: CredentialResponse): void => {
     if (!credentialResponse.credential) {
