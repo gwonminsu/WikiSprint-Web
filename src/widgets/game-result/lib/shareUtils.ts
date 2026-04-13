@@ -31,7 +31,13 @@ export async function shareKakao(params: KakaoShareParams): Promise<boolean> {
 
     const timeText = formatElapsed(params.elapsedMs);
 
+    // gameClear를 절대 URL로 변환
+    const imageUrl = new URL(gameClear, window.location.origin).toString();
+
+    // 디버깅
     console.log('gameClear:', gameClear);
+    console.log('imageUrl:', imageUrl);
+
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
