@@ -70,7 +70,8 @@ src/
 │   ├── HomePage.tsx
 │   ├── SettingsPage.tsx
 │   ├── DocPage.tsx         # WikiSprint 소개 문서
-│   └── RankingPage.tsx     # 랭킹 페이지
+│   ├── RankingPage.tsx     # 랭킹 페이지
+│   └── SharePage.tsx       # 공유 결과 페이지 (/share/:shareId)
 │
 ├── widgets/                # 독립적 UI 블록
 │   ├── index.ts            # 네임스페이스 export (w.*)
@@ -79,7 +80,7 @@ src/
 │   ├── game-intro/         # GameIntroView (Wikipedia 렌더링 + 게임 핵심 로직)
 │   │   └── lib/            # useTypewriter, useGameTimer
 │   ├── game-result/        # GameResultView (게임 결과 화면 — 카드 타임라인 + 요약)
-│   │   └── lib/            # useCardSequence
+│   │   └── lib/            # useCardSequence, shareUtils (buildShareUrl, shareKakao)
 │   ├── game-record/        # GameRecordView (전적 페이지 — 요약 바 + 카드 리스트)
 │   │   ├── ui/             # GameRecordView, RecordSummaryBar, RecordCard, RecordPathSegment, EmptyRecordView
 │   │   └── lib/            # formatRecordTime
@@ -98,7 +99,7 @@ src/
 │   ├── index.ts            # 네임스페이스 export (e.*)
 │   ├── auth/               # GoogleLoginRequest, GoogleLoginResponse
 │   ├── account/            # Account, AccountResponse 등
-│   ├── game-record/        # GameRecord, RecordSummary, GameRecordListResponse 등
+│   ├── game-record/        # GameRecord, RecordSummary, GameRecordListResponse, SharedGameRecord 등
 │   └── ranking/            # RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse 등
 │
 └── shared/                 # 공용 코드
@@ -110,7 +111,7 @@ src/
     ├── assets/
     │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
-    ├── lib/                # cn, i18n (ko/en/ja), countryUtils (국가 목록 + 국기 이미지 URL)
+    ├── lib/                # cn, i18n (ko/en/ja), countryUtils (국가 목록 + 국기 이미지 URL), kakao (kakaoSdk, kakao.d.ts)
     ├── store/              # authStore (is_admin, nationality 포함), themeStore, gameStore (difficulty·popDoc 포함, persist), pendingRecordStore
     ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
     └── styles/             # 전역 스타일 + 테마 CSS 변수
@@ -150,15 +151,17 @@ f.hook.useUploadProfileImage, f.hook.useRemoveProfileImage
 f.hook.useTargetWords, f.hook.useAddTargetWord, f.hook.useDeleteTargetWord
 f.hook.useGameRecord   // startRecord / updatePath / completeRecord / abandonRecord
 f.hook.useGameRecords  // 전적 목록 + 통계 조회 (TanStack Query)
+f.hook.useSharedRecord // 공유 전적 조회 (TanStack Query, skipAuth, staleTime 5분)
 f.hook.useRanking      // 기간×난이도 Top 100 조회 (TanStack Query, staleTime 30s)
 f.api.auth, f.api.account, f.api.admin, f.api.gameRecord
+f.api.gameRecord.getSharedRecord  // POST /api/record/share/{shareId} (JWT 불필요)
 f.api.ranking          // getRanking (POST /api/ranking/list)
 
 // e (entities)
 e.auth.type.GoogleLoginRequest, e.auth.type.GoogleLoginResponse
 e.account.type.*  // AccountResponse(is_admin 포함), AddTargetWordRequest, DeleteTargetWordRequest
 e.wiki.type.*     // WikiSummary, WikiArticle, TargetWordResponse
-e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordListResponse, StartGameRecordRequest 등
+e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordListResponse, SharedGameRecord, StartGameRecordRequest 등
 e.ranking.type.*     // RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse, RankingListRequest
 
 // shared
@@ -176,6 +179,7 @@ shared.config.queryClient
 getLogoByLanguage  // 언어(Language)를 인수로 받아 해당 로고 PNG URL 반환
 tutoDoc            // 도움말 아이콘 이미지 (Header "도움!" 버튼)
 talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn  // talker 캐릭터 이미지 9종
+initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_KEY 필요)
 ```
 
 ---

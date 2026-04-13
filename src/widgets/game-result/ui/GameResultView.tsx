@@ -1,26 +1,44 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGameStore, useTranslation, useAuthStore, EmbossButton } from '@shared';
+import { useGameStore, useTranslation, useAuthStore, EmbossButton, useToast } from '@shared';
 import { PathTimeline } from './PathTimeline';
 import { ResultSummary } from './ResultSummary';
+import { buildShareUrl, shareKakao } from '../lib';
 
 // 게임 결과 화면 컨테이너
 // — navigationHistory를 카드 타임라인으로 순차 표시 후 결과 요약과 버튼 렌더링
 export function GameResultView(): React.ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { warning: showWarning, success: showSuccess } = useToast();
+
   const navigationHistory = useGameStore((s) => s.navigationHistory);
   const elapsedMs = useGameStore((s) => s.elapsedMs);
   const targetWord = useGameStore((s) => s.targetWord);
   const resetGame = useGameStore((s) => s.resetGame);
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [beforeTargetWord, afterTargetWord] = t('game.resultHeader').split('???');
+  const recordId = useGameStore((s) => s.recordId);
 
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const accountInfo = useAuthStore((s) => s.accountInfo);
+  const checkAuth = useAuthStore((s) => s.checkAuth);
+
+  const [beforeTargetWord, afterTargetWord] = t('game.resultHeader').split('???');
 
   // 모든 카드 등장 후 결과 요약 표시 여부
   const [showSummary, setShowSummary] = useState<boolean>(false);
   // 타임라인 리마운트용 키 — 변경 시 PathTimeline이 처음부터 다시 재생
   const [replayKey, setReplayKey] = useState<number>(0);
+
+  // hydration 경합 방지 — 마운트 시 토큰 실제 존재 여부 재확인
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  // 공유 URL — 로그인 + recordId 있을 때만 생성
+  const shareUrl = useMemo((): string | undefined => {
+    if (!isAuthenticated || !recordId) return undefined;
+    return buildShareUrl(recordId);
+  }, [isAuthenticated, recordId]);
 
   // PathTimeline에서 모든 카드 등장 완료 시 호출 — 결과 요약 표시
   const handleAllCardsShown = useCallback((): void => {
@@ -32,6 +50,45 @@ export function GameResultView(): React.ReactElement {
     setShowSummary(false);
     setReplayKey((prev: number) => prev + 1);
   }, []);
+
+  // 카카오톡 공유 핸들러
+  const handleShareKakao = useCallback(async (): Promise<void> => {
+    if (!isAuthenticated) {
+      showWarning(t('share.loginRequired'));
+      return;
+    }
+    if (!recordId) return;
+
+    const url = buildShareUrl(recordId);
+    const nick = accountInfo?.nick ?? t('common.user');
+
+    const success = await shareKakao({
+      nick,
+      targetWord,
+      shareUrl: url,
+      elapsedMs,
+      pathCount: navigationHistory.length,
+    });
+
+    if (!success) {
+      // 카카오 SDK 실패 시 링크 복사 fallback
+      await navigator.clipboard.writeText(url);
+      showSuccess(t('share.linkCopied'));
+    }
+  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, showSuccess, t]);
+
+  // 공유 링크 복사 핸들러
+  const handleCopyLink = useCallback(async (): Promise<void> => {
+    if (!isAuthenticated) {
+      showWarning(t('share.loginRequired'));
+      return;
+    }
+    if (!recordId) return;
+
+    const url = buildShareUrl(recordId);
+    await navigator.clipboard.writeText(url);
+    showSuccess(t('share.linkCopied'));
+  }, [isAuthenticated, recordId, showWarning, showSuccess, t]);
 
   return (
     <div className="flex flex-col flex-1 bg-gray-50 dark:bg-gray-900">
@@ -62,6 +119,10 @@ export function GameResultView(): React.ReactElement {
             isVisible={showSummary}
             onRestart={resetGame}
             onReplay={handleReplay}
+            mode="own"
+            onShareKakao={handleShareKakao}
+            shareUrl={shareUrl}
+            onCopyLink={handleCopyLink}
           />
 
           {/* 비로그인 상태: 전적 저장 로그인 안내 */}

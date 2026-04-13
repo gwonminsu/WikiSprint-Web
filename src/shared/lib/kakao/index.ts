@@ -1,0 +1,1 @@
+export { initKakaoSdk } from './kakaoSdk';

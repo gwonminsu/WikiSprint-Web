@@ -9,4 +9,5 @@ export type {
   CompleteRecordRequest,
   AbandonRecordRequest,
   PendingGameState,
+  SharedGameRecord,
 } from './model/types';

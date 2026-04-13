@@ -1,1 +1,1 @@
-export { GameResultView } from './ui';
+export { GameResultView, PathTimeline, ResultSummary } from './ui';

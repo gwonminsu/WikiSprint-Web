@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
     COMPLETE: '/api/record/complete',
     ABANDON: '/api/record/abandon',
     LIST: '/api/record/list',
+    SHARE: '/api/record/share', // + /{shareId}
   },
   // 랭킹 엔드포인트
   RANKING: {

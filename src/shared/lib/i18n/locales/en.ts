@@ -214,4 +214,16 @@ export const en = {
     selectLanguage: 'Select language',
     selectDifficulty: 'Select difficulty',
   },
+  share: {
+    headerMessage: "Let's take a look at {{nick}}'s journey to {{targetWord}}!",
+    tryChallenge: 'Try it myself!',
+    invalidLink: 'Invalid share link',
+    invalidLinkDesc: 'This link has expired or the record does not exist.',
+    goHome: 'Go to Home',
+    loginRequired: 'Please log in to use the share feature!',
+    linkCopied: 'Share link copied to clipboard!',
+    copyShareLink: 'Copy Share Link',
+    qrGuide: 'Scan QR code to view the result on mobile',
+    nativeShare: 'Share',
+  },
 } as const;

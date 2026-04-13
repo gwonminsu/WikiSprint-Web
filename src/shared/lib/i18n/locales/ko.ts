@@ -214,4 +214,16 @@ export const ko = {
     selectLanguage: '언어 선택',
     selectDifficulty: '난이도 선택',
   },
+  share: {
+    headerMessage: '{{nick}}님의 목적지({{targetWord}})까지의 여정을 한번 살펴봅시다!',
+    tryChallenge: '나도 도전하기',
+    invalidLink: '유효하지 않은 공유 링크입니다',
+    invalidLinkDesc: '링크가 만료되었거나 존재하지 않는 기록입니다.',
+    goHome: '홈으로 이동',
+    loginRequired: '공유 기능을 사용하려면 로그인 해주세요!',
+    linkCopied: '공유 링크가 클립보드에 복사되었습니다!',
+    copyShareLink: '공유 링크 복사',
+    qrGuide: 'QR 코드를 스캔하면 모바일에서 결과를 확인할 수 있습니다',
+    nativeShare: '공유하기',
+  },
 } as const;

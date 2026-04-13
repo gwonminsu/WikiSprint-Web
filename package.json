@@ -20,6 +20,7 @@
     "@tensorflow/tfjs": "^4.22.0",
     "dompurify": "^3.3.3",
     "nsfwjs": "^4.3.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-easy-crop": "^5.5.7",

@@ -214,4 +214,16 @@ export const ja = {
     selectLanguage: '言語を選択',
     selectDifficulty: '難易度を選択',
   },
+  share: {
+    headerMessage: '{{nick}}さんの{{targetWord}}までの旅を見てみましょう！',
+    tryChallenge: '自分も挑戦する！',
+    invalidLink: '無効なシェアリンクです',
+    invalidLinkDesc: 'リンクの有効期限が切れたか、記録が存在しません。',
+    goHome: 'ホームへ移動',
+    loginRequired: 'シェア機能を使うにはログインしてください！',
+    linkCopied: 'シェアリンクがクリップボードにコピーされました！',
+    copyShareLink: 'シェアリンクをコピー',
+    qrGuide: 'QRコードをスキャンするとモバイルで結果を確認できます',
+    nativeShare: '共有する',
+  },
 } as const;

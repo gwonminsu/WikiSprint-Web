@@ -10,6 +10,7 @@ const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
 const DocPage = lazy(() => import('@/pages/DocPage'));
 const RecordPage = lazy(() => import('@/pages/RecordPage'));
 const RankingPage = lazy(() => import('@/pages/RankingPage'));
+const SharePage = lazy(() => import('@/pages/SharePage'));
 
 // 인증 실패 시 SPA 내 navigate 등록 — BrowserRouter 내부에서 useNavigate 사용
 function AuthFailureHandler(): null {
@@ -37,6 +38,7 @@ export function Router(): React.ReactElement {
           <Route path="/doc" element={<DocPage />} />
           <Route path="/record" element={<RecordPage />} />
           <Route path="/ranking" element={<RankingPage />} />
+          <Route path="/share/:shareId" element={<SharePage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

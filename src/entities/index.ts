@@ -16,6 +16,7 @@ import type {
   CompleteRecordRequest,
   AbandonRecordRequest,
   PendingGameState,
+  SharedGameRecord,
 } from './game-record';
 
 // Account 엔티티 타입
@@ -90,6 +91,7 @@ export const e = {
       CompleteRecordRequest: CompleteRecordRequest;
       AbandonRecordRequest: AbandonRecordRequest;
       PendingGameState: PendingGameState;
+      SharedGameRecord: SharedGameRecord;
     },
   },
 } as const;
@@ -132,4 +134,5 @@ export type {
   CompleteRecordRequest,
   AbandonRecordRequest,
   PendingGameState,
+  SharedGameRecord,
 } from './game-record';

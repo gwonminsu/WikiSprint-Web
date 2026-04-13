@@ -36,8 +36,10 @@ import {
   completeGameRecord,
   abandonGameRecord,
   getGameRecords,
+  getSharedRecord,
   useGameRecord,
   useGameRecords,
+  useSharedRecord,
 } from './game-record';
 
 // Ranking feature
@@ -60,6 +62,7 @@ export const f = {
     // GameRecord
     useGameRecord,
     useGameRecords,
+    useSharedRecord,
     // Ranking
     useRanking,
   },
@@ -80,6 +83,7 @@ export const f = {
       completeGameRecord,
       abandonGameRecord,
       getGameRecords,
+      getSharedRecord,
     },
     ranking: { getRanking },
   },
@@ -112,8 +116,10 @@ export {
   completeGameRecord,
   abandonGameRecord,
   getGameRecords,
+  getSharedRecord,
   useGameRecord,
   useGameRecords,
+  useSharedRecord,
 } from './game-record';
 
 export { getRanking, useRanking } from './ranking';

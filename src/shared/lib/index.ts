@@ -1,4 +1,5 @@
 export { cn } from './cn';
+export { initKakaoSdk } from './kakao';
 export {
   useTranslation,
   useLanguageStore,

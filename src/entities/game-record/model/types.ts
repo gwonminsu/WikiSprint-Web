@@ -60,6 +60,16 @@ export type AbandonRecordRequest = {
   recordId: string;
 };
 
+// 공유용 전적 응답 (공개 정보만 포함)
+export type SharedGameRecord = {
+  nick: string;
+  profileImgUrl: string | null;
+  targetWord: string;
+  startDoc: string;
+  navPath: string[];
+  elapsedMs: number;
+};
+
 // 비로그인 임시 게임 상태 (pendingRecordStore용)
 export type PendingGameState = {
   targetWord: string;

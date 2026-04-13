@@ -1,3 +1,46 @@
+## v2.6.0 (2026-04-13)
+
+### Added
+- 공유 전용 결과 페이지 추가 (`/share/:shareId`)
+  - 게임 기록 ID 기반 고유 공유 URL (`REC-{uuid}` → `/share/{uuid}`)
+  - 기존 결과 화면과 동일한 PathTimeline + ResultSummary UI 재사용
+  - 헤더 문구: "OOO님의 목적지(제시어)까지의 여정을 한번 살펴봅시다!"
+  - "나도 도전하기" 버튼 → 홈으로 이동, 공유 버튼 미표시
+  - 모바일 환경: `navigator.share` Web Share API로 네이티브 공유 시트 호출 (디스코드·카카오 등 앱 선택)
+  - PC 환경: 공유 링크 복사 버튼 표시
+  - 잘못된 링크 / 미클리어 기록 접근 시 에러 UI 표시
+- 카카오톡 공유 기능 구현
+  - Kakao JavaScript SDK 동적 로드 + 초기화 (`VITE_KAKAO_JS_KEY` 환경변수)
+  - `Kakao.Share.sendDefault` feed 메시지 전송 (닉네임, 제시어, 공유 URL 포함)
+  - SDK 실패 시 링크 클립보드 복사 fallback
+- 공유 링크 복사 + QR 코드 토글 패널 추가 (결과 화면)
+  - 디스코드 공유 버튼 → "공유 링크 복사" 버튼으로 교체
+  - 클릭 시 URL + 복사 아이콘 + QR 코드 패널 토글 표시
+  - `qrcode.react` 라이브러리로 공유 URL QR 코드 SVG 렌더링
+  - QR 스캔 → 공유 페이지 접속 후 모바일에서 네이티브 공유 가능
+- `SharedGameRecord` 타입 추가 (`entities/game-record`)
+- `getSharedRecord` API 함수 추가 (`features/game-record` — `skipAuth=true`)
+- `useSharedRecord` TanStack Query 훅 추가 (staleTime 5분, retry false)
+- 카카오 SDK 유틸 모듈 추가 (`shared/lib/kakao/kakaoSdk.ts`, `kakao.d.ts`)
+- 공유 유틸리티 추가 (`widgets/game-result/lib/shareUtils.ts` — `buildShareUrl`, `shareKakao`)
+- i18n `share` 네임스페이스 추가 (ko/en/ja)
+- `SharePage` 코드 스플리팅 청크 분리
+
+### Fixed
+- 로그인 상태에서 게임 결과 화면 하단에 비로그인 로그인 안내 섹션이 렌더링되는 버그 수정
+  - 원인: Zustand persist hydration과 렌더링 경합으로 `isAuthenticated` 초기값 불일치
+  - 수정: `GameResultView` 마운트 시 `checkAuth()` 호출로 토큰 존재 여부 재확인
+
+### Changed
+- `ResultSummary` props 확장: `mode`, `onShareKakao`, `shareUrl`, `onCopyLink` 추가
+- 라우터에 `/share/:shareId` 라우트 추가 (`SharePage`)
+- `widgets/game-result` — `PathTimeline`, `ResultSummary` 외부 export 추가 (pages 레이어 재사용)
+- 버전 2.5.0 → **2.6.0**
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.5.0 (2026-04-12)
 
 ### Added
