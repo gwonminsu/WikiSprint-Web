@@ -1,4 +1,4 @@
-import { talkerGood, useTranslation, EmbossButton } from '@shared';
+import { gameClear, useTranslation, EmbossButton } from '@shared';
 import { QRCodeSVG } from 'qrcode.react';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -183,13 +183,13 @@ export function ResultSummary({
   );
 
   return (
-    <div className="animate-result-summary-in flex flex-col items-center gap-6 mt-10 w-full max-w-sm pb-12">
-      {/* talkerGood + 요약 텍스트 */}
+    <div className="animate-result-summary-in flex flex-col items-center gap-6 mt-10 w-full max-w-sm">
+      {/* gameClear + 요약 텍스트 */}
       <div className="flex flex-col items-center gap-3">
         <img
-          src={talkerGood}
-          alt="결과 캐릭터"
-          className="w-24 h-24 object-contain"
+          src={gameClear}
+          alt="clear img"
+          className="w-84 object-contain rounded-3xl"
         />
         <p className="text-center text-sm leading-relaxed text-gray-700 dark:text-gray-200 px-2">
           {summaryContent}
@@ -199,7 +199,7 @@ export function ResultSummary({
       {/* 버튼 영역 */}
       <div className="flex flex-col gap-3 w-full">
         {/* 다시하기 + 리플레이 버튼 행 */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 pb-3">
           <EmbossButton
             onClick={onRestart}
             variant="primary"
@@ -242,6 +242,24 @@ export function ResultSummary({
                 className="flex-1 h-10 text-sm"
               >
                 {t('game.resultShareKakao')}
+
+                {/* 공유 아이콘 SVG */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4 ml-2"
+                >
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
               </EmbossButton>
               <EmbossButton
                 onClick={handleToggleLinkPanel}

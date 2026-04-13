@@ -135,26 +135,62 @@ export default function SharePage(): React.ReactElement {
 
               {/* 모바일 Web Share 버튼 — navigator.share 지원 환경에서만 표시 */}
               {showSummary && canNativeShare && (
-                <div className="mt-4 w-full max-w-sm animate-result-summary-in">
+                <div className="-mt-3 w-full max-w-sm animate-result-summary-in">
                   <EmbossButton
                     variant="secondary"
                     className="w-full h-10 text-sm"
                     onClick={handleNativeShare}
                   >
                     {t('share.nativeShare')}
+
+                    {/* 공유 아이콘 SVG */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4 ml-2"
+                    >
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
                   </EmbossButton>
                 </div>
               )}
 
               {/* Web Share 미지원 환경: 링크 복사 버튼 */}
               {showSummary && !canNativeShare && (
-                <div className="mt-4 w-full max-w-sm animate-result-summary-in">
+                <div className="-mt-3 w-full max-w-sm animate-result-summary-in">
                   <EmbossButton
                     variant="secondary"
-                    className="w-full h-10 text-sm"
+                    className="w-full h-10 text-sm flex items-center justify-center gap-2" // [수정] 아이콘 정렬
                     onClick={handleCopyLink}
                   >
                     {t('share.copyShareLink')}
+
+                    {/* 공유 아이콘 SVG */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4 ml-2"
+                    >
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
                   </EmbossButton>
                 </div>
               )}

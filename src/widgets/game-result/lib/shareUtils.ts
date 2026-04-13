@@ -1,4 +1,4 @@
-import { initKakaoSdk } from '@shared';
+import { initKakaoSdk, gameClear } from '@shared';
 
 // 공유 URL 생성 — recordId에서 "REC-" prefix 제거 후 /share/{uuid} 경로 구성
 export function buildShareUrl(recordId: string): string {
@@ -31,11 +31,16 @@ export async function shareKakao(params: KakaoShareParams): Promise<boolean> {
 
     const timeText = formatElapsed(params.elapsedMs);
 
+    console.log('gameClear:', gameClear);
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
         title: `${params.nick}님이 WikiSprint를 클리어했습니다!`,
         description: `제시어 "${params.targetWord}"에 ${params.pathCount}개 경로, ${timeText} 만에 도달!`,
+
+        // 이미지 적용
+        imageUrl: imageUrl,
+
         link: {
           mobileWebUrl: params.shareUrl,
           webUrl: params.shareUrl,
@@ -51,8 +56,10 @@ export async function shareKakao(params: KakaoShareParams): Promise<boolean> {
         },
       ],
     });
+
     return true;
-  } catch {
+  } catch (error) {
+    console.error('shareKakao error:', error);
     return false;
   }
 }

@@ -13,6 +13,7 @@ import talkerGood from './talker-good.png';
 import talkerOk from './talker-ok.png';
 import talkerLate from './talker-late.png';
 import talkerWarn from './talker-warn.png';
+import gameClear from './game-clear.png';
 
 // 언어별 로고 이미지 맵
 const logoMap: Record<Language, string> = {
@@ -31,3 +32,6 @@ export { tutoDoc };
 
 // 캐릭터(talker) 이미지
 export { talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn };
+
+// 결과 화면 이미지
+export { gameClear };
