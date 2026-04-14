@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGameStore, useTranslation, useAuthStore, EmbossButton, useToast } from '@shared';
 import { PathTimeline } from './PathTimeline';
 import { ResultSummary } from './ResultSummary';
-import { buildShareUrl, shareKakao } from '../lib';
+import { buildShareUrl, shareKakao, formatElapsed } from '../lib';
 
 // 게임 결과 화면 컨테이너
 // — navigationHistory를 카드 타임라인으로 순차 표시 후 결과 요약과 버튼 렌더링
@@ -77,7 +77,7 @@ export function GameResultView(): React.ReactElement {
     }
   }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, showSuccess, t]);
 
-  // 공유 링크 복사 핸들러
+  // 공유 링크 복사 핸들러 — 모바일: Web Share API 우선, fallback: 클립보드 복사
   const handleCopyLink = useCallback(async (): Promise<void> => {
     if (!isAuthenticated) {
       showWarning(t('share.loginRequired'));
@@ -86,9 +86,28 @@ export function GameResultView(): React.ReactElement {
     if (!recordId) return;
 
     const url = buildShareUrl(recordId);
+    const nick = accountInfo?.nick ?? t('common.user');
+    const timeText = formatElapsed(elapsedMs);
+    const pathCount = navigationHistory.length;
+
+    // 1순위: Web Share API (모바일 — 앱 선택 공유)
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share({
+          title: `${nick}님이 WikiSprint를 클리어했습니다!`,
+          text: `제시어 "${targetWord}"에 ${pathCount}개 경로, ${timeText} 만에 도달!\n결과 보러가기`,
+          url,
+        });
+        return;
+      } catch {
+        // 사용자 취소 시 클립보드 복사 fallback
+      }
+    }
+
+    // 2순위: 클립보드 복사
     await navigator.clipboard.writeText(url);
     showSuccess(t('share.linkCopied'));
-  }, [isAuthenticated, recordId, showWarning, showSuccess, t]);
+  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, showSuccess, t]);
 
   return (
     <div className="flex flex-col flex-1 bg-gray-50 dark:bg-gray-900">

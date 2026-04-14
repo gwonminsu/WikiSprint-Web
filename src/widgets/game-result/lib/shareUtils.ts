@@ -15,8 +15,8 @@ type KakaoShareParams = {
   pathCount: number;
 };
 
-// 경과 시간 포맷 헬퍼
-function formatElapsed(ms: number): string {
+// 경과 시간 포맷 헬퍼 — 공유 텍스트에 사용 (SharePage, GameResultView 공용)
+export function formatElapsed(ms: number): string {
   const totalSeconds = ms / 1000;
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = (totalSeconds % 60).toFixed(2);

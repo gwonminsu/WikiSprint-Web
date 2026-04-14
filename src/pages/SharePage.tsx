@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSharedRecord } from '@features';
 import { w } from '@widgets';
-import { PathTimeline, ResultSummary } from '@widgets/game-result';
+import { PathTimeline, ResultSummary, formatElapsed } from '@widgets/game-result';
 import { useTranslation, EmbossButton, useToast } from '@shared';
 
 // 공유 전용 결과 페이지 — /share/:shareId 라우트
@@ -37,10 +37,12 @@ export default function SharePage(): React.ReactElement {
   const handleNativeShare = useCallback(async (): Promise<void> => {
     if (!data) return;
     const shareUrl = window.location.href;
+    const timeText = formatElapsed(data.elapsedMs);
+    const pathCount = data.navPath.length;
     try {
       await navigator.share({
-        title: `WikiSprint — ${data.nick}님의 클리어 기록`,
-        text: `${data.nick}님이 "${data.targetWord}"까지의 경로를 공유했습니다!`,
+        title: `${data.nick}님이 WikiSprint를 클리어했습니다!`,
+        text: `제시어 "${data.targetWord}"에 ${pathCount}개 경로, ${timeText} 만에 도달!\n결과 보러가기`,
         url: shareUrl,
       });
     } catch {
