@@ -37,6 +37,9 @@ export function useGoogleLogin(): UseMutationResult<ApiResponse<GoogleLoginRespo
         });
       }
 
+      // 로그인 성공 토스트
+      toast.success(t('auth.loginSuccess'));
+
       // 비로그인 상태에서 플레이한 전적이 있으면 서버에 동기화
       const pending = usePendingRecordStore.getState().pendingGame;
       if (pending) {

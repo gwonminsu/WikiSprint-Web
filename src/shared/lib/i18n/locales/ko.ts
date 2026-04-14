@@ -24,6 +24,8 @@ export const ko = {
     continueWithGoogle: 'Google로 계속하기',
     googleLoginFail: 'Google 로그인에 실패했습니다. 다시 시도해주세요.',
     guest: '게스트',
+    loginSuccess: '로그인되었습니다!',
+    logoutSuccess: '로그아웃되었습니다.',
     loginPrompt: '위키 스프린트를 제대로 즐겨보려면 로그인 해 보세요!',
   },
   nav: {
@@ -125,6 +127,7 @@ export const ko = {
     resultShareKakao: '카카오톡 공유',
     resultShareDiscord: '디스코드 공유',
     autoClosed: '이전 게임이 비정상 종료되어 자동으로 포기 처리되었습니다.',
+    abandonedByNavigation: '게임이 중단되어 전적에 포기로 기록되었습니다.',
     difficultyOmakase: '오마카세',
     difficultyEasy: '쉬움',
     difficultyNormal: '보통',

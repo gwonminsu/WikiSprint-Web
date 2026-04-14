@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, useDialog, useTranslation, ProfileAvatar, getLogoByLanguage, tutoDoc, useGameStore } from '@shared';
+import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage, tutoDoc, useGameStore } from '@shared';
 import { getProfileImageUrl, useGameRecord } from '@features';
 
 // 구분선 컴포넌트 — nav 항목 사이에 표시
@@ -14,6 +14,7 @@ export function Header(): React.ReactElement {
   const { accountInfo, clearAuth } = useAuthStore();
   const { showConfirm } = useDialog();
   const { t, language } = useTranslation();
+  const { info: showInfo, success: showSuccess } = useToast();
   const navigate = useNavigate();
 
   // 게임 phase만 구독 — 다른 gameStore 상태 변경 시 Header 리렌더 방지
@@ -32,6 +33,7 @@ export function Header(): React.ReactElement {
           abandonRecord();
           resetGame();
           navigate(path);
+          showInfo(t('game.abandonedByNavigation'));
         },
       });
     } else if (phase === 'completed' || phase === 'result') {
@@ -54,6 +56,7 @@ export function Header(): React.ReactElement {
       onConfirm: () => {
         clearAuth();
         navigate('/');
+        showSuccess(t('auth.logoutSuccess'));
       },
     });
   };

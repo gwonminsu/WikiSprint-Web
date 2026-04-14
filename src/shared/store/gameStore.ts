@@ -110,7 +110,8 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: 'game-storage',
-      // elapsedMs, isTimerRunning은 새로고침 시 복구하지 않음 (타이머는 재시작 불가)
+      // isTimerRunning은 새로고침 시 복구하지 않음 (타이머는 재시작 불가)
+      // elapsedMs는 결과 화면(completed)에서 새로고침 시 클리어 시간 유지를 위해 persist
       partialize: (state) => ({
         phase: state.phase,
         targetWord: state.targetWord,
@@ -119,6 +120,7 @@ export const useGameStore = create<GameState>()(
         recordId: state.recordId,
         gameStartedAt: state.gameStartedAt,
         difficulty: state.difficulty,
+        elapsedMs: state.elapsedMs,
       }),
     }
   )

@@ -24,6 +24,8 @@ export const ja = {
     continueWithGoogle: 'Googleで続ける',
     googleLoginFail: 'Googleログインに失敗しました。もう一度お試しください。',
     guest: 'ゲスト',
+    loginSuccess: 'ログインしました！',
+    logoutSuccess: 'ログアウトしました。',
     loginPrompt: 'WikiSprintを思う存分楽しむにはログインしてみてください！',
   },
   nav: {
@@ -125,6 +127,7 @@ export const ja = {
     resultShareKakao: 'KakaoTalkでシェア',
     resultShareDiscord: 'Discordでシェア',
     autoClosed: '前回のゲームが異常終了し、自動的に放棄扱いになりました。',
+    abandonedByNavigation: 'ゲームが中断され、棄権として記録されました。',
     difficultyOmakase: 'おまかせ',
     difficultyEasy: '易しい',
     difficultyNormal: '普通',

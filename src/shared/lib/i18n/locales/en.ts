@@ -24,6 +24,8 @@ export const en = {
     continueWithGoogle: 'Continue with Google',
     googleLoginFail: 'Google login failed. Please try again.',
     guest: 'Guest',
+    loginSuccess: 'Logged in successfully!',
+    logoutSuccess: 'You have been logged out.',
     loginPrompt: 'Log in to enjoy WikiSprint to the fullest!',
   },
   nav: {
@@ -125,6 +127,7 @@ export const en = {
     resultShareKakao: 'Share on KakaoTalk',
     resultShareDiscord: 'Share on Discord',
     autoClosed: 'Your previous game was closed unexpectedly and marked as abandoned.',
+    abandonedByNavigation: 'Your game was abandoned and recorded as a forfeit.',
     difficultyOmakase: 'Omakase',
     difficultyEasy: 'Easy',
     difficultyNormal: 'Normal',
