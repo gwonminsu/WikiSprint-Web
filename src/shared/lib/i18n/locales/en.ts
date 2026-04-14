@@ -134,7 +134,7 @@ export const en = {
     resultShareDiscord: 'Share on Discord',
     autoClosed: 'Your previous game was closed unexpectedly and marked as abandoned.',
     abandonedByNavigation: 'Your game was abandoned and recorded as a forfeit.',
-    loadingButton: '⏳ Loading...',
+    loadingButton: 'Loading...',
     selectDifficulty: 'Select Difficulty',
     loadingTitle: 'Loading document...',
     loadingDesc: 'Organizing links and content fragments',

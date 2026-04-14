@@ -134,7 +134,7 @@ export const ja = {
     resultShareDiscord: 'Discordでシェア',
     autoClosed: '前回のゲームが異常終了し、自動的に放棄扱いになりました。',
     abandonedByNavigation: 'ゲームが中断され、棄権として記録されました。',
-    loadingButton: '⏳ 読み込み中...',
+    loadingButton: '読み込み中...',
     selectDifficulty: '難易度を選択',
     loadingTitle: '文書を読み込み中...',
     loadingDesc: 'リンクと本文の断片を整理中',

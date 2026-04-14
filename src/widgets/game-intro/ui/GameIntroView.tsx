@@ -569,7 +569,24 @@ export function GameIntroView(): React.ReactElement {
               className="px-8 h-12 text-base"
               disabled={isLoading}
             >
-              {isLoading ? t('game.loadingButton') : t('game.startButton')}
+              {isLoading ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="loading-hourglass inline-block">⏳</span>
+                  <span className="inline-flex">
+                    {[...t('game.loadingButton')].map((char, index) => (
+                      <span
+                        key={`loading-char-${index}`}
+                        className="loading-wave-char inline-block"
+                        style={{ animationDelay: `${index * 0.08}s` }}
+                      >
+                        {char === ' ' ? '\u00A0' : char}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              ) : (
+                t('game.startButton')
+              )}
             </EmbossButton>
           </div>
         </div>

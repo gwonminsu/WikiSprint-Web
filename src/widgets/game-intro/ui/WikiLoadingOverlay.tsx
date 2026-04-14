@@ -30,7 +30,7 @@ export function WikiLoadingOverlay({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-20 flex items-center justify-center bg-white/70 backdrop-blur-md dark:bg-gray-950/70">
+    <div className="fixed left-0 right-0 bottom-0 top-35 z-20 flex items-center justify-center bg-white/70 backdrop-blur-md dark:bg-gray-950/70">
       {/* 메인 카드 */}
       <div className="relative w-[340px] overflow-hidden rounded-[30px] border border-black/5 bg-white/90 px-6 py-7 shadow-[0_20px_70px_rgba(0,0,0,0.12)] dark:border-white/10 dark:bg-gray-900/90">
         {/* 배경 글로우 */}

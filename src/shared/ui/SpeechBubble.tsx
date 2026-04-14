@@ -41,8 +41,8 @@ function renderTextWithHighlights(text: string, highlights: HighlightItem[]): Re
 
   if (matches.length === 0) return text;
 
-  // 위치 순서로 정렬 (겹치는 경우 첫 번째 위치 우선)
-  matches.sort((a, b) => a.index - b.index);
+  // 위치 순서로 정렬 (같은 위치면 긴 매칭 우선 — 문서 제목이 제시어를 포함할 때 긴 쪽이 먼저 처리되어야 함)
+  matches.sort((a, b) => a.index - b.index || b.length - a.length);
 
   // 결과 노드 배열 구성
   const nodes: React.ReactNode[] = [];

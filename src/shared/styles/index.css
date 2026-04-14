@@ -314,6 +314,64 @@ body {
   background: transparent;
 }
 
+/* ===== 게임 시작 로딩 모래시계 애니메이션 ===== */
+/* 로딩 모래시계 통통 튀고 반바퀴 뒤집히는 애니메이션 */
+.loading-hourglass {
+  display: inline-block;
+  transform-origin: center;
+  animation: hourglassFlipBounce 1.6s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes hourglassFlipBounce {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  10% {
+    transform: translateY(-2px) rotate(0deg) scale(1.05);
+  }
+  20% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  35% {
+    transform: translateY(-5px) rotate(90deg) scale(1.08);
+  }
+  50% {
+    transform: translateY(0) rotate(180deg) scale(1);
+  }
+  60% {
+    transform: translateY(-2px) rotate(180deg) scale(1.04);
+  }
+  70% {
+    transform: translateY(0) rotate(180deg) scale(1);
+  }
+  85% {
+    transform: translateY(-5px) rotate(270deg) scale(1.08);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg) scale(1);
+  }
+}
+
+.loading-wave-char {
+  display: inline-block;
+  animation: loadingWave 1.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes loadingWave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+}
+
 /* ===== 위키피디아 문서 스타일 (스코프) ===== */
 /* 외부 Wikipedia CSS 대신 .wiki-article 범위 내에서만 적용되는 자체 스타일 */
 

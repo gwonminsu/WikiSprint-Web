@@ -134,7 +134,7 @@ export const ko = {
     resultShareDiscord: '디스코드 공유',
     autoClosed: '이전 게임이 비정상 종료되어 자동으로 포기 처리되었습니다.',
     abandonedByNavigation: '게임이 중단되어 전적에 포기로 기록되었습니다.',
-    loadingButton: '⏳ 로딩 중...',
+    loadingButton: '로딩 중...',
     selectDifficulty: '난이도 선택',
     loadingTitle: '문서를 불러오는 중...',
     loadingDesc: '링크와 본문 조각을 정리하는 중',
