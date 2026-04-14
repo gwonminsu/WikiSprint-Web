@@ -14,6 +14,10 @@ export const ja = {
     retry: '再試行',
     user: 'ユーザー',
     account: 'アカウント',
+    greeting: 'こんにちは、{{nick}}さん',
+    contentSource: 'コンテンツ出典:',
+    searchEmpty: '検索結果なし',
+    clipboardCopy: 'クリップボードにコピー',
   },
   auth: {
     login: 'ログイン',
@@ -27,6 +31,8 @@ export const ja = {
     loginSuccess: 'ログインしました！',
     logoutSuccess: 'ログアウトしました。',
     loginPrompt: 'WikiSprintを思う存分楽しむにはログインしてみてください！',
+    iosLoginFail: 'iOSログイン後処理に失敗しました: {{message}}',
+    googleLoginButton: 'Googleでログイン',
   },
   nav: {
     home: 'ホーム',
@@ -128,6 +134,9 @@ export const ja = {
     resultShareDiscord: 'Discordでシェア',
     autoClosed: '前回のゲームが異常終了し、自動的に放棄扱いになりました。',
     abandonedByNavigation: 'ゲームが中断され、棄権として記録されました。',
+    loadingButton: '⏳ 読み込み中...',
+    loadingDocument: '⏳ 文書を読み込み中...',
+    selectDifficulty: '難易度を選択',
     difficultyOmakase: 'おまかせ',
     difficultyEasy: '易しい',
     difficultyNormal: '普通',
@@ -228,5 +237,7 @@ export const ja = {
     copyShareLink: 'シェアリンクをコピー',
     qrGuide: 'QRコードをスキャンするとモバイルで結果を確認できます',
     nativeShare: '共有する',
+    webShareTitle: '{{nick}}さんがWikiSprintをクリアしました！',
+    webShareText: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達！\n結果を見る',
   },
 } as const;

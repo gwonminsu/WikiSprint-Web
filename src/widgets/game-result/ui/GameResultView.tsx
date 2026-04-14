@@ -94,8 +94,8 @@ export function GameResultView(): React.ReactElement {
     if (typeof navigator.share === 'function') {
       try {
         await navigator.share({
-          title: `${nick}님이 WikiSprint를 클리어했습니다!`,
-          text: `제시어 "${targetWord}"에 ${pathCount}개 경로, ${timeText} 만에 도달!\n결과 보러가기`,
+          title: t('share.webShareTitle', { nick }),
+          text: t('share.webShareText', { targetWord, pathCount: String(pathCount), timeText }),
           url,
         });
         return;

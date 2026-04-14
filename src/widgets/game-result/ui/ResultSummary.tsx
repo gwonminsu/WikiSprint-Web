@@ -282,7 +282,7 @@ export function ResultSummary({
                     type="button"
                     onClick={onCopyLink}
                     className="text-gray-400 dark:text-gray-400 hover:text-amber-500 dark:hover:text-amber-400 transition-colors active:scale-95"
-                    title="클립보드에 복사"
+                    title={t('common.clipboardCopy')}
                   >
                     <CopyIcon />
                   </button>

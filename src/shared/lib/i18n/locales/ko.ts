@@ -14,6 +14,10 @@ export const ko = {
     retry: '다시 시도',
     user: '사용자',
     account: '계정',
+    greeting: '안녕하세요, {{nick}}님',
+    contentSource: '콘텐츠 출처:',
+    searchEmpty: '검색 결과 없음',
+    clipboardCopy: '클립보드에 복사',
   },
   auth: {
     login: '로그인',
@@ -27,6 +31,8 @@ export const ko = {
     loginSuccess: '로그인되었습니다!',
     logoutSuccess: '로그아웃되었습니다.',
     loginPrompt: '위키 스프린트를 제대로 즐겨보려면 로그인 해 보세요!',
+    iosLoginFail: 'iOS 로그인 후처리 실패: {{message}}',
+    googleLoginButton: 'Google로 로그인',
   },
   nav: {
     home: '홈',
@@ -128,6 +134,9 @@ export const ko = {
     resultShareDiscord: '디스코드 공유',
     autoClosed: '이전 게임이 비정상 종료되어 자동으로 포기 처리되었습니다.',
     abandonedByNavigation: '게임이 중단되어 전적에 포기로 기록되었습니다.',
+    loadingButton: '⏳ 로딩 중...',
+    loadingDocument: '⏳ 문서를 불러오는 중...',
+    selectDifficulty: '난이도 선택',
     difficultyOmakase: '오마카세',
     difficultyEasy: '쉬움',
     difficultyNormal: '보통',
@@ -228,5 +237,7 @@ export const ko = {
     copyShareLink: '공유 링크 복사',
     qrGuide: 'QR 코드를 스캔하면 모바일에서 결과를 확인할 수 있습니다',
     nativeShare: '공유하기',
+    webShareTitle: '{{nick}}님이 WikiSprint를 클리어했습니다!',
+    webShareText: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달!\n결과 보러가기',
   },
 } as const;

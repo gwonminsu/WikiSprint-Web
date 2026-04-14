@@ -371,7 +371,7 @@ export function SettingsView(): React.ReactElement {
 
                         {filteredCountries.length === 0 && (
                           <li className="px-3 py-3 text-xs text-gray-400 text-center">
-                            검색 결과 없음
+                            {t('common.searchEmpty')}
                           </li>
                         )}
                       </ul>

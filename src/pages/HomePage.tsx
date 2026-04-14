@@ -5,7 +5,7 @@ import { useAuthStore, useTranslation, getLogoByLanguage, useGameStore } from '@
 // WikiSprint 홈 페이지 — 인트로 페이드아웃 후 게임 플로우 진입
 export default function HomePage(): React.ReactElement {
   const { accountInfo } = useAuthStore();
-  const { language } = useTranslation();
+  const { t, language } = useTranslation();
   const phase = useGameStore((s) => s.phase);
   const setPhase = useGameStore((s) => s.setPhase);
 
@@ -45,7 +45,7 @@ export default function HomePage(): React.ReactElement {
               className="h-16 mx-auto mb-2 object-contain"
             />
             <p className="text-gray-600 dark:text-gray-400 mb-8">
-              안녕하세요, {accountInfo?.nick ?? '게스트'}님
+              {t('common.greeting', { nick: accountInfo?.nick ?? t('auth.guest') })}
             </p>
             <div className="w-16 h-1 bg-primary rounded-full mx-auto opacity-30" />
           </div>
@@ -56,7 +56,7 @@ export default function HomePage(): React.ReactElement {
       {(phase === 'playing' || phase === 'completed') && (
         <div className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-center gap-1.5 py-1 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
           <span className="text-xs text-gray-400 dark:text-gray-500">
-            콘텐츠 출처:
+            {t('common.contentSource')}
           </span>
           <a
             href="https://ko.wikipedia.org"

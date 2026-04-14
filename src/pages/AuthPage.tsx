@@ -123,7 +123,7 @@ export default function AuthPage(): React.ReactElement {
       } catch (error) {
         // 어디서 터졌는지 임시 토스트로 노출
         const message = error instanceof Error ? error.message : 'unknown error';
-        showError(`iOS 로그인 후처리 실패: ${message}`);
+        showError(t('auth.iosLoginFail', { message }));
         isProcessingCode.current = false;
       }
     };
@@ -184,7 +184,7 @@ export default function AuthPage(): React.ReactElement {
                 className="flex items-center gap-3 rounded-md border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 active:bg-gray-100 transition-colors"
               >
                 <GoogleIcon />
-                <span>Google로 로그인</span>
+                <span>{t('auth.googleLoginButton')}</span>
               </button>
             ) : (
               // Android / Desktop: 기존 GIS 팝업 방식

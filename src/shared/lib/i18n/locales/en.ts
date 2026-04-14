@@ -14,6 +14,10 @@ export const en = {
     retry: 'Retry',
     user: 'User',
     account: 'Account',
+    greeting: 'Hello, {{nick}}!',
+    contentSource: 'Content source:',
+    searchEmpty: 'No results found',
+    clipboardCopy: 'Copy to clipboard',
   },
   auth: {
     login: 'Login',
@@ -27,6 +31,8 @@ export const en = {
     loginSuccess: 'Logged in successfully!',
     logoutSuccess: 'You have been logged out.',
     loginPrompt: 'Log in to enjoy WikiSprint to the fullest!',
+    iosLoginFail: 'iOS login post-processing failed: {{message}}',
+    googleLoginButton: 'Sign in with Google',
   },
   nav: {
     home: 'Home',
@@ -128,6 +134,9 @@ export const en = {
     resultShareDiscord: 'Share on Discord',
     autoClosed: 'Your previous game was closed unexpectedly and marked as abandoned.',
     abandonedByNavigation: 'Your game was abandoned and recorded as a forfeit.',
+    loadingButton: '⏳ Loading...',
+    loadingDocument: '⏳ Loading document...',
+    selectDifficulty: 'Select Difficulty',
     difficultyOmakase: 'Omakase',
     difficultyEasy: 'Easy',
     difficultyNormal: 'Normal',
@@ -228,5 +237,7 @@ export const en = {
     copyShareLink: 'Copy Share Link',
     qrGuide: 'Scan QR code to view the result on mobile',
     nativeShare: 'Share',
+    webShareTitle: '{{nick}} cleared WikiSprint!',
+    webShareText: 'Reached "{{targetWord}}" in {{pathCount}} steps, {{timeText}}!\nView results',
   },
 } as const;

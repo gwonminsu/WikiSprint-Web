@@ -530,7 +530,7 @@ export function GameIntroView(): React.ReactElement {
         <div className="relative flex-1 flex flex-col items-center justify-center gap-6 px-4 pb-8">
           {/* 난이도 선택 드롭다운 (우상단 배치) */}
           <div className="absolute top-4 right-4">
-            <p className="font-medium text-sm mb-2 text-gray-700 dark:text-gray-300 truncate">난이도 선택</p>
+            <p className="font-medium text-sm mb-2 text-gray-700 dark:text-gray-300 truncate">{t('game.selectDifficulty')}</p>
             <DifficultyDropdown />
           </div>
 
@@ -568,7 +568,7 @@ export function GameIntroView(): React.ReactElement {
               className="px-8 h-12 text-base"
               disabled={isLoading}
             >
-              {isLoading ? '⏳ 로딩 중...' : `${t('game.startButton')}`}
+              {isLoading ? t('game.loadingButton') : t('game.startButton')}
             </EmbossButton>
           </div>
         </div>
@@ -628,8 +628,10 @@ export function GameIntroView(): React.ReactElement {
             <div className="relative">
               {/* 로딩 시 기존 문서 위에 오버레이 (깜빡임 방지) */}
               {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10 min-h-40">
-                  <span className="text-lg text-gray-500">⏳ 문서를 불러오는 중...</span>
+                <div className="fixed inset-0 flex items-center justify-center bg-white/60 dark:bg-gray-900/60 z-20">
+                  <span className="text-lg text-gray-500 bg-white dark:bg-gray-800 px-5 py-3 rounded-xl shadow-md">
+                    {t('game.loadingDocument')}
+                  </span>
                 </div>
               )}
               {articleHtml && (

@@ -41,8 +41,8 @@ export default function SharePage(): React.ReactElement {
     const pathCount = data.navPath.length;
     try {
       await navigator.share({
-        title: `${data.nick}님이 WikiSprint를 클리어했습니다!`,
-        text: `제시어 "${data.targetWord}"에 ${pathCount}개 경로, ${timeText} 만에 도달!\n결과 보러가기`,
+        title: t('share.webShareTitle', { nick: data.nick }),
+        text: t('share.webShareText', { targetWord: data.targetWord, pathCount: String(pathCount), timeText }),
         url: shareUrl,
       });
     } catch {
