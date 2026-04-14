@@ -109,7 +109,7 @@ export const en = {
     timer2min: '[Target-???] 2 minutes have passed!',
     timer5min: '[Target-???] Yaaawn.. 5 minutes have passed! Better hurry up!',
     timer10min: '[Target-???] 10 minutes passed.. zzz.. Still not done..? Pick up the pace!',
-    winMessage: 'You reached ??? in @ min @@.@@ sec! Congratulations!',
+    winMessage: 'You reached ??? in {{minutes}} min {{seconds}} sec! Congratulations!',
     helpButton: 'Help!',
     externalLinkMessage: '[Target-???] Red links are external links and cannot be followed.',
     redlinkMessage: '[Target-???] This document link does not exist on Wikipedia and cannot be followed.',

@@ -373,10 +373,8 @@ export function GameIntroView(): React.ReactElement {
 
         const winTalker = getWinTalker(currentElapsedMs);
         const { minutes, seconds } = formatWinTime(currentElapsedMs);
-        const winText = t('game.winMessage')
-          .replace('???', targetWord)
-          .replace('@분', `${minutes}분`)
-          .replace('@@.@@초', `${seconds}초`);
+        const winText = t('game.winMessage', { minutes: String(minutes), seconds })
+          .replace('???', targetWord);
 
         setSpeechText(winText);
         setSpeechHighlights([{ word: targetWord, color: 'red' }]);
