@@ -20,6 +20,7 @@ import {
 import { getRandomArticle, getArticleHtml, getRandomTargetWord, useGameRecord } from '@features';
 import { useTypewriter, useGameTimer } from '../lib';
 import { DifficultyDropdown } from './DifficultyDropdown';
+import { WikiLoadingOverlay } from './WikiLoadingOverlay';
 
 // SpeechBubble에 전달하는 하이라이트 항목 타입
 type HighlightItem = {
@@ -628,11 +629,7 @@ export function GameIntroView(): React.ReactElement {
             <div className="relative">
               {/* 로딩 시 기존 문서 위에 오버레이 (깜빡임 방지) */}
               {isLoading && (
-                <div className="fixed inset-0 flex items-center justify-center bg-white/60 dark:bg-gray-900/60 z-20">
-                  <span className="text-lg text-gray-500 bg-white dark:bg-gray-800 px-5 py-3 rounded-xl shadow-md">
-                    {t('game.loadingDocument')}
-                  </span>
-                </div>
+                <WikiLoadingOverlay isVisible={isLoading} />
               )}
               {articleHtml && (
                 <div

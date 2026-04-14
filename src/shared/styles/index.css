@@ -644,6 +644,63 @@ body {
   background-color: #e8e8e8;
 }
 
+/* ===== 문서 로딩 오버레이 스타일 ===== */
+/* 시작/끝 티가 거의 없는 공전 애니메이션 */
+@keyframes orbitRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.orbit {
+  animation: orbitRotate linear infinite;
+  transform-origin: center;
+}
+
+.orbit-slow {
+  animation-duration: 8s;
+}
+
+.orbit-fast {
+  animation-duration: 4.8s;
+}
+
+/* 공전하는 동안 각 아이템이 같이 기울어지지 않게 보정 */
+.orbit-item {
+  position: absolute;
+}
+
+.orbit-slow .orbit-item,
+.orbit-fast .orbit-item {
+  animation: orbitRotate linear infinite reverse;
+}
+
+.orbit-slow .orbit-item {
+  animation-duration: 8s;
+}
+
+.orbit-fast .orbit-item {
+  animation-duration: 4.8s;
+}
+
+/* 자연스럽게 끝없이 흐르는 하단 칩 */
+@keyframes loadingMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.loading-marquee {
+  width: max-content;
+  animation: loadingMarquee 10s linear infinite;
+}
+
 /* ===== 전적 페이지 애니메이션 ===== */
 
 /* 카드 stagger fade-up (각 카드에 animation-delay 조합) */
