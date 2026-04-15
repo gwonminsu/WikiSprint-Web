@@ -250,4 +250,95 @@ export const en = {
     webShareTitle: '{{nick}} cleared WikiSprint!',
     webShareText: 'Reached "{{targetWord}}" in {{pathCount}} steps, {{timeText}}!\nView results',
   },
+  consent: {
+    title: 'Terms of Service',
+    description: 'Please agree to the following terms to use WikiSprint.',
+    agreeAll: 'Agree to All',
+    termsOfService: 'Terms of Service',
+    privacyPolicy: 'Privacy Policy',
+    ageVerification: 'Age Verification (14+)',
+    marketingNotification: 'Marketing Notifications',
+    termsContent: `I agree to the WikiSprint Terms of Service.
+
+Article 1 (Purpose)
+These terms define the rights, obligations, and responsibilities between users and the service provider regarding the use of WikiSprint.
+
+Article 2 (Service Description)
+The service provides:
+- Wiki-based word guessing game
+- Game record storage and statistics
+- Ranking system and comparison features
+
+Article 3 (User Obligations)
+Users must not:
+- Use another person's account or provide false information
+- Interfere with normal service operation
+- Use automated methods (bots) to play the game
+- Use nicknames or profile images that contain obscene, offensive, hateful, or discriminatory content
+- Create or distribute content that may cause discomfort or harm to others
+
+Article 4 (Restriction of Use)
+The service provider may restrict usage or suspend accounts without prior notice if violations are detected.
+
+Article 5 (Service Modification)
+The service provider may modify or terminate the service at any time.
+
+Article 6 (Disclaimer)
+The service is provided "as is" without warranties, and the provider is not liable for damages arising from its use.`,
+    privacyContent: `I agree to the WikiSprint Privacy Policy.
+
+1. Collected Information
+- Google account email
+- Name
+- Profile image URL
+
+2. Purpose of Collection
+- User identification and login
+- Game record storage and statistics
+- Service improvement and user experience enhancement
+
+3. Retention Period
+- Service access is immediately restricted upon account deletion request
+- Data is retained for up to 7 days and then permanently deleted
+
+4. Third-party Sharing
+Personal information is not shared with third parties.
+
+5. User Rights
+Users may request account deletion at any time, and their data will be deleted according to policy.`,
+    ageContent: `I confirm that I am at least 14 years old.
+
+- Users under 14 require parental consent.
+- I confirm that I meet the eligibility requirements.
+- Providing false information may result in service restrictions.`,
+    marketingContent: `I agree to receive marketing notifications from WikiSprint.
+
+- Updates about new features
+- Event and announcement notifications
+- Service improvement updates
+
+※ This is optional and does not affect service usage.
+※ You may withdraw consent at any time in settings.`,
+    required: 'Required',
+    optional: 'Optional',
+    agreeRequired: 'I agree to the above (Required)',
+    agreeOptional: 'I agree to the above (Optional)',
+    signUp: 'Sign Up',
+    requiredMissing: 'Please agree to all required terms.',
+    cancelTitle: 'Cancel sign-up?',
+    cancelMessage: 'If you close this now, your current sign-up process will be canceled.',
+    cancelConfirmButton: 'Cancel sign-up',
+  },
+  account: {
+    deleteAccount: 'Delete Account',
+    deleteAccountTitle: 'Delete Account',
+    deleteAccountMessage: 'Are you sure you want to delete your account?\n\nYour account will be retained for 7 days after the deletion request. After 7 days, your account and all game records will be permanently deleted.\n\nItems to be deleted: Account info, game records, ranking records',
+    deleteAccountConfirm: 'Request Deletion',
+    deleteAccountRequested: 'Deletion requested. Your account will be permanently deleted in 7 days.',
+    deletionCancelTitle: 'Cancel Deletion',
+    deletionCancelMessage: 'Your account is scheduled for permanent deletion on {{date}}.\nWould you like to cancel the deletion and keep your account?',
+    cancelDeletion: 'Cancel Deletion',
+    keepDeletion: 'Keep Deletion',
+    deletionCancelled: 'Account deletion has been cancelled.',
+  },
 } as const;

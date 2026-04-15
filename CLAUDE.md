@@ -79,6 +79,7 @@ src/
 │   ├── settings/           # SettingsView
 │   ├── game-intro/         # GameIntroView (Wikipedia 렌더링 + 게임 핵심 로직)
 │   │   └── lib/            # useTypewriter, useGameTimer
+│   ├── consent/            # ConsentModal (약관 동의 가입 모달 — 필수 3개 + 선택 1개 아코디언)
 │   ├── game-result/        # GameResultView (게임 결과 화면 — 카드 타임라인 + 요약)
 │   │   └── lib/            # useCardSequence, shareUtils (buildShareUrl, shareKakao)
 │   ├── game-record/        # GameRecordView (전적 페이지 — 요약 바 + 카드 리스트)
@@ -90,7 +91,8 @@ src/
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
 │   ├── auth/               # Google OAuth (useGoogleLogin, authApi)
-│   ├── account/            # 계정 관리 (닉네임, 프로필 이미지)
+│   ├── account/            # 계정 관리 (닉네임, 프로필 이미지, 회원탈퇴)
+│   ├── consent/            # 회원가입 (register API, useRegister 훅)
 │   ├── admin/              # 관리자 전용 (제시어 CRUD — adminApi, useTargetWords 등)
 │   ├── game-record/        # 게임 전적 (useGameRecord, useGameRecords, gameRecordApi)
 │   └── ranking/            # 랭킹 조회 (getRanking, useRanking)
@@ -99,6 +101,7 @@ src/
 │   ├── index.ts            # 네임스페이스 export (e.*)
 │   ├── auth/               # GoogleLoginRequest, GoogleLoginResponse
 │   ├── account/            # Account, AccountResponse 등
+│   ├── consent/            # ConsentType, ConsentItem, RegisterRequest
 │   ├── game-record/        # GameRecord, RecordSummary, GameRecordListResponse, SharedGameRecord 등
 │   └── ranking/            # RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse 등
 │
@@ -138,6 +141,7 @@ import { shared } from '@shared'; // shared.ui.Dialog, shared.store.useAuthStore
 // w (widgets)
 w.Header
 w.SettingsView
+w.ConsentModal   // 약관 동의 가입 모달 (신규 유저 Google 로그인 시 표시)
 w.GameIntroView  // DifficultyDropdown 포함 (ready 상태 우상단 난이도 선택)
 w.GameResultView
 w.GameRecordView
@@ -149,17 +153,23 @@ f.hook.useMyAccount, f.hook.useGetAccount
 f.hook.useUpdateNick, f.hook.useUpdateNationality
 f.hook.useUploadProfileImage, f.hook.useRemoveProfileImage
 f.hook.useTargetWords, f.hook.useAddTargetWord, f.hook.useDeleteTargetWord
+f.hook.useRequestDeletion  // 회원탈퇴 요청 훅 (immediate 파라미터로 즉시/유예 삭제 선택)
+f.hook.useRegister         // 약관 동의 후 회원가입 훅
 f.hook.useGameRecord   // startRecord / updatePath / completeRecord / abandonRecord
 f.hook.useGameRecords  // 전적 목록 + 통계 조회 (TanStack Query)
 f.hook.useSharedRecord // 공유 전적 조회 (TanStack Query, skipAuth, staleTime 5분)
 f.hook.useRanking      // 기간×난이도 Top 100 조회 (TanStack Query, staleTime 30s)
-f.api.auth, f.api.account, f.api.admin, f.api.gameRecord
+f.api.auth, f.api.account, f.api.consent, f.api.admin, f.api.gameRecord
+f.api.auth.register          // POST /api/auth/register (Google ID 토큰 + 동의 항목)
+f.api.auth.cancelDeletion    // POST /api/auth/cancel-deletion
+f.api.account.requestDeletion // POST /api/account/delete/request
 f.api.gameRecord.getSharedRecord  // POST /api/record/share/{shareId} (JWT 불필요)
 f.api.ranking          // getRanking (POST /api/ranking/list)
 
 // e (entities)
 e.auth.type.GoogleLoginRequest, e.auth.type.GoogleLoginResponse
 e.account.type.*  // AccountResponse(is_admin 포함), AddTargetWordRequest, DeleteTargetWordRequest
+e.consent.type.*  // ConsentType, ConsentItem, RegisterRequest
 e.wiki.type.*     // WikiSummary, WikiArticle, TargetWordResponse
 e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordListResponse, SharedGameRecord, StartGameRecordRequest 등
 e.ranking.type.*     // RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse, RankingListRequest
@@ -187,11 +197,12 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 ## 라우팅 구조
 
 ```
-/           → HomePage      (게스트 포함 누구나 접근 가능)
-/auth       → AuthPage      (로그인 페이지)
-/settings   → SettingsPage  (게스트 포함 누구나 접근 가능)
-/doc        → DocPage       (WikiSprint 소개)
-/ranking    → RankingPage   (게스트 포함 누구나 접근 가능)
+/                → HomePage      (게스트 포함 누구나 접근 가능)
+/auth            → AuthPage      (로그인 페이지)
+/settings        → SettingsPage  (게스트 포함 누구나 접근 가능)
+/doc             → DocPage       (WikiSprint 소개)
+/ranking         → RankingPage   (게스트 포함 누구나 접근 가능)
+/share/:shareId  → SharePage     (공유 결과 페이지, JWT 불필요)
 ```
 
 > PrivateRoute 없음. 게임 진행 중(`playing`) 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.

@@ -7,14 +7,16 @@ import {
   ProfileAvatar,
   LANGUAGES,
   useToast,
+  useDialog,
   type Theme,
   type Language,
   getCountryFlagUrl,
   getCountryFlagSrcSet,
   COUNTRY_LIST,
   type CountryOption,
+  ApiException,
 } from '@shared';
-import { getProfileImageUrl, useUpdateNick, useUpdateNationality, ProfileImageEditModal } from '@/features/account';
+import { getProfileImageUrl, useUpdateNick, useUpdateNationality, useRequestDeletion, ProfileImageEditModal } from '@/features/account';
 import { AdminTargetWordsSection } from './AdminTargetWordsSection';
 
 // 이메일 마스킹: 첫 글자 제외 @ 이전을 ***으로 치환
@@ -28,10 +30,12 @@ function maskEmail(email: string): string {
 export function SettingsView(): React.ReactElement {
   const { theme, setTheme } = useThemeStore();
   const { t, language, setLanguage } = useTranslation();
-  const { accountInfo, setAccountInfo } = useAuthStore();
+  const { accountInfo, setAccountInfo, clearAuth } = useAuthStore();
   const { success: toastSuccess, error: toastError } = useToast();
+  const { showConfirm } = useDialog();
   const updateNickMutation = useUpdateNick();
   const updateNationalityMutation = useUpdateNationality();
+  const requestDeletionMutation = useRequestDeletion();
   const navigate = useNavigate();
 
   const profileImageUrl = accountInfo?.profile_img_url
@@ -77,8 +81,13 @@ export function SettingsView(): React.ReactElement {
       }
       toastSuccess(t('profile.nickUpdateSuccess'));
       setIsEditingNick(false);
-    } catch {
-      toastError(t('profile.nickUpdateFail'));
+    } catch (error: unknown) {
+      // 서버가 반환한 에러 메시지(닉네임 중복 등)를 토스트에 직접 표시
+      if (error instanceof ApiException && error.message) {
+        toastError(error.message);
+      } else {
+        toastError(t('profile.nickUpdateFail'));
+      }
       setIsEditingNick(false);
     }
   };
@@ -483,9 +492,44 @@ export function SettingsView(): React.ReactElement {
         </h2>
         <div className="flex items-center justify-between">
           <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-          <span className="text-gray-500 dark:text-gray-400">2.6.0</span>
+          <span className="text-gray-500 dark:text-gray-400">2.7.0</span>
         </div>
       </section>
+
+      {/* 회원탈퇴 — 로그인 상태에서만 표시, 권장하지 않는 디자인으로 시각적으로 낮은 강조 */}
+      {accountInfo && (
+        <div className="flex justify-center pt-2 pb-4">
+          <button
+            type="button"
+            onClick={() => {
+              showConfirm({
+                title: t('account.deleteAccountTitle'),
+                message: t('account.deleteAccountMessage'),
+                confirmText: t('account.deleteAccountConfirm'),
+                cancelText: t('common.cancel'),
+                onConfirm: () => {
+                  requestDeletionMutation.mutate(
+                    { immediate: true },
+                    {
+                      onSuccess: () => {
+                        clearAuth();
+                        navigate('/auth');
+                        toastSuccess(t('account.deleteAccountRequested'));
+                      },
+                      onError: (error) => {
+                        toastError(error instanceof Error ? error.message : t('common.error'));
+                      },
+                    }
+                  );
+                },
+              });
+            }}
+            className="text-xs text-gray-400 dark:text-gray-600 hover:text-red-400 dark:hover:text-red-500 transition-colors underline-offset-2 hover:underline"
+          >
+            {t('account.deleteAccount')}
+          </button>
+        </div>
+      )}
 
       {/* 프로필 이미지 편집 모달 (로그인 상태에서만 렌더링) */}
       {accountInfo && (

@@ -22,6 +22,9 @@ import { GameRecordView } from './game-record';
 // Ranking 위젯 (랭킹 페이지 — 아케이드 스타일 리더보드)
 import { RankingView } from './ranking';
 
+// Consent 위젯 (약관 동의 모달 — 신규 회원가입 플로우)
+import { ConsentModal } from './consent';
+
 // 네임스페이스 export
 export const w = {
   Header,
@@ -32,6 +35,7 @@ export const w = {
   GameResultView,
   GameRecordView,
   RankingView,
+  ConsentModal,
 } as const;
 
 // 개별 export (직접 import 용도)
@@ -43,3 +47,4 @@ export { GameIntroView } from './game-intro';
 export { GameResultView } from './game-result';
 export { GameRecordView } from './game-record';
 export { RankingView } from './ranking';
+export { ConsentModal } from './consent';

@@ -161,6 +161,10 @@ export function ResultSummary({
 
   // 공유 링크 패널 토글 핸들러
   const handleToggleLinkPanel = (): void => {
+    if (!shareUrl) {
+      onCopyLink?.();
+      return;
+    }
     setShowLinkPanel((prev) => !prev);
   };
 

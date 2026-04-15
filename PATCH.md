@@ -1,3 +1,40 @@
+## v2.7.0 (2026-04-16)
+
+### Added
+- 약관 동의 기반 회원가입 플로우
+  - 신규 유저 Google 로그인 시 약관 동의 모달(`ConsentModal`) 표시
+  - 필수 3개(서비스 이용약관, 개인정보처리방침, 만 14세 이상) + 선택 1개(마케팅 알림) 아코디언 형식
+  - 전체 동의 토글, 필수 모두 체크 시 가입 버튼 활성화 (그라데이션 애니메이션)
+  - ESC / 외부 클릭 시 닫기 컨펌 다이얼로그 표시
+  - `POST /api/auth/register` — Google ID 토큰 + 동의 항목 전송 후 계정 생성
+- 회원탈퇴 기능
+  - 설정 페이지 하단 "회원탈퇴" 버튼 추가 (회색 낮은 강조, 호버 시 빨간색)
+  - 컨펌 다이얼로그 확인 시 `POST /api/account/delete/request` 호출 후 로그아웃 및 `/auth` 이동
+- 탈퇴 취소 기능
+  - 탈퇴 대기(7일 유예) 계정 재로그인 시 취소/유지 선택 다이얼로그 표시
+  - "탈퇴 취소" 선택 시 `POST /api/auth/cancel-deletion` 호출 후 정상 로그인 복귀
+- `consent` 도메인 신규 추가
+  - `entities/consent/` — `ConsentType`, `ConsentItem`, `RegisterRequest` 타입
+  - `features/consent/` — `register()` API 함수 + `useRegister` 훅
+  - `widgets/consent/` — `ConsentModal` 컴포넌트
+- i18n `consent` / `account` 네임스페이스 추가 (ko/en/ja 3개국어)
+- `GlobalModals` 컴포넌트 추가 — Router 내 전역 모달(ConsentModal, 탈퇴 취소 다이얼로그) 통합 관리
+
+### Fixed
+- `Dialog` z-index 문제 수정 — `z-60` → `z-100`으로 상향, 모달 중첩 시에도 컨펌 다이얼로그가 정상 표시되도록 개선
+- `ResultSummary` 공유 링크 미생성 시 null 처리 — `shareUrl`이 없을 때 링크 패널 토글 대신 `onCopyLink?.()`를 호출하도록 수정
+- 닉네임 변경 실패 시 서버 에러 메시지 직접 표시 — `ApiException`인 경우 서버가 반환한 구체적 메시지(중복 닉네임 등)를 토스트에 표시
+
+### Changed
+- `GoogleLoginResponse`에 `is_new_user`, `is_deletion_pending`, `deletion_scheduled_at`, `id_token_string` 필드 추가
+- 로그인 성공 처리 로직 `handleSuccessfulLogin()`으로 공통화 — GIS credential, iOS code flow, 약관 동의 후 가입 3곳에서 재사용
+- `authStore`에 `pendingConsent`, `pendingCredential`, `pendingDeletionCancel`, `deletionScheduledAt` 상태 추가 (persist 대상 포함)
+- 버전 2.6.0 → **2.7.0**
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.6.0 (2026-04-13)
 
 ### Added

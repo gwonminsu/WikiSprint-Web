@@ -81,3 +81,8 @@ export const getProfileImageUrl = (fileUuidOrUrl: string | null): string | null 
   }
   return `${API_BASE_URL}/api/account/profile/image/${fileUuidOrUrl}`;
 };
+
+// 회원탈퇴 요청 (immediate=false이면 7일 유예, true이면 즉시 삭제)
+export const requestDeletion = async (immediate: boolean = false): Promise<void> => {
+  await apiClient.post<void>(API_ENDPOINTS.ACCOUNT.DELETE_REQUEST, { immediate });
+};

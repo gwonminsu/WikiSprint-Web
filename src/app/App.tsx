@@ -61,6 +61,7 @@ export function App(): React.ReactElement {
         <ThemeInitializer />
         <AuthInitializer />
         <ViewportScaleInitializer />
+        {/* Router 내부에 GlobalModals (ConsentModal + 탈퇴 취소 다이얼로그) 포함 */}
         <Router />
         <Dialog />
         <ToastContainer />

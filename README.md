@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.5.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.7.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -40,7 +40,9 @@
 | 🎯 난이도 선택 | 쉬움 / 보통 / 어려움 / 오마카세(랜덤) 4단계 |
 | 📊 전적 관리 | 게임 기록 자동 저장, 클리어/포기 통계 조회 |
 | 🏆 랭킹 시스템 | 일간·주간·월간 × 난이도 Top 100 리더보드 |
-| 🔐 Google OAuth 로그인 | Google 계정으로 원클릭 로그인 및 자동 회원가입 |
+| 🔐 Google OAuth 로그인 | Google 계정으로 원클릭 로그인 + 약관 동의 가입 |
+| 📋 약관 동의 가입 | 신규 유저 약관 동의 후 회원가입 (필수 3개 + 선택 1개) |
+| 🚪 회원탈퇴 | 계정 삭제 요청 및 탈퇴 대기 중 취소 가능 |
 | 🔄 JWT 자동 갱신 | Access Token 만료 시 Refresh Token으로 자동 재발급 |
 | 👤 계정 관리 | 닉네임 변경, 프로필 이미지 업로드/삭제 |
 | 🏳️ 국적 설정 | 프로필 국기 표시, 랭킹 카드 국기 반영 |
@@ -106,11 +108,13 @@ WikiSprint-Web/
     │   ├── SettingsPage.tsx      # 설정 페이지
     │   ├── DocPage.tsx           # WikiSprint 소개 문서
     │   ├── RecordPage.tsx        # 전적 조회 페이지
-    │   └── RankingPage.tsx       # 랭킹 페이지
+    │   ├── RankingPage.tsx       # 랭킹 페이지
+    │   └── SharePage.tsx         # 공유 결과 페이지 (/share/:shareId)
     │
     ├── widgets/
     │   ├── main-layout/          # Header 네비게이션
-    │   ├── settings/             # SettingsView (프로필·테마·언어·관리자)
+    │   ├── settings/             # SettingsView (프로필·테마·언어·관리자·회원탈퇴)
+    │   ├── consent/              # ConsentModal (약관 동의 가입 모달)
     │   ├── game-intro/           # GameIntroView (게임 진행 화면 + Wikipedia 렌더링)
     │   ├── game-result/          # GameResultView (게임 결과 카드 타임라인)
     │   ├── game-record/          # GameRecordView (전적 목록 + 통계 바)
@@ -118,7 +122,8 @@ WikiSprint-Web/
     │
     ├── features/
     │   ├── auth/                 # Google OAuth 로그인 훅 & API
-    │   ├── account/              # 계정 관리 훅 & API
+    │   ├── account/              # 계정 관리 훅 & API (닉네임·이미지·회원탈퇴)
+    │   ├── consent/              # 회원가입 훅 & API (register, useRegister)
     │   ├── wiki/                 # Wikipedia API 클라이언트
     │   ├── admin/                # 관리자 제시어 CRUD
     │   ├── game-record/          # 게임 전적 훅 & API
@@ -127,6 +132,7 @@ WikiSprint-Web/
     ├── entities/
     │   ├── auth/                 # GoogleLoginRequest/Response 타입
     │   ├── account/              # Account, AccountResponse 타입
+    │   ├── consent/              # ConsentType, ConsentItem, RegisterRequest 타입
     │   ├── wiki/                 # WikiSummary, TargetWordResponse 타입
     │   ├── game-record/          # GameRecord, RecordSummary 타입
     │   └── ranking/              # RankingRecord, RankingListResponse 타입
@@ -196,6 +202,7 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 | `/doc` | `DocPage` | ❌ |
 | `/record` | `RecordPage` | ✅ |
 | `/ranking` | `RankingPage` | ❌ (게스트 포함) |
+| `/share/:shareId` | `SharePage` | ❌ |
 
 > PrivateRoute 없음. 게임 진행 중 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
 

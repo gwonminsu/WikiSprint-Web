@@ -5,3 +5,4 @@ export { useRemoveProfileImage } from './useRemoveProfileImage';
 export { useMyAccount } from './useMyAccount';
 export { useGetAccount } from './useGetAccount';
 export { cropImageToFile, checkNsfw } from './imageUtils';
+export { useRequestDeletion } from './useRequestDeletion';

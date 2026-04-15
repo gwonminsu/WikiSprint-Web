@@ -4,6 +4,9 @@ import type {
   GoogleLoginResponse,
 } from './auth';
 
+// Consent 엔티티 타입
+import type { ConsentType, ConsentItem, RegisterRequest } from './consent';
+
 // GameRecord 엔티티 타입
 import type {
   GameRecordStatus,
@@ -49,6 +52,13 @@ export const e = {
     type: {} as {
       GoogleLoginRequest: GoogleLoginRequest;
       GoogleLoginResponse: GoogleLoginResponse;
+    },
+  },
+  consent: {
+    type: {} as {
+      ConsentType: ConsentType;
+      ConsentItem: ConsentItem;
+      RegisterRequest: RegisterRequest;
     },
   },
   account: {
@@ -101,6 +111,8 @@ export type {
   GoogleLoginRequest,
   GoogleLoginResponse,
 } from './auth';
+
+export type { ConsentType, ConsentItem, RegisterRequest } from './consent';
 
 export type {
   Account,

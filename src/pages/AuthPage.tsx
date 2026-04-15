@@ -6,6 +6,7 @@ import { getTokenStorage, useAuthStore, useToast, useTranslation, getLogoByLangu
 import { authApi } from '@features/auth/api/authApi';
 import type { GoogleLoginResponse } from '@entities';
 import type { ApiResponse } from '@shared';
+import { handleSuccessfulLogin } from '@features/auth/lib/useGoogleLogin';
 
 // JWT exp 클레임으로 토큰 만료 여부 확인
 function isTokenExpired(token: string): boolean {
@@ -57,9 +58,11 @@ function GoogleIcon(): React.ReactElement {
 export default function AuthPage(): React.ReactElement {
   const navigate = useNavigate();
   const { error: showError } = useToast();
+  const toast = useToast();
   const { t, language } = useTranslation();
   const { mutate: googleLogin, isPending } = useGoogleLogin();
-  const { setAccountInfo, checkAuth } = useAuthStore();
+  const { setAccountInfo, checkAuth, setPendingConsent, setPendingDeletionCancel } = useAuthStore();
+  const tokenStorage = getTokenStorage();
   // code 교환 중복 실행 방지 (React Strict Mode 이중 마운트 대응)
   const isProcessingCode = useRef(false);
 
@@ -95,31 +98,34 @@ export default function AuthPage(): React.ReactElement {
           throw new Error('google/code 응답이 비어있음');
         }
 
-        // 토큰 검증
+        const data = response.data;
+
+        // 신규 유저: 계정 미생성 → 약관 동의 모달 표시
+        // iOS code flow에서는 credential 재사용 불가이므로, 서버가 반환한 id_token_string 사용
+        if (data?.is_new_user === true) {
+          if (!data.id_token_string) {
+            throw new Error('신규 유저 id_token_string 미반환');
+          }
+          setPendingConsent(true, data.id_token_string);
+          return;
+        }
+
+        // 탈퇴 대기 계정: 토큰 미발급 → 탈퇴 취소 다이얼로그 표시
+        if (data?.is_deletion_pending === true) {
+          setPendingDeletionCancel(true, data.deletion_scheduled_at, data.id_token_string);
+          return;
+        }
+
+        // 정상 로그인: 토큰 검증
         if (!response.auth?.accessToken || !response.auth?.refreshToken) {
           throw new Error('auth 토큰이 응답에 없음');
         }
 
-        getTokenStorage().setTokens(response.auth.accessToken, response.auth.refreshToken);
-
-        // 계정 정보 세팅 전 검증
-        if (!response.data) {
-          throw new Error('response.data가 없음');
-        }
-
-        setAccountInfo({
-          uuid: response.data.uuid,
-          nick: response.data.nick,
-          nationality: response.data.nationality ?? null,
-          email: response.data.email,
-          profile_img_url: response.data.profile_img_url,
-          is_admin: response.data.is_admin ?? false,
-        });
+        // 정상 로그인 처리 (토큰 저장 + 계정 정보 저장 + 전적 동기화 + 홈 이동)
+        await handleSuccessfulLogin(response, { setAccountInfo, tokenStorage, toast, t, navigate });
 
         // checkAuth가 비동기일 가능성 고려
         await Promise.resolve(checkAuth());
-
-        navigate('/');
       } catch (error) {
         // 어디서 터졌는지 임시 토스트로 노출
         const message = error instanceof Error ? error.message : 'unknown error';
@@ -135,7 +141,7 @@ export default function AuthPage(): React.ReactElement {
       navigate('/');
     }
 
-  }, [checkAuth, navigate, setAccountInfo, showError, t]);
+  }, [checkAuth, navigate, setAccountInfo, showError, t, toast, setPendingConsent, setPendingDeletionCancel, tokenStorage]);
 
   const handleGoogleSuccess = (credentialResponse: CredentialResponse): void => {
     if (!credentialResponse.credential) {

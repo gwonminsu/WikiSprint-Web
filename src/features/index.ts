@@ -22,12 +22,17 @@ import {
   uploadProfileImage,
   removeProfileImage,
   getProfileImageUrl,
+  requestDeletion,
   useMyAccount,
   useUpdateNick,
   useUploadProfileImage,
   useRemoveProfileImage,
+  useRequestDeletion,
   ProfileImageEditModal,
 } from './account';
+
+// Consent feature
+import { register, useRegister } from './consent';
 
 // GameRecord feature
 import {
@@ -55,6 +60,9 @@ export const f = {
     useUpdateNick,
     useUploadProfileImage,
     useRemoveProfileImage,
+    useRequestDeletion,
+    // Consent
+    useRegister,
     // Admin
     useTargetWords,
     useAddTargetWord,
@@ -75,7 +83,9 @@ export const f = {
       uploadProfileImage,
       removeProfileImage,
       getProfileImageUrl,
+      requestDeletion,
     },
+    consent: { register },
     admin: adminApi,
     gameRecord: {
       startGameRecord,
@@ -103,12 +113,16 @@ export {
   uploadProfileImage,
   removeProfileImage,
   getProfileImageUrl,
+  requestDeletion,
   useMyAccount,
   useUpdateNick,
   useUploadProfileImage,
   useRemoveProfileImage,
+  useRequestDeletion,
   ProfileImageEditModal,
 } from './account';
+
+export { register, useRegister } from './consent';
 
 export {
   startGameRecord,

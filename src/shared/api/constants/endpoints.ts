@@ -5,6 +5,10 @@ export const API_ENDPOINTS = {
     GOOGLE: '/api/auth/google',
     GOOGLE_CODE: '/api/auth/google/code',
     REFRESH: '/api/auth/token/refresh',
+    // 약관 동의 완료 후 계정 생성 (Google ID 토큰 + 동의 항목)
+    REGISTER: '/api/auth/register',
+    // 탈퇴 취소 (Google ID 토큰으로 본인 확인, permitAll)
+    CANCEL_DELETION: '/api/auth/cancel-deletion',
   },
   ACCOUNT: {
     ME: '/api/account/me',
@@ -13,6 +17,8 @@ export const API_ENDPOINTS = {
     UPLOAD_PROFILE: '/api/account/profile/upload',
     REMOVE_PROFILE: '/api/account/profile/remove',
     UPDATE_NATIONALITY: '/api/account/nationality/update',
+    // 회원탈퇴 요청 (immediate=true이면 즉시 삭제, false이면 7일 유예)
+    DELETE_REQUEST: '/api/account/delete/request',
   },
   // Wikipedia API 프록시 엔드포인트
   WIKI: {
