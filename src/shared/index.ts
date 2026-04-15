@@ -57,7 +57,7 @@ export const shared = {
 // 개별 export (직접 import 용도)
 export { getLogoByLanguage, tutoDoc, talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn, gameClear } from './assets/images';
 export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay } from './ui';
-export { useAuthStore, useThemeStore, type Theme, useGameStore, usePendingRecordStore, type Difficulty } from './store';
+export { useAuthStore, useThemeStore, type Theme, useGameStore, usePendingRecordStore, type Difficulty, type AuthState } from './store';
 export { cn, useTranslation, useLanguageStore, getTranslations, LANGUAGES, type Language, useViewportScale, getCountryFlagSrcSet, getCountryFlagUrl, COUNTRY_LIST, type CountryOption, initKakaoSdk } from './lib';
 export { queryClient } from './config';
 export {

@@ -1,6 +1,6 @@
 import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, getTokenStorage, usePendingRecordStore, useToast, useTranslation } from '@shared';
+import { useAuthStore, getTokenStorage, usePendingRecordStore, useToast, useTranslation, type AuthState } from '@shared';
 import type { ApiResponse } from '@shared';
 import { authApi } from '../api/authApi';
 import type { GoogleLoginRequest, GoogleLoginResponse } from '@entities';
@@ -14,7 +14,7 @@ import {
 async function handleSuccessfulLogin(
   response: ApiResponse<GoogleLoginResponse>,
   deps: {
-    setAccountInfo: ReturnType<typeof useAuthStore>['setAccountInfo'];
+    setAccountInfo: AuthState['setAccountInfo'];
     tokenStorage: ReturnType<typeof getTokenStorage>;
     toast: ReturnType<typeof useToast>;
     t: ReturnType<typeof useTranslation>['t'];

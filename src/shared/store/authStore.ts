@@ -13,7 +13,7 @@ type AccountInfo = {
 };
 
 // 인증 상태 타입
-type AuthState = {
+export type AuthState = {
   isAuthenticated: boolean;
   accountInfo: AccountInfo | null;
   setAuth: (accessToken: string, refreshToken: string) => void;
