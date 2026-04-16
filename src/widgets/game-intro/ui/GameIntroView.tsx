@@ -32,6 +32,8 @@ type HighlightItem = {
 // Map은 삽입 순서를 유지하므로, 최대 크기 초과 시 가장 먼저 삽입된 항목을 제거하는 FIFO 방식 사용
 const sanitizedHtmlCache = new Map<string, string>();
 const MAX_HTML_CACHE_SIZE = 50;
+// 시작 문서 재선택 루프 상한 — 무한 재시도 방지
+const MAX_START_DOC_RETRIES = 5;
 
 function setCachedHtml(key: string, value: string): void {
   if (sanitizedHtmlCache.size >= MAX_HTML_CACHE_SIZE) {
@@ -108,6 +110,16 @@ function sanitizeWikiHtml(html: string, cacheKey?: string): string {
   });
   if (cacheKey) setCachedHtml(cacheKey, sanitized);
   return sanitized;
+}
+
+// sanitizeWikiHtml 처리 결과 HTML에서 이동 가능한 내부 링크 개수를 집계
+// DOM 렌더 전에 동기 판정하여 handleGameStart 루프에서 재사용
+function countNavigableLinks(sanitizedHtml: string): number {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(sanitizedHtml, 'text/html');
+  return doc.querySelectorAll(
+    'a[href]:not([data-redlink]):not([data-external-link])'
+  ).length;
 }
 
 // 위키피디아 문서 링크 클릭 시 제목 추출
@@ -451,7 +463,44 @@ export function GameIntroView(): React.ReactElement {
     }
   }, [language, targetWord, updatePath, t]);
 
-  // 게임 시작 — DB에서 제시어 가져온 후 랜덤 시작 문서 fetch
+  // 이동 가능한 링크가 1개 이상인 시작 문서가 나올 때까지 최대 MAX_START_DOC_RETRIES회 재시도
+  // getRandomArticle 전체 장애는 루프 밖으로 전파, 개별 문서 HTML 실패는 해당 시도만 continue
+  const pickNavigableStartDoc = async (): Promise<{
+    title: string;
+    sanitized: string;
+    reselected: boolean;
+  } | null> => {
+    let attempts: number = 0;
+    let reselected: boolean = false;
+
+    while (attempts < MAX_START_DOC_RETRIES) {
+      attempts += 1;
+      const summary = await getRandomArticle(language);
+
+      let html: string;
+      try {
+        html = await getArticleHtml(summary.title, language);
+      } catch {
+        // 개별 문서 HTML fetch 실패 — 다른 문서로 재시도
+        reselected = true;
+        continue;
+      }
+
+      const sanitized: string = sanitizeWikiHtml(
+        html,
+        `${language}:${summary.title}`
+      );
+
+      if (countNavigableLinks(sanitized) > 0) {
+        return { title: summary.title, sanitized, reselected };
+      }
+      // 링크 없는 문서 — 다음 문서로 교체
+      reselected = true;
+    }
+    return null;
+  };
+
+  // 게임 시작 — DB에서 제시어 가져온 후 링크 있는 랜덤 시작 문서 fetch
   const handleGameStart = async (): Promise<void> => {
     setIsLoading(true);
     // 마일스톤·뒤로가기 버튼 초기화
@@ -460,7 +509,8 @@ export function GameIntroView(): React.ReactElement {
     try {
       // 선택된 난이도 파라미터 결정 (오마카세=0이면 파라미터 미전송)
       const { difficulty: currentDifficulty } = useGameStore.getState();
-      const difficultyParam = currentDifficulty === 0 ? undefined : currentDifficulty;
+      const difficultyParam: number | undefined =
+        currentDifficulty === 0 ? undefined : currentDifficulty;
 
       let targetWordData = await getRandomTargetWord(language, difficultyParam);
       // 선택한 난이도에 제시어가 없으면 오마카세로 자동 전환
@@ -469,42 +519,62 @@ export function GameIntroView(): React.ReactElement {
         setDifficulty(0);
         targetWordData = await getRandomTargetWord(language);
       }
-      const word = targetWordData.word;
+      const word: string = targetWordData.word;
 
-      // 시작 문서는 제시어와 관계없는 랜덤 문서
-      const summary = await getRandomArticle(language);
-      const html = await getArticleHtml(summary.title, language);
-      setArticleHtml(sanitizeWikiHtml(html, `${language}:${summary.title}`));
+      // 이동 가능한 링크가 있는 시작 문서가 나올 때까지 재선택
+      const picked = await pickNavigableStartDoc();
+      if (picked === null) {
+        toast.error(t('game.startDocNoLinksFinal'));
+        return; // phase 그대로 'ready' 유지 — startGame 미호출
+      }
 
-      // 서버에 in_progress 전적 생성 후 recordId를 스토어에 저장
-      const recordId = await startRecord(word, summary.title);
+      // 최종 확정된 시작 문서 HTML 반영
+      setArticleHtml(picked.sanitized);
+
+      // 최종 확정 후에만 서버 전적 생성 (루프 중에는 호출하지 않아 불필요한 레코드 방지)
+      const recordId = await startRecord(word, picked.title);
 
       // 게임 시작: 스토어 초기화 + 타이머 시작 (recordId 포함)
-      startGame(word, summary.title, recordId);
+      startGame(word, picked.title, recordId);
 
       // 초기 말풍선 설정
-      const initialText = t('game.playingMessage').replace('???', word);
+      const initialText: string = t('game.playingMessage').replace('???', word);
       setSpeechText(initialText);
       setSpeechHighlights([{ word, color: 'red' }]);
       setCurrentTalkerImage(talkerIdle);
+
+      // 시작 문서가 한 번이라도 교체됐다면 안내 토스트 표시
+      if (picked.reselected) {
+        toast.info(t('game.startDocReselected'));
+      }
     } catch (err) {
       // 404: 해당 난이도에 제시어 없음 — 오마카세로 전환 후 재시도
-      const isNotFound = err instanceof Error && err.message.includes('404');
+      const isNotFound: boolean =
+        err instanceof Error && err.message.includes('404');
       if (isNotFound) {
         toast.warning(t('game.difficultyNoWord'));
         setDifficulty(0);
         try {
           const fallbackData = await getRandomTargetWord(language);
-          const word = fallbackData.word;
-          const summary = await getRandomArticle(language);
-          const html = await getArticleHtml(summary.title, language);
-          setArticleHtml(sanitizeWikiHtml(html, `${language}:${summary.title}`));
-          const recordId = await startRecord(word, summary.title);
-          startGame(word, summary.title, recordId);
-          const initialText = t('game.playingMessage').replace('???', word);
+          const word: string = fallbackData.word;
+          const picked = await pickNavigableStartDoc();
+          if (picked === null) {
+            toast.error(t('game.startDocNoLinksFinal'));
+            return;
+          }
+          setArticleHtml(picked.sanitized);
+          const recordId = await startRecord(word, picked.title);
+          startGame(word, picked.title, recordId);
+          const initialText: string = t('game.playingMessage').replace(
+            '???',
+            word
+          );
           setSpeechText(initialText);
           setSpeechHighlights([{ word, color: 'red' }]);
           setCurrentTalkerImage(talkerFinger);
+          if (picked.reselected) {
+            toast.info(t('game.startDocReselected'));
+          }
           return;
         } catch {
           // 오마카세 폴백도 실패

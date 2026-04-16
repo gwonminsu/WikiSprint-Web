@@ -158,6 +158,8 @@ export const ja = {
     difficultyNoWord: 'この難易度のお題がありません。おまかせに切り替えます。',
     currentDifficulty: '現在の難易度',
     noLinksMessage: '[お題-???] え？この記事には移動できるリンクがないですよ？特別に戻るボタンを提供します！',
+    startDocReselected: '開始記事に移動可能なリンクがなかったため、別の記事に差し替えました。',
+    startDocNoLinksFinal: '移動可能な開始記事を見つけられませんでした。少し待ってからもう一度お試しください。',
     goBack: '戻る',
   },
   record: {

@@ -158,6 +158,8 @@ export const en = {
     difficultyNoWord: 'No words found for this difficulty. Switching to Omakase.',
     currentDifficulty: 'Difficulty',
     noLinksMessage: '[Target-???] Huh? There are no clickable links in this article! I\'ll grant you a back button just this once!',
+    startDocReselected: 'The starting article had no navigable links, so we picked another one.',
+    startDocNoLinksFinal: 'Could not find a starting article with navigable links. Please try again shortly!',
     goBack: 'Go back',
   },
   record: {

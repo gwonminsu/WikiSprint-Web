@@ -158,6 +158,8 @@ export const ko = {
     difficultyNoWord: '해당 난이도의 제시어가 없습니다. 오마카세로 전환합니다.',
     currentDifficulty: '현재 난이도',
     noLinksMessage: '[제시어-???] 아? 이 문서엔 이동 가능한 링크가 없네요? 특별히 뒤로가기 버튼을 제공하겠습니다!',
+    startDocReselected: '시작 문서에 이동할 수 있는 링크가 없어 다른 문서로 교체했습니다.',
+    startDocNoLinksFinal: '이동 가능한 시작 문서를 찾지 못했습니다. 잠시 후 다시 시도해 주세요!',
     goBack: '뒤로가기',
   },
   record: {
