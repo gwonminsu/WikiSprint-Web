@@ -2,7 +2,7 @@
 import { getLogoByLanguage } from './assets/images';
 
 // UI 컴포넌트
-import { Dialog, ToastContainer, useDialog, useToast, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay } from './ui';
+import { Dialog, ToastContainer, useDialog, useToast, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup } from './ui';
 
 // 스토어
 import { useAuthStore, useThemeStore, useGameStore, usePendingRecordStore } from './store';
@@ -31,6 +31,9 @@ export const shared = {
     SpeechBubble,
     Accordion,
     SuccessOverlay,
+    ThemeOrbitToggle,
+    ThemeSystemButton,
+    ThemeControlGroup,
   },
   store: {
     useAuthStore,
@@ -56,7 +59,7 @@ export const shared = {
 
 // 개별 export (직접 import 용도)
 export { getLogoByLanguage, tutoDoc, talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn, gameClear } from './assets/images';
-export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay } from './ui';
+export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup } from './ui';
 export { useAuthStore, useThemeStore, type Theme, useGameStore, usePendingRecordStore, type Difficulty, type AuthState } from './store';
 export { cn, useTranslation, useLanguageStore, getTranslations, LANGUAGES, type Language, useViewportScale, getCountryFlagSrcSet, getCountryFlagUrl, COUNTRY_LIST, type CountryOption, initKakaoSdk } from './lib';
 export { queryClient } from './config';

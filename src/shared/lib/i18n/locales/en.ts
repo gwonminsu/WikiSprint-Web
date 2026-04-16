@@ -47,6 +47,8 @@ export const en = {
     themeLight: 'Light',
     themeDark: 'Dark',
     themeSystem: 'System',
+    themeToggleLabel: 'Toggle theme',
+    themeControlHint: 'The switch follows light or dark directly, and the System button syncs with your device theme.',
     account: 'Account',
     about: 'About',
     version: 'Version',

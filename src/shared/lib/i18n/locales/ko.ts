@@ -47,6 +47,8 @@ export const ko = {
     themeLight: '라이트',
     themeDark: '다크',
     themeSystem: '시스템',
+    themeToggleLabel: '테마 전환',
+    themeControlHint: '토글은 라이트와 다크를 직접 전환하고, 시스템 버튼은 기기 테마와 동기화됩니다.',
     account: '계정',
     about: '정보',
     version: '버전',

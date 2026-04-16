@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { useGoogleLogin } from '@features';
-import { getTokenStorage, useAuthStore, useToast, useTranslation, getLogoByLanguage } from '@shared';
+import { getTokenStorage, useAuthStore, useToast, useTranslation, getLogoByLanguage, useThemeStore, ThemeOrbitToggle } from '@shared';
 import { authApi } from '@features/auth/api/authApi';
 import type { GoogleLoginResponse } from '@entities';
 import type { ApiResponse } from '@shared';
@@ -61,6 +61,7 @@ export default function AuthPage(): React.ReactElement {
   const { error: showError } = useToast();
   const toast = useToast();
   const { t, language } = useTranslation();
+  const { resolvedTheme, setTheme } = useThemeStore();
   const { mutate: googleLogin, isPending } = useGoogleLogin();
   const { setAccountInfo, checkAuth, setPendingConsent, setPendingDeletionCancel } = useAuthStore();
   const tokenStorage = getTokenStorage();
@@ -161,9 +162,19 @@ export default function AuthPage(): React.ReactElement {
     window.location.href = buildGoogleOAuth2Url();
   };
 
+  const handleThemeToggle = (nextChecked: boolean): void => {
+    setTheme(nextChecked ? 'dark' : 'light');
+  };
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
-      <div className="fixed right-4 top-4 z-40 sm:right-6 sm:top-6">
+      <div className="fixed right-4 top-4 z-40 flex items-center gap-2 sm:right-6 sm:top-6 sm:gap-3">
+        <ThemeOrbitToggle
+          checked={resolvedTheme === 'dark'}
+          onCheckedChange={handleThemeToggle}
+          resolvedTheme={resolvedTheme}
+          ariaLabel={t('settings.themeToggleLabel')}
+        />
         <w.AuthLanguageDropdown />
       </div>
 

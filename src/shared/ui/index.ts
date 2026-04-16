@@ -5,3 +5,6 @@ export { EmbossButton } from './EmbossButton';
 export { SpeechBubble } from './SpeechBubble';
 export { Accordion } from './Accordion';
 export { SuccessOverlay } from './SuccessOverlay';
+export { ThemeOrbitToggle } from './ThemeOrbitToggle';
+export { ThemeSystemButton } from './ThemeSystemButton';
+export { ThemeControlGroup } from './ThemeControlGroup';

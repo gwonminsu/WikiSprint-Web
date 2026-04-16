@@ -8,7 +8,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
 
 // 테마 초기화 컴포넌트
 function ThemeInitializer(): null {
-  const { theme } = useThemeStore();
+  const { theme, setResolvedTheme } = useThemeStore();
 
   useEffect(() => {
     // 시스템 테마 변경 감지
@@ -25,13 +25,15 @@ function ThemeInitializer(): null {
       } else {
         root.classList.remove('dark');
       }
+
+      setResolvedTheme(effectiveTheme);
     };
 
     applyTheme();
     mediaQuery.addEventListener('change', applyTheme);
 
     return () => mediaQuery.removeEventListener('change', applyTheme);
-  }, [theme]);
+  }, [setResolvedTheme, theme]);
 
   return null;
 }

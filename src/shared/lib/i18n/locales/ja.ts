@@ -47,6 +47,8 @@ export const ja = {
     themeLight: 'ライト',
     themeDark: 'ダーク',
     themeSystem: 'システム',
+    themeToggleLabel: 'テーマ切り替え',
+    themeControlHint: 'トグルはライトとダークを直接切り替え、システムボタンは端末テーマと同期します。',
     account: 'アカウント',
     about: '情報',
     version: 'バージョン',

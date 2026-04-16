@@ -1,14 +1,13 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  useThemeStore,
   useTranslation,
   useAuthStore,
   ProfileAvatar,
+  ThemeControlGroup,
   LANGUAGES,
   useToast,
   useDialog,
-  type Theme,
   type Language,
   getCountryFlagUrl,
   getCountryFlagSrcSet,
@@ -28,7 +27,6 @@ function maskEmail(email: string): string {
 
 // 설정 뷰 위젯
 export function SettingsView(): React.ReactElement {
-  const { theme, setTheme } = useThemeStore();
   const { t, language, setLanguage } = useTranslation();
   const { accountInfo, setAccountInfo, clearAuth } = useAuthStore();
   const { success: toastSuccess, error: toastError } = useToast();
@@ -148,13 +146,6 @@ export function SettingsView(): React.ReactElement {
 
   // 현재 국적 국기 srcSet 계산
   const currentFlagSrcSet: string | undefined = getCountryFlagSrcSet(accountInfo?.nationality);
-
-  // 테마 옵션
-  const themeOptions: { value: Theme; label: string }[] = [
-    { value: 'light', label: t('settings.themeLight') },
-    { value: 'dark', label: t('settings.themeDark') },
-    { value: 'system', label: t('settings.themeSystem') },
-  ];
 
   // 언어 옵션
   const languageOptions: { value: Language; label: string }[] = [
@@ -441,21 +432,11 @@ export function SettingsView(): React.ReactElement {
         <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">
           {t('settings.theme')}
         </h2>
-        <div className="flex gap-3 flex-wrap">
-          {themeOptions.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setTheme(option.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                theme === option.value
-                  ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20'
-                  : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary'
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div className="space-y-3">
+          <ThemeControlGroup />
+          <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+            {t('settings.themeControlHint')}
+          </p>
         </div>
       </section>
 

@@ -9,6 +9,7 @@ type ThemeState = {
   theme: Theme;
   resolvedTheme: 'light' | 'dark';
   setTheme: (theme: Theme) => void;
+  setResolvedTheme: (resolvedTheme: 'light' | 'dark') => void;
 };
 
 // 시스템 테마 감지
@@ -35,6 +36,7 @@ export const useThemeStore = create<ThemeState>()(
     (set) => ({
       theme: 'system',
       resolvedTheme: getSystemTheme(),
+      setResolvedTheme: (resolvedTheme) => set({ resolvedTheme }),
       setTheme: (theme) => {
         const effectiveTheme = theme === 'system' ? getSystemTheme() : theme;
         applyTheme(theme);
