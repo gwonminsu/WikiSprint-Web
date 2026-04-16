@@ -167,7 +167,7 @@ export default function AuthPage(): React.ReactElement {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
+    <div className="relative flex min-h-screen min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-gray-50 px-4 py-24 dark:bg-gray-900">
       <div className="fixed right-4 top-4 z-40 flex items-center gap-2 sm:right-6 sm:top-6 sm:gap-3">
         <ThemeOrbitToggle
           checked={resolvedTheme === 'dark'}
@@ -179,9 +179,9 @@ export default function AuthPage(): React.ReactElement {
       </div>
 
       {/* 배경 패턴 레이어 */}
-      <div className="absolute inset-0 pointer-events-none pattern-bg" />
+      <div className="fixed inset-0 pointer-events-none pattern-bg" />
 
-      <div className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 text-center">
+      <div className="relative w-full max-w-sm rounded-2xl bg-white p-10 text-center shadow-lg dark:bg-gray-800">
         <img
           src={getLogoByLanguage(language)}
           alt="WikiSprint"
