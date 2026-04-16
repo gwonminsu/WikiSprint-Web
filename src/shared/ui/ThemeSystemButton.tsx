@@ -1,3 +1,5 @@
+import { NightStarfield } from './NightStarfield';
+
 type ThemeSystemButtonProps = {
   active: boolean;
   resolvedTheme: 'light' | 'dark';
@@ -28,9 +30,12 @@ export function ThemeSystemButton({
         <span className="theme-system-button__ambient theme-system-button__ambient--day" />
         <span className="theme-system-button__ambient theme-system-button__ambient--night" />
 
-        <span className="theme-system-button__star theme-system-button__star--one" />
-        <span className="theme-system-button__star theme-system-button__star--two" />
-        <span className="theme-system-button__star theme-system-button__star--three" />
+        <NightStarfield
+          active={active && resolvedTheme === 'dark'}
+          variant="system"
+          className="theme-system-button__starfield"
+          starClassName="theme-system-button__star"
+        />
 
         <span className="theme-system-button__orbit-ring" />
         <span className="theme-system-button__orbit-track">

@@ -1,3 +1,5 @@
+import { NightStarfield } from './NightStarfield';
+
 type ThemeOrbitToggleProps = {
   checked: boolean;
   onCheckedChange: (nextChecked: boolean) => void;
@@ -42,13 +44,12 @@ export function ThemeOrbitToggle({
 
             <span className="theme-orbit-toggle__hemisphere theme-orbit-toggle__hemisphere--night">
               <span className="theme-orbit-toggle__sky-fill theme-orbit-toggle__sky-fill--night" />
-              <span className="theme-orbit-toggle__star theme-orbit-toggle__star--one" />
-              <span className="theme-orbit-toggle__star theme-orbit-toggle__star--two" />
-              <span className="theme-orbit-toggle__star theme-orbit-toggle__star--three" />
-              <span className="theme-orbit-toggle__star theme-orbit-toggle__star--four" />
-              <span className="theme-orbit-toggle__star theme-orbit-toggle__star--five" />
-              <span className="theme-orbit-toggle__star theme-orbit-toggle__star--six" />
-              <span className="theme-orbit-toggle__star theme-orbit-toggle__star--seven" />
+              <NightStarfield
+                active={checked}
+                variant="toggle"
+                className="theme-orbit-toggle__starfield"
+                starClassName="theme-orbit-toggle__star"
+              />
               <span className="theme-orbit-toggle__glow theme-orbit-toggle__glow--night" />
             </span>
 
