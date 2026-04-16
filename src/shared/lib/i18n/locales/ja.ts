@@ -33,6 +33,7 @@ export const ja = {
     loginPrompt: 'WikiSprintを思う存分楽しむにはログインしてみてください！',
     iosLoginFail: 'iOSログイン後処理に失敗しました: {{message}}',
     googleLoginButton: 'Googleでログイン',
+    languageSelectorLabel: '言語を選択',
   },
   nav: {
     home: 'ホーム',

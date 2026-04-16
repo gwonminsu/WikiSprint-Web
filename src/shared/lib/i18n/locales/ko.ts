@@ -33,6 +33,7 @@ export const ko = {
     loginPrompt: '위키 스프린트를 제대로 즐겨보려면 로그인 해 보세요!',
     iosLoginFail: 'iOS 로그인 후처리 실패: {{message}}',
     googleLoginButton: 'Google로 로그인',
+    languageSelectorLabel: '언어 선택',
   },
   nav: {
     home: '홈',
