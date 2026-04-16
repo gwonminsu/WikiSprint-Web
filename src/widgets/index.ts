@@ -1,5 +1,6 @@
 // Main Layout 위젯
 import { Header } from './main-layout';
+import { AuthLanguageDropdown } from './auth';
 
 // Settings 위젯
 import { SettingsView } from './settings';
@@ -28,6 +29,7 @@ import { ConsentModal } from './consent';
 // 네임스페이스 export
 export const w = {
   Header,
+  AuthLanguageDropdown,
   SettingsView,
   DocFloatingButton,
   DocContentView,
@@ -40,6 +42,7 @@ export const w = {
 
 // 개별 export (직접 import 용도)
 export { Header } from './main-layout';
+export { AuthLanguageDropdown } from './auth';
 export { SettingsView } from './settings';
 export { DocFloatingButton } from './doc-button';
 export { DocContentView } from './doc-content';

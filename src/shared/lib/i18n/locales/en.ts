@@ -33,6 +33,7 @@ export const en = {
     loginPrompt: 'Log in to enjoy WikiSprint to the fullest!',
     iosLoginFail: 'iOS login post-processing failed: {{message}}',
     googleLoginButton: 'Sign in with Google',
+    languageSelectorLabel: 'Select language',
   },
   nav: {
     home: 'Home',

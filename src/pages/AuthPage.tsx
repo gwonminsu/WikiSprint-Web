@@ -7,6 +7,7 @@ import { authApi } from '@features/auth/api/authApi';
 import type { GoogleLoginResponse } from '@entities';
 import type { ApiResponse } from '@shared';
 import { handleSuccessfulLogin } from '@features/auth/lib/useGoogleLogin';
+import { w } from '@widgets';
 
 // JWT exp 클레임으로 토큰 만료 여부 확인
 function isTokenExpired(token: string): boolean {
@@ -162,6 +163,9 @@ export default function AuthPage(): React.ReactElement {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      <div className="fixed right-4 top-4 z-40 sm:right-6 sm:top-6">
+        <w.AuthLanguageDropdown />
+      </div>
 
       {/* 배경 패턴 레이어 */}
       <div className="absolute inset-0 pointer-events-none pattern-bg" />
