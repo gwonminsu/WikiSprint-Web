@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.7.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.8.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -46,6 +46,8 @@
 | 🔄 JWT 자동 갱신 | Access Token 만료 시 Refresh Token으로 자동 재발급 |
 | 👤 계정 관리 | 닉네임 변경, 프로필 이미지 업로드/삭제 |
 | 🏳️ 국적 설정 | 프로필 국기 표시, 랭킹 카드 국기 반영 |
+| 📘 인터랙티브 문서 가이드 | `/doc` 페이지에 TOC, 플레이형 튜토리얼, FAQ, 영상 아코디언 제공 |
+| 🏷️ 전적 난이도 태그 | `/record` 카드에서 제시어 난이도를 함께 표시 |
 | 🌍 다국어 지원 | 한국어 · 영어 · 일본어 (i18n) |
 | 🎨 테마 지원 | 라이트 / 다크 / 시스템 자동 테마 |
 | 📱 웹뷰 호환 | `window.alert` 없이 커스텀 Dialog/Toast 사용 |
@@ -115,6 +117,7 @@ WikiSprint-Web/
     │   ├── main-layout/          # Header 네비게이션
     │   ├── settings/             # SettingsView (프로필·테마·언어·관리자·회원탈퇴)
     │   ├── consent/              # ConsentModal (약관 동의 가입 모달)
+    │   ├── doc-content/          # DocContentView, DocInteractiveTutorial, DocVideoAccordion
     │   ├── game-intro/           # GameIntroView (게임 진행 화면 + Wikipedia 렌더링)
     │   ├── game-result/          # GameResultView (게임 결과 카드 타임라인)
     │   ├── game-record/          # GameRecordView (전적 목록 + 통계 바)
@@ -142,7 +145,7 @@ WikiSprint-Web/
         ├── config/               # QueryClient 설정
         ├── lib/                  # cn 유틸, i18n (ko/en/ja), countryUtils (국기 이미지)
         ├── store/                # authStore, themeStore, gameStore, pendingRecordStore
-        ├── ui/                   # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
+        ├── ui/                   # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay, Accordion
         └── styles/               # 전역 스타일 + 테마 CSS 변수
 ```
 

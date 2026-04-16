@@ -77,6 +77,7 @@ src/
 │   ├── index.ts            # 네임스페이스 export (w.*)
 │   ├── main-layout/        # Header
 │   ├── settings/           # SettingsView
+│   ├── doc-content/        # DocContentView, DocInteractiveTutorial, DocVideoAccordion
 │   ├── game-intro/         # GameIntroView (Wikipedia 렌더링 + 게임 핵심 로직)
 │   │   └── lib/            # useTypewriter, useGameTimer
 │   ├── consent/            # ConsentModal (약관 동의 가입 모달 — 필수 3개 + 선택 1개 아코디언)
@@ -116,7 +117,7 @@ src/
     ├── config/             # QueryClient 설정
     ├── lib/                # cn, i18n (ko/en/ja), countryUtils (국가 목록 + 국기 이미지 URL), kakao (kakaoSdk, kakao.d.ts)
     ├── store/              # authStore (is_admin, nationality 포함), themeStore, gameStore (difficulty·popDoc 포함, persist), pendingRecordStore
-    ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay
+    ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay, Accordion
     └── styles/             # 전역 스타일 + 테마 CSS 변수
 ```
 
@@ -241,3 +242,15 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 - Base URL: `http://localhost:8585`
 - 모든 엔드포인트 POST 메서드
 - JWT Bearer 토큰 자동 갱신 (interceptor.ts)
+
+---
+
+## 문서 페이지 메모
+
+- `/doc` 페이지는 정적 소개 문서가 아니라 인터랙티브 가이드 페이지입니다.
+- `widgets/doc-content` 아래에서 다음 요소를 함께 관리합니다.
+  - 고정 TOC 및 모바일 플로팅 TOC
+  - 플레이 가능한 튜토리얼 (`DocInteractiveTutorial`)
+  - 유튜브 아코디언 (`DocVideoAccordion`)
+  - 공용 `Accordion` 애니메이션 재사용
+- 문서 문구 수정 시 `ko`, `en`, `ja` locale을 함께 갱신합니다.

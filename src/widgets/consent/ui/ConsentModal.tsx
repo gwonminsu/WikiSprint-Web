@@ -356,7 +356,7 @@ function ConsentAccordionItem({
           </span>
         </div>
         <svg
-          className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200 consent-accordion-chevron ${
+          className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200 ui-accordion-chevron ${
             isOpen ? 'rotate-180' : ''
           }`}
           fill="none"
@@ -370,11 +370,11 @@ function ConsentAccordionItem({
 
       {/* 약관 내용 + 개별 동의 체크 */}
       <div
-        className={`consent-accordion-content ${
-          isOpen ? 'consent-accordion-content--open' : 'consent-accordion-content--closed'
+        className={`ui-accordion-content ${
+          isOpen ? 'ui-accordion-content--open' : 'ui-accordion-content--closed'
         }`}
       >
-        <div className="consent-accordion-content-inner">
+        <div className="ui-accordion-content-inner">
           <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
             <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap mb-3">
               {content}

@@ -315,7 +315,7 @@ body {
 }
 
 /* ===== 동의 모달 아코디언 애니메이션 ===== */
-@keyframes consent-accordion-down {
+@keyframes ui-accordion-down {
   from {
     opacity: 0;
     grid-template-rows: 0fr;
@@ -326,7 +326,7 @@ body {
   }
 }
 
-@keyframes consent-accordion-up {
+@keyframes ui-accordion-up {
   from {
     opacity: 1;
     grid-template-rows: 1fr;
@@ -337,31 +337,31 @@ body {
   }
 }
 
-.consent-accordion-content {
+.ui-accordion-content {
   display: grid;
   transition:
-    grid-template-rows 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.2s ease;
+    grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s ease;
 }
 
-.consent-accordion-content--open {
+.ui-accordion-content--open {
   grid-template-rows: 1fr;
   opacity: 1;
 }
 
-.consent-accordion-content--closed {
+.ui-accordion-content--closed {
   grid-template-rows: 0fr;
   opacity: 0;
 }
 
-.consent-accordion-content-inner {
+.ui-accordion-content-inner {
   overflow: hidden;
   min-height: 0;
 }
 
-.consent-accordion-chevron {
+.ui-accordion-chevron {
   transition:
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.2s ease;
 }
 

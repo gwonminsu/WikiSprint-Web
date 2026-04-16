@@ -8,6 +8,7 @@ export type GameRecord = {
   recordId: string;
   accountId: string;
   targetWord: string;
+  difficulty: number | null;
   startDoc: string;
   navPath: string[];           // 방문 경로 배열 (서버 JSON 문자열 → 파싱 후)
   elapsedMs: number | null;    // cleared 상태에서만 설정

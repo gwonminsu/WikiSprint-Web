@@ -12,7 +12,7 @@ type RecordCardProps = {
 export function RecordCard({ record, index }: RecordCardProps): React.ReactElement {
   const { t } = useTranslation();
 
-  const { targetWord, startDoc, navPath, elapsedMs, status, playedAt } = record;
+  const { targetWord, difficulty, startDoc, navPath, elapsedMs, status, playedAt } = record;
   const isCleared = status === 'cleared';
 
   // 상대 시간 문자열 생성
@@ -24,6 +24,21 @@ export function RecordCard({ record, index }: RecordCardProps): React.ReactEleme
 
   // 클리어 시간 포맷 (elapsedMs가 null인 경우 abandoned)
   const formattedTime = elapsedMs != null ? formatElapsedMs(elapsedMs) : null;
+  const difficultyLabel = difficulty === 1
+    ? t('game.difficultyEasy')
+    : difficulty === 2
+      ? t('game.difficultyNormal')
+      : difficulty === 3
+        ? t('game.difficultyHard')
+        : null;
+
+  const difficultyClassName = difficulty === 1
+    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
+    : difficulty === 2
+      ? 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300'
+      : difficulty === 3
+        ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'
+        : '';
 
   return (
     <div
@@ -69,11 +84,18 @@ export function RecordCard({ record, index }: RecordCardProps): React.ReactEleme
       {/* 카드 본문 */}
       <div className="flex flex-col gap-1.5">
         {/* 제시어 (강조) */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">제시어</span>
           <span className="text-sm font-bold text-gray-900 dark:text-white truncate">
             {targetWord}
           </span>
+          {difficultyLabel ? (
+            <span
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold ${difficultyClassName}`}
+            >
+              {difficultyLabel}
+            </span>
+          ) : null}
         </div>
 
         {/* 시작 문서 */}
