@@ -12,6 +12,7 @@ const INITIAL_SHOW = 10;
 export function RankingView(): React.ReactElement {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthStore();
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
 
   const [period, setPeriod] = useState<RankingPeriod>('daily');
   const [difficulty, setDifficulty] = useState<RankingDifficulty>('all');
@@ -75,22 +76,23 @@ export function RankingView(): React.ReactElement {
       <MyRankingCard
         me={me}
         top100={top100}
+        hasHydrated={hasHydrated}
         isAuthenticated={isAuthenticated}
       />
 
-      {isLoading && (
+      {(!hasHydrated || isLoading) && (
         <div className="text-center py-10 text-gray-400 text-sm animate-pulse">
           {t('common.loading')}
         </div>
       )}
 
-      {isError && (
+      {hasHydrated && isError && (
         <div className="text-center py-10 text-red-400 text-sm">
           {t('common.error')}
         </div>
       )}
 
-      {!isLoading && !isError && top100.length === 0 && (
+      {hasHydrated && !isLoading && !isError && top100.length === 0 && (
         <div className="text-center py-16">
           <p className="text-4xl mb-3">🎮</p>
           <p className="text-base font-semibold text-gray-600 dark:text-gray-300 mb-1">
@@ -102,7 +104,7 @@ export function RankingView(): React.ReactElement {
         </div>
       )}
 
-      {!isLoading && !isError && top100.length > 0 && (
+      {hasHydrated && !isLoading && !isError && top100.length > 0 && (
         // 리더보드 시작점 ref
         <div ref={leaderboardRef} className="flex flex-col gap-3">
           {visibleList.map((record, i) => (

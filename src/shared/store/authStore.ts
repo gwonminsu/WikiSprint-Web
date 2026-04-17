@@ -14,6 +14,7 @@ type AccountInfo = {
 
 // 인증 상태 타입
 export type AuthState = {
+  hasHydrated: boolean;
   isAuthenticated: boolean;
   accountInfo: AccountInfo | null;
   setAuth: (accessToken: string, refreshToken: string) => void;
@@ -38,12 +39,13 @@ export type AuthState = {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      hasHydrated: true,
       isAuthenticated: !!getTokenStorage().getAccessToken(),
       accountInfo: null,
 
       setAuth: (accessToken: string, refreshToken: string): void => {
         getTokenStorage().setTokens(accessToken, refreshToken);
-        set({ isAuthenticated: true, accountInfo: null });
+        set({ isAuthenticated: true });
       },
 
       setAccountInfo: (info: AccountInfo): void => {

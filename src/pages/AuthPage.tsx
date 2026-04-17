@@ -63,7 +63,7 @@ export default function AuthPage(): React.ReactElement {
   const { t, language } = useTranslation();
   const { resolvedTheme, setTheme } = useThemeStore();
   const { mutate: googleLogin, isPending } = useGoogleLogin();
-  const { setAccountInfo, checkAuth, setPendingConsent, setPendingDeletionCancel } = useAuthStore();
+  const { setAuth, setAccountInfo, checkAuth, setPendingConsent, setPendingDeletionCancel } = useAuthStore();
   const tokenStorage = getTokenStorage();
   // code 교환 중복 실행 방지 (React Strict Mode 이중 마운트 대응)
   const isProcessingCode = useRef(false);
@@ -124,7 +124,7 @@ export default function AuthPage(): React.ReactElement {
         }
 
         // 정상 로그인 처리 (토큰 저장 + 계정 정보 저장 + 전적 동기화 + 홈 이동)
-        await handleSuccessfulLogin(response, { setAccountInfo, tokenStorage, toast, t, navigate });
+        await handleSuccessfulLogin(response, { setAuth, setAccountInfo, toast, t, navigate });
 
         // checkAuth가 비동기일 가능성 고려
         await Promise.resolve(checkAuth());
@@ -143,7 +143,7 @@ export default function AuthPage(): React.ReactElement {
       navigate('/');
     }
 
-  }, [checkAuth, navigate, setAccountInfo, showError, t, toast, setPendingConsent, setPendingDeletionCancel, tokenStorage]);
+  }, [checkAuth, navigate, setAuth, setAccountInfo, showError, t, toast, setPendingConsent, setPendingDeletionCancel, tokenStorage]);
 
   const handleGoogleSuccess = (credentialResponse: CredentialResponse): void => {
     if (!credentialResponse.credential) {

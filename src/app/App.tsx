@@ -1,8 +1,17 @@
 import { useEffect } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { useMyAccount } from '@features';
+import {
+  Dialog,
+  ToastContainer,
+  useThemeStore,
+  useAuthStore,
+  useViewportScale,
+  setAuthUpdateCallback,
+  getTokenStorage,
+} from '@shared';
 import { QueryProvider } from './providers/QueryProvider';
 import { Router } from './router/Router';
-import { Dialog, ToastContainer, useThemeStore, useAuthStore, useViewportScale } from '@shared';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
 
@@ -11,7 +20,6 @@ function ThemeInitializer(): null {
   const { theme, setResolvedTheme } = useThemeStore();
 
   useEffect(() => {
-    // 시스템 테마 변경 감지
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const applyTheme = (): void => {
@@ -38,24 +46,37 @@ function ThemeInitializer(): null {
   return null;
 }
 
-// 인증 초기화 컴포넌트
+// 인증 상태와 계정 정보를 앱 전역에서 먼저 맞춘다.
 function AuthInitializer(): null {
   const checkAuth = useAuthStore((state) => state.checkAuth);
+  const setAuth = useAuthStore((state) => state.setAuth);
+
+  useMyAccount();
 
   useEffect(() => {
-    checkAuth(); // persist hydration 이후 토큰 재확인
+    checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    setAuthUpdateCallback((data) => {
+      if (!data.accessToken) return;
+
+      const refreshToken = data.refreshToken ?? getTokenStorage().getRefreshToken();
+      if (!refreshToken) return;
+
+      setAuth(data.accessToken, refreshToken);
+    });
+  }, [setAuth]);
 
   return null;
 }
 
-// 좁은 뷰포트 축소 처리 컴포넌트
+// 모바일 줌 뷰포트 축소 처리
 function ViewportScaleInitializer(): null {
   useViewportScale();
   return null;
 }
 
-// 메인 앱 컴포넌트
 export function App(): React.ReactElement {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -63,7 +84,6 @@ export function App(): React.ReactElement {
         <ThemeInitializer />
         <AuthInitializer />
         <ViewportScaleInitializer />
-        {/* Router 내부에 GlobalModals (ConsentModal + 탈퇴 취소 다이얼로그) 포함 */}
         <Router />
         <Dialog />
         <ToastContainer />

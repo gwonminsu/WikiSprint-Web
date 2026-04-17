@@ -1,36 +1,33 @@
-import { useQuery } from '@tanstack/react-query';
-import { getMyAccount } from '../api/accountApi';
-import { useAuthStore } from '@shared';
 import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '@shared';
+import { getMyAccount } from '../api/accountApi';
 
-// 내 계정 정보 조회 및 자동 저장 훅
+// 내 계정 정보를 조회하고 authStore와 동기화한다.
 export function useMyAccount() {
-  const { isAuthenticated, setAccountInfo, accountInfo } = useAuthStore();
+  const { hasHydrated, isAuthenticated, setAccountInfo, accountInfo } = useAuthStore();
 
-  // accountInfo가 없거나 nick이 없는 경우 API 호출
-  const shouldFetch = isAuthenticated && (!accountInfo || !accountInfo.nick);
-  
+  const shouldFetch = hasHydrated && isAuthenticated && (!accountInfo || !accountInfo.nick);
+
   const query = useQuery({
     queryKey: ['myAccount'],
     queryFn: getMyAccount,
     enabled: shouldFetch,
-    staleTime: 1000 * 60 * 5, // 5분
+    staleTime: 1000 * 60 * 5,
     retry: 1,
   });
 
-  // 조회 성공 시 authStore에 저장
   useEffect(() => {
-    if (query.data) {
-      console.log('계정 조회 성공');
-      setAccountInfo({
-        uuid: query.data.uuid,
-        nick: query.data.nick,
-        nationality: query.data.nationality ?? null,
-        email: query.data.email,
-        profile_img_url: query.data.profile_img_url,
-        is_admin: query.data.is_admin ?? false,
-      });
-    }
+    if (!query.data) return;
+
+    setAccountInfo({
+      uuid: query.data.uuid,
+      nick: query.data.nick,
+      nationality: query.data.nationality ?? null,
+      email: query.data.email,
+      profile_img_url: query.data.profile_img_url,
+      is_admin: query.data.is_admin ?? false,
+    });
   }, [query.data, setAccountInfo]);
 
   return query;

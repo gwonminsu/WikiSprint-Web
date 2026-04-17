@@ -36,6 +36,7 @@ function formatRankCreatedAt(value: string): string {
 type MyRankingCardProps = {
   me: RankingRecord | null;
   top100: RankingRecord[];
+  hasHydrated: boolean;
   isAuthenticated: boolean;
 };
 
@@ -51,6 +52,7 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 export function MyRankingCard({
   me,
   top100,
+  hasHydrated,
   isAuthenticated,
 }: MyRankingCardProps): React.ReactElement {
   const { t } = useTranslation();
@@ -68,6 +70,21 @@ export function MyRankingCard({
   // 수정: 분기 전에 국기 이미지 URL / srcSet 계산
   const myFlagUrl: string | null = getCountryFlagUrl(myNationality);
   const myFlagSrcSet: string | undefined = getCountryFlagSrcSet(myNationality);
+
+  if (!hasHydrated) {
+    return (
+      <section className="my-rank-panel mb-5 animate-my-rank-float">
+        <div className="my-rank-panel__header">
+          <span className="my-rank-panel__badge">MY RANK</span>
+        </div>
+
+        <div className="my-rank-panel__body">
+          <div className="h-12 flex-1 rounded-2xl bg-gray-100/90 dark:bg-white/10 animate-pulse" />
+          <div className="h-14 w-28 shrink-0 rounded-2xl bg-gray-100/90 dark:bg-white/10 animate-pulse" />
+        </div>
+      </section>
+    );
+  }
 
   if (!isAuthenticated) {
     // 비로그인 상태도 패널형 안내로 표시

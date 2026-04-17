@@ -1,8 +1,9 @@
 import { useMutation, type UseMutationResult } from '@tanstack/react-query';
-import { getTokenStorage, useAuthStore, usePendingRecordStore, useToast, useTranslation } from '@shared';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore, usePendingRecordStore, useToast, useTranslation } from '@shared';
 import type { ApiResponse } from '@shared';
 import type { GoogleLoginResponse, RegisterRequest } from '@entities';
+import { queryClient } from '@/shared/config/queryClient';
 import { register } from '../api/consentApi';
 import {
   startGameRecord,
@@ -10,25 +11,22 @@ import {
   abandonGameRecord,
 } from '../../game-record';
 
-// 약관 동의 완료 후 계정 생성 mutation 훅
+// 동의 완료 후 로그인 상태와 전적 데이터를 즉시 동기화한다.
 export function useRegister(): UseMutationResult<ApiResponse<GoogleLoginResponse>, Error, RegisterRequest> {
   const navigate = useNavigate();
-  const { setAccountInfo, clearPendingConsent } = useAuthStore();
-  const tokenStorage = getTokenStorage();
+  const { setAuth, setAccountInfo, clearPendingConsent } = useAuthStore();
   const toast = useToast();
   const { t } = useTranslation();
 
   return useMutation({
     mutationFn: (data: RegisterRequest) => register(data),
     onSuccess: async (response) => {
-      // 동의 모달 pending 상태 완전 초기화
       clearPendingConsent();
 
-      // 토큰 저장
       if (response.auth?.accessToken && response.auth?.refreshToken) {
-        tokenStorage.setTokens(response.auth.accessToken, response.auth.refreshToken);
+        setAuth(response.auth.accessToken, response.auth.refreshToken);
       }
-      // 계정 정보 저장
+
       if (response.data) {
         setAccountInfo({
           uuid: response.data.uuid,
@@ -42,11 +40,14 @@ export function useRegister(): UseMutationResult<ApiResponse<GoogleLoginResponse
 
       toast.success(t('auth.loginSuccess'));
 
-      // 비로그인 상태에서 플레이한 전적이 있으면 서버에 동기화
       const pending = usePendingRecordStore.getState().pendingGame;
       if (pending) {
         try {
-          const resp = await startGameRecord({ targetWord: pending.targetWord, startDoc: pending.startDoc });
+          const resp = await startGameRecord({
+            targetWord: pending.targetWord,
+            startDoc: pending.startDoc,
+          });
+
           if (pending.status === 'cleared' && pending.elapsedMs != null) {
             await completeGameRecord({
               recordId: resp.recordId,
@@ -56,13 +57,20 @@ export function useRegister(): UseMutationResult<ApiResponse<GoogleLoginResponse
           } else {
             await abandonGameRecord({ recordId: resp.recordId });
           }
+
           toast.success(t('record.savedAfterLogin'));
         } catch {
-          // 저장 실패 시 조용히 무시
+          // 저장 실패는 로그인 자체를 막지 않는다.
         } finally {
           usePendingRecordStore.getState().clearPendingGame();
         }
       }
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['myAccount'] }),
+        queryClient.invalidateQueries({ queryKey: ['gameRecords'] }),
+        queryClient.invalidateQueries({ queryKey: ['ranking'] }),
+      ]);
 
       navigate('/');
     },

@@ -1,4 +1,4 @@
-import { useTranslation } from '@shared';
+import { useTranslation, useAuthStore } from '@shared';
 import { useGameRecords } from '@features';
 import { RecordSummaryBar } from './RecordSummaryBar';
 import { RecordCard } from './RecordCard';
@@ -7,10 +7,11 @@ import { EmptyRecordView } from './EmptyRecordView';
 // 전적 페이지 메인 컨테이너
 export function GameRecordView(): React.ReactElement {
   const { t } = useTranslation();
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const { data, isLoading, isError } = useGameRecords();
 
   // 로딩 상태
-  if (isLoading) {
+  if (!hasHydrated || isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
         <div className="w-8 h-8 border-2 border-gray-300 border-t-primary rounded-full animate-spin" />
