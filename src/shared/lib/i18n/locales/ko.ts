@@ -1,4 +1,4 @@
-// 한국어 번역
+﻿// 한국어 번역
 export const ko = {
   common: {
     confirm: '확인',
@@ -480,10 +480,14 @@ export const ko = {
     copyShareLink: '공유 링크 복사',
     qrGuide: 'QR 코드를 스캔하면 모바일에서 결과를 확인할 수 있습니다',
     nativeShare: '공유하기',
+    validFor24Hours: '이 기록은 24시간 동안 유효합니다.',
+    pageValidFor24Hours: '이 공유 기록은 생성된 시점부터 24시간 동안만 확인할 수 있습니다.',
+    expiresAtNotice: '만료 예정 시각: {{dateTime}}',
     webShareTitle: '{{nick}}님이 WikiSprint를 클리어했습니다!',
-    webShareText: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달!\n결과 보러가기',
+    webShareText: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달!\n{{expiryNotice}}\n결과 보러가기',
     kakaoTitle: '{{nick}}님이 WikiSprint를 클리어했습니다!',
-    kakaoDescription: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달했습니다.',
+    kakaoDescription: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달했습니다.\n{{expiryNotice}}',
     kakaoButton: '결과 보러가기',
   },
 } as const;
+

@@ -29,54 +29,18 @@ function renderHighlightedSummary(
   }
 ): ReactNode[] {
   const tokenMap: Record<string, ReactNode> = {
-    '@@@': (
-      <span className="font-bold text-base text-blue-500 dark:text-blue-400">
-        {startDoc}
-      </span>
-    ),
-    '###': (
-      <span className="font-bold text-base text-gray-900 dark:text-gray-100">
-        {pathCount}
-      </span>
-    ),
-    '@분': (
-      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
-        {minutes}분
-      </span>
-    ),
-    '@@.@@초': (
-      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
-        {seconds}초
-      </span>
-    ),
-    '@ min': (
-      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
-        {minutes} min
-      </span>
-    ),
-    '@@.@@ sec': (
-      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
-        {seconds} sec
-      </span>
-    ),
-    '@分': (
-      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
-        {minutes}分
-      </span>
-    ),
-    '@@.@@秒': (
-      <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">
-        {seconds}秒
-      </span>
-    ),
-    '???': (
-      <span className="font-bold text-base text-orange-500 dark:text-orange-400">
-        {targetWord}
-      </span>
-    ),
+    '@@@': <span className="font-bold text-base text-blue-500 dark:text-blue-400">{startDoc}</span>,
+    '###': <span className="font-bold text-base text-gray-900 dark:text-gray-100">{pathCount}</span>,
+    '@분': <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">{minutes}분</span>,
+    '@@.@@초': <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">{seconds}초</span>,
+    '@ min': <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">{minutes} min</span>,
+    '@@.@@ sec': <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">{seconds} sec</span>,
+    '@分': <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">{minutes}分</span>,
+    '@@.@@秒': <span className="font-bold text-base text-emerald-500 dark:text-emerald-400">{seconds}秒</span>,
+    '???': <span className="font-bold text-base text-orange-500 dark:text-orange-400">{targetWord}</span>,
   };
 
-  const tokenRegex = /(@@\.@@ sec|@@\.@@초|@@\.@@秒|@@@|###|@ min|@분|\?\?\?|@分)/g;
+  const tokenRegex = /(@@\.@@ sec|@@\.@@초|@@\.@@秒|@@@|###|@ min|@분|@分|\?\?\?)/g;
 
   return template
     .split(tokenRegex)
@@ -88,7 +52,7 @@ function renderHighlightedSummary(
     ));
 }
 
-// ResultSummary Props
+// 결과 요약 props
 type ResultSummaryProps = {
   history: string[];
   elapsedMs: number;
@@ -96,13 +60,13 @@ type ResultSummaryProps = {
   isVisible: boolean;
   onRestart: () => void;
   onReplay: () => void;
-  mode?: 'own' | 'shared';       // 기본값 'own' — shared 시 공유 버튼 미표시
-  onShareKakao?: () => void;     // 카카오톡 공유 콜백 (own 모드)
-  shareUrl?: string;             // 공유 URL (own 모드 — URL 복사 + QR 코드에 사용)
-  onCopyLink?: () => void;       // 링크 복사 콜백 (own 모드)
+  mode?: 'own' | 'shared';
+  onShareKakao?: () => void;
+  shareUrl?: string;
+  onCopyLink?: () => void;
+  onPrepareShareLink?: () => Promise<string | null>;
 };
 
-// 결과 요약 영역 + 하단 버튼
 export function ResultSummary({
   history,
   elapsedMs,
@@ -114,6 +78,7 @@ export function ResultSummary({
   onShareKakao,
   shareUrl,
   onCopyLink,
+  onPrepareShareLink,
 }: ResultSummaryProps): React.ReactElement | null {
   const { t } = useTranslation();
 
@@ -133,7 +98,7 @@ export function ResultSummary({
     }
   }, [isVisible]);
 
-  // 패널 토글 시 스크롤 추적
+  // 패널 토글 시 하단으로 스크롤
   useEffect(() => {
     if (showLinkPanel) {
       setTimeout(() => {
@@ -144,6 +109,13 @@ export function ResultSummary({
       }, 150);
     }
   }, [showLinkPanel]);
+
+  // 공유 링크가 초기화되면 패널도 함께 닫는다.
+  useEffect(() => {
+    if (!shareUrl) {
+      setShowLinkPanel(false);
+    }
+  }, [shareUrl]);
 
   if (!isVisible) return null;
 
@@ -160,12 +132,21 @@ export function ResultSummary({
   });
 
   // 공유 링크 패널 토글 핸들러
-  const handleToggleLinkPanel = (): void => {
-    if (!shareUrl) {
-      onCopyLink?.();
+  const handleToggleLinkPanel = async (): Promise<void> => {
+    if (showLinkPanel) {
+      setShowLinkPanel(false);
       return;
     }
-    setShowLinkPanel((prev) => !prev);
+
+    if (shareUrl) {
+      setShowLinkPanel(true);
+      return;
+    }
+
+    const preparedShareUrl = await onPrepareShareLink?.();
+    if (preparedShareUrl) {
+      setShowLinkPanel(true);
+    }
   };
 
   // 클립보드 복사 아이콘 SVG
@@ -235,7 +216,7 @@ export function ResultSummary({
           </EmbossButton>
         </div>
 
-        {/* 공유 버튼 행 — own 모드에서만 렌더링 */}
+        {/* 공유 버튼 행 - own 모드에서만 렌더링 */}
         {mode === 'own' && (
           <>
             {/* 카카오톡 공유 + 공유 링크 복사 버튼 행 */}
@@ -246,7 +227,6 @@ export function ResultSummary({
                 className="flex-1 h-10 text-sm"
               >
                 {t('game.resultShareKakao')}
-
                 {/* 공유 아이콘 SVG */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -266,7 +246,7 @@ export function ResultSummary({
                 </svg>
               </EmbossButton>
               <EmbossButton
-                onClick={handleToggleLinkPanel}
+                onClick={() => { void handleToggleLinkPanel(); }}
                 variant="secondary"
                 className="flex-1 h-10 text-sm"
               >

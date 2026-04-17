@@ -1,7 +1,6 @@
 import { initKakaoSdk, gameClear } from '@shared';
 
-export function buildShareUrl(recordId: string): string {
-  const shareId = recordId.startsWith('REC-') ? recordId.slice(4) : recordId;
+export function buildShareUrl(shareId: string): string {
   return `${window.location.origin}/share/${shareId}`;
 }
 

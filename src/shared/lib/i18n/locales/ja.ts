@@ -1,4 +1,4 @@
-// 日本語翻訳
+﻿// 日本語翻訳
 export const ja = {
   common: {
     confirm: '確認',
@@ -389,10 +389,13 @@ export const ja = {
     copyShareLink: 'シェアリンクをコピー',
     qrGuide: 'QRコードをスキャンするとモバイルで結果を確認できます',
     nativeShare: '共有する',
+    validFor24Hours: 'この記録は24時間有効です。',
+    pageValidFor24Hours: 'この共有記録は作成された時点から24時間だけ確認できます。',
+    expiresAtNotice: '有効期限: {{dateTime}}',
     webShareTitle: '{{nick}}さんがWikiSprintをクリアしました！',
-    webShareText: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達！\n結果を見る',
+    webShareText: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達！\n{{expiryNotice}}\n結果を見る',
     kakaoTitle: '{{nick}}さんがWikiSprintをクリアしました！',
-    kakaoDescription: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達しました。',
+    kakaoDescription: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達しました。\n{{expiryNotice}}',
     kakaoButton: '結果を見る',
   },
   consent: {

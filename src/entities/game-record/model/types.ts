@@ -1,5 +1,3 @@
-// 게임 전적 도메인 타입
-
 // 게임 전적 상태
 export type GameRecordStatus = 'in_progress' | 'cleared' | 'abandoned';
 
@@ -10,11 +8,14 @@ export type GameRecord = {
   targetWord: string;
   difficulty: number | null;
   startDoc: string;
-  navPath: string[];           // 방문 경로 배열 (서버 JSON 문자열 → 파싱 후)
-  elapsedMs: number | null;    // cleared 상태에서만 설정
+  // 방문 경로 배열 (서버 JSON 문자열 -> 파싱 후)
+  navPath: string[];
+  // cleared 상태에서만 설정
+  elapsedMs: number | null;
   status: GameRecordStatus;
   lastArticle: string | null;
-  playedAt: string;            // ISO 날짜 문자열
+  // ISO 날짜 문자열
+  playedAt: string;
 };
 
 // 누적 통계 요약 (accounts 테이블 기반)
@@ -25,7 +26,6 @@ export type RecordSummary = {
   bestTimeMs: number | null;
 };
 
-// 전적 목록 조회 응답
 export type GameRecordListResponse = {
   records: GameRecord[];
   summary: RecordSummary;
@@ -45,7 +45,8 @@ export type StartGameRecordResponse = {
 // 경로 업데이트 요청
 export type UpdatePathRequest = {
   recordId: string;
-  navPath: string;        // JSON.stringify된 배열
+  // JSON.stringify된 배열
+  navPath: string;
   lastArticle: string;
 };
 
@@ -61,7 +62,18 @@ export type AbandonRecordRequest = {
   recordId: string;
 };
 
-// 공유용 전적 응답 (공개 정보만 포함)
+// 공유 링크 생성 요청
+export type CreateShareRecordRequest = {
+  recordId: string;
+};
+
+// 공유 링크 생성 응답
+export type ShareRecord = {
+  shareId: string;
+  expiresAt: string;
+};
+
+// 공유 전용 전적 응답
 export type SharedGameRecord = {
   nick: string;
   profileImgUrl: string | null;
@@ -69,6 +81,7 @@ export type SharedGameRecord = {
   startDoc: string;
   navPath: string[];
   elapsedMs: number;
+  expiresAt: string;
 };
 
 // 비로그인 임시 게임 상태 (pendingRecordStore용)
@@ -77,7 +90,9 @@ export type PendingGameState = {
   startDoc: string;
   navPath: string[];
   lastArticle: string;
-  startedAt: number;          // Date.now() — 경과 시간 계산용
+  // Date.now() 기준 경과 시간 계산용
+  startedAt: number;
   status: 'in_progress' | 'cleared' | 'abandoned';
-  elapsedMs: number | null;   // cleared 시에만 설정
+  // cleared 시에만 설정
+  elapsedMs: number | null;
 };

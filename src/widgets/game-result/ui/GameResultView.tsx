@@ -1,10 +1,18 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore, useTranslation, useAuthStore, EmbossButton, useToast } from '@shared';
+import { createShareRecord } from '@features';
 import { PathTimeline } from './PathTimeline';
 import { ResultSummary } from './ResultSummary';
 import { buildShareUrl, shareKakao, formatElapsed, copyShareText } from '../lib';
 
+type PreparedShareLink = {
+  shareId: string;
+  shareUrl: string;
+  expiresAt: string;
+};
+
+// 결과 화면 - 공유 링크를 서버에서 발급받아 재사용한다.
 export function GameResultView(): React.ReactElement {
   const { t, language } = useTranslation();
   const navigate = useNavigate();
@@ -23,14 +31,15 @@ export function GameResultView(): React.ReactElement {
   const [beforeTargetWord, afterTargetWord] = t('game.resultHeader').split('???');
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [replayKey, setReplayKey] = useState<number>(0);
+  const [shareLink, setShareLink] = useState<PreparedShareLink | null>(null);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  const shareUrl = useMemo((): string | undefined => {
-    if (!recordId) return undefined;
-    return buildShareUrl(recordId);
+  // recordId가 바뀌면 이전 공유 링크 캐시를 버린다.
+  useEffect(() => {
+    setShareLink(null);
   }, [recordId]);
 
   const handleAllCardsShown = useCallback((): void => {
@@ -42,6 +51,7 @@ export function GameResultView(): React.ReactElement {
     setReplayKey((prev: number) => prev + 1);
   }, []);
 
+  // 클립보드 API가 실패하면 execCommand fallback으로 재시도한다.
   const handleCopyFallback = useCallback(async (url: string): Promise<boolean> => {
     const copied = await copyShareText(url);
     if (copied) {
@@ -53,13 +63,38 @@ export function GameResultView(): React.ReactElement {
     return false;
   }, [showError, showSuccess, t]);
 
-  const handleShareKakao = useCallback(async (): Promise<void> => {
+  // 같은 전적은 24시간 내 기존 shareId를 재사용한다.
+  const ensureShareLink = useCallback(async (): Promise<PreparedShareLink | null> => {
     if (!recordId) {
       showWarning(t(isAuthenticated ? 'share.preparingLink' : 'share.loginRequired'));
-      return;
+      return null;
     }
 
-    const url = buildShareUrl(recordId);
+    if (shareLink) {
+      return shareLink;
+    }
+
+    try {
+      const createdShare = await createShareRecord({ recordId });
+      const preparedShare = {
+        shareId: createdShare.shareId,
+        shareUrl: buildShareUrl(createdShare.shareId),
+        expiresAt: createdShare.expiresAt,
+      };
+
+      setShareLink(preparedShare);
+      return preparedShare;
+    } catch {
+      showError(t('common.error'));
+      return null;
+    }
+  }, [recordId, isAuthenticated, shareLink, showWarning, showError, t]);
+
+  // 카카오 공유는 먼저 유효한 공유 링크를 확보한 뒤 실행한다.
+  const handleShareKakao = useCallback(async (): Promise<void> => {
+    const preparedShare = await ensureShareLink();
+    if (!preparedShare) return;
+
     const nick = accountInfo?.nick ?? t('common.user');
     const timeText = formatElapsed(elapsedMs, language);
 
@@ -69,23 +104,22 @@ export function GameResultView(): React.ReactElement {
         targetWord,
         pathCount: String(navigationHistory.length),
         timeText,
+        expiryNotice: t('share.validFor24Hours'),
       }),
       buttonTitle: t('share.kakaoButton'),
-      shareUrl: url,
+      shareUrl: preparedShare.shareUrl,
     });
 
     if (!success) {
-      await handleCopyFallback(url);
+      await handleCopyFallback(preparedShare.shareUrl);
     }
-  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, handleCopyFallback, t, language]);
+  }, [ensureShareLink, accountInfo, t, elapsedMs, language, targetWord, navigationHistory, handleCopyFallback]);
 
+  // Web Share 또는 링크 복사는 동일한 공유 링크를 사용한다.
   const handleCopyLink = useCallback(async (): Promise<void> => {
-    if (!recordId) {
-      showWarning(t(isAuthenticated ? 'share.preparingLink' : 'share.loginRequired'));
-      return;
-    }
+    const preparedShare = await ensureShareLink();
+    if (!preparedShare) return;
 
-    const url = buildShareUrl(recordId);
     const nick = accountInfo?.nick ?? t('common.user');
     const timeText = formatElapsed(elapsedMs, language);
     const pathCount = navigationHistory.length;
@@ -94,17 +128,28 @@ export function GameResultView(): React.ReactElement {
       try {
         await navigator.share({
           title: t('share.webShareTitle', { nick }),
-          text: t('share.webShareText', { targetWord, pathCount: String(pathCount), timeText }),
-          url,
+          text: t('share.webShareText', {
+            targetWord,
+            pathCount: String(pathCount),
+            timeText,
+            expiryNotice: t('share.validFor24Hours'),
+          }),
+          url: preparedShare.shareUrl,
         });
         return;
       } catch {
-        // 사용자가 닫았거나 미지원이면 링크 복사로 fallback
+        // 사용자가 취소하거나 미지원 환경이면 링크 복사로 폴백한다.
       }
     }
 
-    await handleCopyFallback(url);
-  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, handleCopyFallback, t, language]);
+    await handleCopyFallback(preparedShare.shareUrl);
+  }, [ensureShareLink, accountInfo, t, elapsedMs, language, navigationHistory, targetWord, handleCopyFallback]);
+
+  // 링크 패널을 열 때도 미리 공유 링크를 준비할 수 있게 한다.
+  const handlePrepareShareLink = useCallback(async (): Promise<string | null> => {
+    const preparedShare = await ensureShareLink();
+    return preparedShare?.shareUrl ?? null;
+  }, [ensureShareLink]);
 
   return (
     <div className="flex flex-col flex-1 bg-gray-50 dark:bg-gray-900">
@@ -133,8 +178,9 @@ export function GameResultView(): React.ReactElement {
             onReplay={handleReplay}
             mode="own"
             onShareKakao={handleShareKakao}
-            shareUrl={shareUrl}
+            shareUrl={shareLink?.shareUrl}
             onCopyLink={handleCopyLink}
+            onPrepareShareLink={handlePrepareShareLink}
           />
 
           {!isAuthenticated && showSummary && (

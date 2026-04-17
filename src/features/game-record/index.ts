@@ -3,6 +3,7 @@ export {
   updateRecordPath,
   completeGameRecord,
   abandonGameRecord,
+  createShareRecord,
   getGameRecords,
   getSharedRecord,
 } from './api/gameRecordApi';
