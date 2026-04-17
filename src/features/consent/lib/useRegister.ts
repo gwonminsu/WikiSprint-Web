@@ -1,6 +1,6 @@
 import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, usePendingRecordStore, useToast, useTranslation } from '@shared';
+import { useAuthStore, useGameStore, usePendingRecordStore, useToast, useTranslation } from '@shared';
 import type { ApiResponse } from '@shared';
 import type { GoogleLoginResponse, RegisterRequest } from '@entities';
 import { queryClient } from '@/shared/config/queryClient';
@@ -11,7 +11,6 @@ import {
   abandonGameRecord,
 } from '../../game-record';
 
-// 동의 완료 후 로그인 상태와 전적 데이터를 즉시 동기화한다.
 export function useRegister(): UseMutationResult<ApiResponse<GoogleLoginResponse>, Error, RegisterRequest> {
   const navigate = useNavigate();
   const { setAuth, setAccountInfo, clearPendingConsent } = useAuthStore();
@@ -49,6 +48,7 @@ export function useRegister(): UseMutationResult<ApiResponse<GoogleLoginResponse
           });
 
           if (pending.status === 'cleared' && pending.elapsedMs != null) {
+            useGameStore.getState().setRecordId(resp.recordId);
             await completeGameRecord({
               recordId: resp.recordId,
               navPath: JSON.stringify(pending.navPath),

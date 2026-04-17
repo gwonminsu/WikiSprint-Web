@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useGameStore, useTranslation, useAuthStore, EmbossButton, useToast } from '@shared';
 import { PathTimeline } from './PathTimeline';
 import { ResultSummary } from './ResultSummary';
-import { buildShareUrl, shareKakao, formatElapsed } from '../lib';
+import { buildShareUrl, shareKakao, formatElapsed, copyShareText } from '../lib';
 
-// 게임 결과 화면 컨테이너
-// — navigationHistory를 카드 타임라인으로 순차 표시 후 결과 요약과 버튼 렌더링
 export function GameResultView(): React.ReactElement {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const navigate = useNavigate();
-  const { warning: showWarning, success: showSuccess } = useToast();
+  const { warning: showWarning, success: showSuccess, error: showError } = useToast();
 
   const navigationHistory = useGameStore((s) => s.navigationHistory);
   const elapsedMs = useGameStore((s) => s.elapsedMs);
@@ -23,74 +21,75 @@ export function GameResultView(): React.ReactElement {
   const checkAuth = useAuthStore((s) => s.checkAuth);
 
   const [beforeTargetWord, afterTargetWord] = t('game.resultHeader').split('???');
-
-  // 모든 카드 등장 후 결과 요약 표시 여부
   const [showSummary, setShowSummary] = useState<boolean>(false);
-  // 타임라인 리마운트용 키 — 변경 시 PathTimeline이 처음부터 다시 재생
   const [replayKey, setReplayKey] = useState<number>(0);
 
-  // hydration 경합 방지 — 마운트 시 토큰 실제 존재 여부 재확인
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  // 공유 URL — 로그인 + recordId 있을 때만 생성
   const shareUrl = useMemo((): string | undefined => {
-    if (!isAuthenticated || !recordId) return undefined;
+    if (!recordId) return undefined;
     return buildShareUrl(recordId);
-  }, [isAuthenticated, recordId]);
+  }, [recordId]);
 
-  // PathTimeline에서 모든 카드 등장 완료 시 호출 — 결과 요약 표시
   const handleAllCardsShown = useCallback((): void => {
     setShowSummary(true);
   }, []);
 
-  // 결과 화면 애니메이션 다시 재생
   const handleReplay = useCallback((): void => {
     setShowSummary(false);
     setReplayKey((prev: number) => prev + 1);
   }, []);
 
-  // 카카오톡 공유 핸들러
+  const handleCopyFallback = useCallback(async (url: string): Promise<boolean> => {
+    const copied = await copyShareText(url);
+    if (copied) {
+      showSuccess(t('share.linkCopied'));
+      return true;
+    }
+
+    showError(t('common.error'));
+    return false;
+  }, [showError, showSuccess, t]);
+
   const handleShareKakao = useCallback(async (): Promise<void> => {
-    if (!isAuthenticated) {
-      showWarning(t('share.loginRequired'));
+    if (!recordId) {
+      showWarning(t(isAuthenticated ? 'share.preparingLink' : 'share.loginRequired'));
       return;
     }
-    if (!recordId) return;
 
     const url = buildShareUrl(recordId);
     const nick = accountInfo?.nick ?? t('common.user');
+    const timeText = formatElapsed(elapsedMs, language);
 
     const success = await shareKakao({
-      nick,
-      targetWord,
+      title: t('share.kakaoTitle', { nick }),
+      description: t('share.kakaoDescription', {
+        targetWord,
+        pathCount: String(navigationHistory.length),
+        timeText,
+      }),
+      buttonTitle: t('share.kakaoButton'),
       shareUrl: url,
-      elapsedMs,
-      pathCount: navigationHistory.length,
     });
 
     if (!success) {
-      // 카카오 SDK 실패 시 링크 복사 fallback
-      await navigator.clipboard.writeText(url);
-      showSuccess(t('share.linkCopied'));
+      await handleCopyFallback(url);
     }
-  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, showSuccess, t]);
+  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, handleCopyFallback, t, language]);
 
-  // 공유 링크 복사 핸들러 — 모바일: Web Share API 우선, fallback: 클립보드 복사
   const handleCopyLink = useCallback(async (): Promise<void> => {
-    if (!isAuthenticated) {
-      showWarning(t('share.loginRequired'));
+    if (!recordId) {
+      showWarning(t(isAuthenticated ? 'share.preparingLink' : 'share.loginRequired'));
       return;
     }
-    if (!recordId) return;
 
     const url = buildShareUrl(recordId);
     const nick = accountInfo?.nick ?? t('common.user');
-    const timeText = formatElapsed(elapsedMs);
+    const timeText = formatElapsed(elapsedMs, language);
     const pathCount = navigationHistory.length;
 
-    // 1순위: Web Share API (모바일 — 앱 선택 공유)
     if (typeof navigator.share === 'function') {
       try {
         await navigator.share({
@@ -100,21 +99,17 @@ export function GameResultView(): React.ReactElement {
         });
         return;
       } catch {
-        // 사용자 취소 시 클립보드 복사 fallback
+        // 사용자가 닫았거나 미지원이면 링크 복사로 fallback
       }
     }
 
-    // 2순위: 클립보드 복사
-    await navigator.clipboard.writeText(url);
-    showSuccess(t('share.linkCopied'));
-  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, showSuccess, t]);
+    await handleCopyFallback(url);
+  }, [isAuthenticated, recordId, accountInfo, targetWord, elapsedMs, navigationHistory, showWarning, handleCopyFallback, t, language]);
 
   return (
     <div className="flex flex-col flex-1 bg-gray-50 dark:bg-gray-900">
-      {/* 스크롤 가능한 컨텐츠 영역 */}
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center px-4 py-8">
-          {/* 상단 헤더 메시지 */}
           <h2 className="animate-result-header text-lg font-bold text-gray-800 dark:text-gray-100 mb-8 text-center leading-relaxed">
             {beforeTargetWord}
             <span className="inline-flex items-center mx-1 px-2 py-0.5 rounded-md bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-300 shadow-sm">
@@ -123,14 +118,12 @@ export function GameResultView(): React.ReactElement {
             {afterTargetWord}
           </h2>
 
-          {/* 문서 경로 카드 타임라인 — replayKey 변경 시 리마운트하여 처음부터 재생 */}
           <PathTimeline
             key={replayKey}
             history={navigationHistory}
             onAllCardsShown={handleAllCardsShown}
           />
 
-          {/* 결과 요약 + 하단 버튼 */}
           <ResultSummary
             history={navigationHistory}
             elapsedMs={elapsedMs}
@@ -144,7 +137,6 @@ export function GameResultView(): React.ReactElement {
             onCopyLink={handleCopyLink}
           />
 
-          {/* 비로그인 상태: 전적 저장 로그인 안내 */}
           {!isAuthenticated && showSummary && (
             <div className="mt-6 w-full max-w-md animate-result-summary-in">
               <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 px-5 py-4 text-center">

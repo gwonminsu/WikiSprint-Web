@@ -2,14 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage, tutoDoc, useGameStore } from '@shared';
 import { getProfileImageUrl, useGameRecord } from '@features';
 
-// 구분선 컴포넌트 — nav 항목 사이에 표시
 function NavDivider(): React.ReactElement {
   return (
     <div className="w-px h-4 bg-gray-300/60 dark:bg-gray-600/60 shrink-0" />
   );
 }
 
-// 웹 네비게이션 헤더
 export function Header(): React.ReactElement {
   const { accountInfo, clearAuth } = useAuthStore();
   const { showConfirm } = useDialog();
@@ -17,31 +15,37 @@ export function Header(): React.ReactElement {
   const { info: showInfo, success: showSuccess } = useToast();
   const navigate = useNavigate();
 
-  // 게임 phase만 구독 — 다른 gameStore 상태 변경 시 Header 리렌더 방지
   const phase = useGameStore((s) => s.phase);
   const resetGame = useGameStore((s) => s.resetGame);
   const { abandonRecord } = useGameRecord();
 
-  // 게임 진행 중 페이지 이동 시 확인 다이얼로그 표시 후 이동
-  // completed/result 상태에서는 확인 없이 즉시 초기화 후 이동 (게임이 이미 끝났으므로)
+  // 결과 화면에서 /auth 로 이동할 때는 결과 상태를 유지해야 로그인 후 공유를 이어서 할 수 있다.
   const guardedNavigate = (path: string): void => {
     if (phase === 'playing') {
       showConfirm({
         message: t('game.leaveConfirm'),
         onConfirm: () => {
-          // 포기 처리 — recordId는 useGameRecord 내부에서 gameStore에서 조회
           abandonRecord();
           resetGame();
           navigate(path);
           showInfo(t('game.abandonedByNavigation'));
         },
       });
-    } else if (phase === 'completed' || phase === 'result') {
+      return;
+    }
+
+    if (phase === 'completed' || phase === 'result') {
+      if (path === '/auth') {
+        navigate(path);
+        return;
+      }
+
       resetGame();
       navigate(path);
-    } else {
-      navigate(path);
+      return;
     }
+
+    navigate(path);
   };
 
   const profileImageUrl = accountInfo?.profile_img_url
@@ -64,7 +68,6 @@ export function Header(): React.ReactElement {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <div className="max-w-5xl mx-auto flex items-center justify-between h-14 px-6">
-        {/* 로고 */}
         <button
           type="button"
           onClick={() => guardedNavigate('/')}
@@ -77,7 +80,6 @@ export function Header(): React.ReactElement {
           />
         </button>
 
-        {/* 네비게이션 */}
         <nav className="flex items-center gap-3">
           <button
             type="button"
@@ -89,7 +91,6 @@ export function Header(): React.ReactElement {
 
           <NavDivider />
 
-          {/* 도움! 버튼 — DocPage로 이동 */}
           <button
             type="button"
             onClick={() => guardedNavigate('/doc')}
@@ -121,10 +122,8 @@ export function Header(): React.ReactElement {
 
           <NavDivider />
 
-          {/* 사용자 메뉴 */}
           {accountInfo ? (
             <div className="flex items-center gap-3">
-              {/* 프로필 클릭 → 전적 페이지 이동 */}
               <button
                 type="button"
                 onClick={() => guardedNavigate('/record')}
@@ -149,9 +148,7 @@ export function Header(): React.ReactElement {
               </button>
             </div>
           ) : (
-            // 비로그인 게스트 메뉴
             <div className="flex items-center gap-3">
-              {/* 달리는 사람 아이콘 */}
               <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-gray-500 dark:text-gray-400">
                   <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9 1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z" />

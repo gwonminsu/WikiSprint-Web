@@ -2,6 +2,7 @@ import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   useAuthStore,
+  useGameStore,
   usePendingRecordStore,
   useToast,
   useTranslation,
@@ -17,7 +18,6 @@ import {
   abandonGameRecord,
 } from '../../game-record';
 
-// 로그인 성공 후 인증 상태, 계정 정보, 파생 쿼리를 함께 맞춘다.
 async function handleSuccessfulLogin(
   response: ApiResponse<GoogleLoginResponse>,
   deps: {
@@ -56,6 +56,7 @@ async function handleSuccessfulLogin(
       });
 
       if (pending.status === 'cleared' && pending.elapsedMs != null) {
+        useGameStore.getState().setRecordId(resp.recordId);
         await completeGameRecord({
           recordId: resp.recordId,
           navPath: JSON.stringify(pending.navPath),

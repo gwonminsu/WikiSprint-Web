@@ -6,19 +6,61 @@ export function buildShareUrl(recordId: string): string {
 }
 
 type KakaoShareParams = {
-  nick: string;
-  targetWord: string;
+  title: string;
+  description: string;
+  buttonTitle: string;
   shareUrl: string;
-  elapsedMs: number;
-  pathCount: number;
 };
 
-export function formatElapsed(ms: number): string {
+type SupportedLanguage = 'ko' | 'en' | 'ja';
+
+export function formatElapsed(ms: number, language: SupportedLanguage): string {
   const totalSeconds = ms / 1000;
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = (totalSeconds % 60).toFixed(2);
 
+  if (language === 'en') {
+    return minutes > 0 ? `${minutes} min ${seconds} sec` : `${seconds} sec`;
+  }
+
+  if (language === 'ja') {
+    return minutes > 0 ? `${minutes}分${seconds}秒` : `${seconds}秒`;
+  }
+
   return minutes > 0 ? `${minutes}분 ${seconds}초` : `${seconds}초`;
+}
+
+function copyWithExecCommand(text: string): boolean {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', 'true');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.top = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand('copy');
+  } finally {
+    document.body.removeChild(textarea);
+  }
+
+  return copied;
+}
+
+export async function copyShareText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // 최신 API가 막히면 레거시 복사 방식으로 폴백한다.
+  }
+
+  return copyWithExecCommand(text);
 }
 
 export async function shareKakao(params: KakaoShareParams): Promise<boolean> {
@@ -26,7 +68,6 @@ export async function shareKakao(params: KakaoShareParams): Promise<boolean> {
     const initialized = await initKakaoSdk();
     if (!initialized || !window.Kakao) return false;
 
-    const timeText = formatElapsed(params.elapsedMs);
     const imageUrl = new URL(gameClear, window.location.origin).toString();
     const shareLink = {
       mobileWebUrl: params.shareUrl,
@@ -36,14 +77,14 @@ export async function shareKakao(params: KakaoShareParams): Promise<boolean> {
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: `${params.nick}님이 WikiSprint를 클리어했습니다!`,
-        description: `목표 "${params.targetWord}"에 ${params.pathCount}개 경로, ${timeText} 만에 도달했습니다.`,
+        title: params.title,
+        description: params.description,
         imageUrl,
         link: shareLink,
       },
       buttons: [
         {
-          title: '결과 보러가기',
+          title: params.buttonTitle,
           link: shareLink,
         },
       ],

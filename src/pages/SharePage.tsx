@@ -10,7 +10,7 @@ import { useTranslation, EmbossButton, useToast } from '@shared';
 export default function SharePage(): React.ReactElement {
   const { shareId = '' } = useParams<{ shareId: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { success: showSuccess } = useToast();
 
   const { data, isLoading, isError } = useSharedRecord(shareId);
@@ -37,7 +37,7 @@ export default function SharePage(): React.ReactElement {
   const handleNativeShare = useCallback(async (): Promise<void> => {
     if (!data) return;
     const shareUrl = window.location.href;
-    const timeText = formatElapsed(data.elapsedMs);
+    const timeText = formatElapsed(data.elapsedMs, language);
     const pathCount = data.navPath.length;
     try {
       await navigator.share({
@@ -48,7 +48,7 @@ export default function SharePage(): React.ReactElement {
     } catch {
       // 사용자 취소 또는 API 미지원은 무시
     }
-  }, [data]);
+  }, [data, t, language]);
 
   // 공유 URL 복사
   const handleCopyLink = useCallback(async (): Promise<void> => {
