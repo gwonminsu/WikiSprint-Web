@@ -8,3 +8,4 @@ export { SuccessOverlay } from './SuccessOverlay';
 export { ThemeOrbitToggle } from './ThemeOrbitToggle';
 export { ThemeSystemButton } from './ThemeSystemButton';
 export { ThemeControlGroup } from './ThemeControlGroup';
+export { WidgetDropdown } from './WidgetDropdown';

@@ -1,5 +1,4 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { LANGUAGES, useTranslation, type Language } from '@shared';
+import { LANGUAGES, WidgetDropdown, useTranslation, type Language } from '@shared';
 
 type LanguageOption = {
   value: Language;
@@ -17,10 +16,16 @@ export function AuthLanguageDropdown(): React.ReactElement {
   const currentLanguage = LANGUAGE_OPTIONS.find((option) => option.value === language) ?? LANGUAGE_OPTIONS[0];
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
+    <WidgetDropdown
+      align="end"
+      sideOffset={10}
+      contentClassName="
+        min-w-[172px] rounded-2xl border border-gray-200 bg-white p-1.5 shadow-xl shadow-black/10
+        outline-none dark:border-gray-700 dark:bg-gray-800
+      "
+      trigger={(triggerProps) => (
         <button
-          type="button"
+          {...triggerProps}
           className="
             inline-flex items-center gap-2 rounded-full border border-gray-200/90 bg-white/90 px-3 py-2
             text-sm font-semibold text-gray-700 shadow-lg shadow-black/5 backdrop-blur-md transition-all
@@ -45,42 +50,35 @@ export function AuthLanguageDropdown(): React.ReactElement {
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-      </DropdownMenu.Trigger>
+      )}
+    >
+      {({ getItemProps }) => LANGUAGE_OPTIONS.map((option, index) => {
+        const isSelected = option.value === language;
 
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          align="end"
-          sideOffset={10}
-          className="
-            z-50 min-w-[172px] rounded-2xl border border-gray-200 bg-white p-1.5 shadow-xl shadow-black/10
-            outline-none dark:border-gray-700 dark:bg-gray-800
-          "
-        >
-          {LANGUAGE_OPTIONS.map((option) => {
-            const isSelected = option.value === language;
-            return (
-              <DropdownMenu.Item
-                key={option.value}
-                onSelect={() => setLanguage(option.value)}
-                className={`
-                  flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-sm outline-none
-                  transition-colors ${isSelected
-                    ? 'bg-orange-50 font-semibold text-orange-700 dark:bg-orange-950/30 dark:text-orange-300'
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/70'}
-                `}
-              >
-                <span>{option.label}</span>
-                <span
-                  className={`h-2 w-2 rounded-full transition-opacity ${
-                    isSelected ? 'bg-orange-400 opacity-100' : 'opacity-0'
-                  }`}
-                  aria-hidden="true"
-                />
-              </DropdownMenu.Item>
-            );
-          })}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+        return (
+          <button
+            key={option.value}
+            {...getItemProps({
+              index,
+              onSelect: () => setLanguage(option.value),
+            })}
+            className={`
+              flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-left text-sm outline-none
+              transition-colors ${isSelected
+                ? 'bg-orange-50 font-semibold text-orange-700 dark:bg-orange-950/30 dark:text-orange-300'
+                : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/70'}
+            `}
+          >
+            <span>{option.label}</span>
+            <span
+              className={`h-2 w-2 rounded-full transition-opacity ${
+                isSelected ? 'bg-orange-400 opacity-100' : 'opacity-0'
+              }`}
+              aria-hidden="true"
+            />
+          </button>
+        );
+      })}
+    </WidgetDropdown>
   );
 }
