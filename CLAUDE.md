@@ -257,6 +257,10 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.9.1)
+
+- 난이도 선택 드롭다운(`widgets/game-intro/ui/DifficultyDropdown.tsx`) 팝업 `contentClassName`에 `whitespace-nowrap`을 적용했습니다. 다국어 환경에서 긴 옵션 라벨이 줄바꿈되지 않고 박스 너비가 콘텐츠에 맞춰 펼쳐집니다. `min-w-[140px]`는 최소 너비 보장용으로 유지합니다.
+
 ## 최근 변경 메모 (v2.9.0)
 
 - 공유 생성은 결과 화면에서 `POST /api/record/share`를 먼저 호출해 `shareId`, `expiresAt`을 받은 뒤 진행합니다.
