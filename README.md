@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.8.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.9.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -48,6 +48,7 @@
 | 🏳️ 국적 설정 | 프로필 국기 표시, 랭킹 카드 국기 반영 |
 | 📘 인터랙티브 문서 가이드 | `/doc` 페이지에 TOC, 플레이형 튜토리얼, FAQ, 영상 아코디언 제공 |
 | 🏷️ 전적 난이도 태그 | `/record` 카드에서 제시어 난이도를 함께 표시 |
+| 🔗 공유 결과 링크 | 공유 전용 `shareId` 기반 URL 생성, 24시간 유효 공유 페이지 제공 |
 | 🌍 다국어 지원 | 한국어 · 영어 · 일본어 (i18n) |
 | 🎨 테마 지원 | 라이트 / 다크 / 시스템 자동 테마 |
 | 📱 웹뷰 호환 | `window.alert` 없이 커스텀 Dialog/Toast 사용 |
@@ -187,11 +188,13 @@ pnpm preview
 
 ```env
 VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 ```
 
 | 환경변수 | 설명 |
 |---------|------|
 | `VITE_GOOGLE_CLIENT_ID` | Google OAuth 클라이언트 ID |
+| `VITE_KAKAO_JS_KEY` | 카카오 JavaScript SDK 초기화 키 |
 
 ---
 
@@ -218,6 +221,14 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 - CORS 허용 오리진: `http://localhost:5969`
 
 → [WikiSprint-Server README](../WikiSprint-Server/README.md)
+
+---
+
+## 🔗 공유 링크 메모
+
+- 결과 화면에서 공유 직전 `POST /api/record/share`를 호출해 공유 전용 `shareId`를 생성합니다.
+- 공유 URL은 전적 ID를 그대로 쓰지 않고, 서버가 발급한 `shareId`를 기반으로 만듭니다.
+- 공유 페이지는 24시간 동안 유효하며, 카카오톡 공유, QR 코드, 링크 복사 흐름과 연결됩니다.
 
 ---
 

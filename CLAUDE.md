@@ -254,3 +254,13 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
   - 유튜브 아코디언 (`DocVideoAccordion`)
   - 공용 `Accordion` 애니메이션 재사용
 - 문서 문구 수정 시 `ko`, `en`, `ja` locale을 함께 갱신합니다.
+
+---
+
+## 최근 변경 메모 (v2.9.0)
+
+- 공유 생성은 결과 화면에서 `POST /api/record/share`를 먼저 호출해 `shareId`, `expiresAt`을 받은 뒤 진행합니다.
+- 공유 URL은 전적 ID 대신 공유 전용 `shareId`를 사용하며, `/share/:shareId` 경로로 노출합니다.
+- 공유 페이지의 24시간 유효 안내, 카카오톡 공유, Web Share, QR 코드, 링크 복사는 같은 공유 스냅샷 데이터를 기준으로 동작합니다.
+- 공유 관련 문구는 `ko`, `en`, `ja` 로케일 파일에서만 관리합니다.
+- 로그인 직후 `/record`, `/ranking` 초기 조회 정합성과 비로그인 클리어 이후 공유 버튼 동작 보강이 `v2.9.0` 범위에 포함됩니다.
