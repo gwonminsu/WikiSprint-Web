@@ -45,7 +45,11 @@ import type {
   RankingListResponse,
   RankingListRequest,
 } from './ranking/types';
-import type { DonationListItem } from './donation';
+import type {
+  AccountTransferDonationCreateRequest,
+  DonationListItem,
+  PendingAccountTransferDonationItem,
+} from './donation';
 
 // 네임스페이스 export
 export const e = {
@@ -93,6 +97,8 @@ export const e = {
   donation: {
     type: {} as {
       DonationListItem: DonationListItem;
+      PendingAccountTransferDonationItem: PendingAccountTransferDonationItem;
+      AccountTransferDonationCreateRequest: AccountTransferDonationCreateRequest;
     },
   },
   gameRecord: {
@@ -141,7 +147,11 @@ export type {
   RankingListRequest,
 } from './ranking/types';
 
-export type { DonationListItem } from './donation';
+export type {
+  DonationListItem,
+  PendingAccountTransferDonationItem,
+  AccountTransferDonationCreateRequest,
+} from './donation';
 
 export type {
   GameRecordStatus,

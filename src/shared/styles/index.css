@@ -2128,3 +2128,94 @@ body {
 .animate-my-rank-float {
   animation: my-rank-float 3s ease-in-out infinite;
 }
+
+@keyframes donationRainbowShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.donation-tier-rainbow {
+  background-image: linear-gradient(
+    90deg,
+    #ff5f6d 0%,
+    #ffc371 16%,
+    #fff36b 32%,
+    #5fffb2 48%,
+    #50c9ff 64%,
+    #8b5cf6 82%,
+    #ff5f6d 100%
+  );
+  background-size: 220% 220%;
+  animation: donationRainbowShift 4s linear infinite;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 0 16px rgba(255, 95, 109, 0.24),
+    0 0 24px rgba(80, 201, 255, 0.22),
+    0 0 32px rgba(139, 92, 246, 0.2);
+}
+
+.dark .donation-tier-rainbow {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 18px rgba(255, 95, 109, 0.26),
+    0 0 28px rgba(80, 201, 255, 0.24),
+    0 0 36px rgba(139, 92, 246, 0.24);
+}
+
+.donation-tier-default {
+  border-color: rgba(203, 213, 225, 0.8);
+}
+
+.dark .donation-tier-default {
+  border-color: rgba(71, 85, 105, 0.9);
+}
+
+.donation-tier-bronze {
+  border-color: #6b3e26;
+  box-shadow:
+    0 0 0 1px rgba(107, 62, 38, 0.28),
+    0 0 18px rgba(107, 62, 38, 0.22);
+}
+
+.dark .donation-tier-bronze {
+  border-color: #9a623f;
+  box-shadow:
+    0 0 0 1px rgba(154, 98, 63, 0.3),
+    0 0 20px rgba(154, 98, 63, 0.24);
+}
+
+.donation-tier-silver {
+  border-color: #cbd5e1;
+  box-shadow:
+    0 0 0 1px rgba(203, 213, 225, 0.28),
+    0 0 18px rgba(226, 232, 240, 0.22);
+}
+
+.dark .donation-tier-silver {
+  border-color: #dbe4ee;
+  box-shadow:
+    0 0 0 1px rgba(219, 228, 238, 0.28),
+    0 0 20px rgba(219, 228, 238, 0.2);
+}
+
+.donation-tier-gold {
+  border-color: #f2c14e;
+  box-shadow:
+    0 0 0 1px rgba(242, 193, 78, 0.3),
+    0 0 22px rgba(242, 193, 78, 0.24);
+}
+
+.dark .donation-tier-gold {
+  border-color: #ffd166;
+  box-shadow:
+    0 0 0 1px rgba(255, 209, 102, 0.32),
+    0 0 24px rgba(255, 209, 102, 0.24);
+}
+
+.donation-tier-rainbow-inner {
+  border-color: transparent;
+}

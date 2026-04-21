@@ -225,7 +225,7 @@ export function DocContentView(): React.ReactElement {
     { id: 'faq', label: t('doc.toc.faq'), icon: '🧠' },
     { id: 'video', label: t('doc.toc.video'), icon: '🎬' },
     { id: 'play', label: t('doc.toc.play'), icon: '🏁' },
-    { id: 'donation', label: t('doc.toc.donation'), icon: 'K' },
+    { id: 'donation', label: t('doc.toc.donation'), icon: '☕' },
   ];
 
   if (!hasKofiUrl) {

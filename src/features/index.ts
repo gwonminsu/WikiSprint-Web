@@ -50,7 +50,16 @@ import {
 
 // Ranking feature
 import { getRanking, useRanking } from './ranking';
-import { getLatestDonations, getAllDonations, useLatestDonations, useAllDonations } from './donation';
+import {
+  getLatestDonations,
+  getAllDonations,
+  createAccountTransferDonation,
+  getPendingAccountTransferDonations,
+  confirmAccountTransferDonation,
+  useLatestDonations,
+  useAllDonations,
+  usePendingAccountTransferDonations,
+} from './donation';
 
 // 네임스페이스 export
 export const f = {
@@ -78,6 +87,7 @@ export const f = {
     // Donation
     useLatestDonations,
     useAllDonations,
+    usePendingAccountTransferDonations,
   },
   api: {
     wiki: { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord },
@@ -102,7 +112,13 @@ export const f = {
       getSharedRecord,
     },
     ranking: { getRanking },
-    donation: { getLatestDonations, getAllDonations },
+    donation: {
+      getLatestDonations,
+      getAllDonations,
+      createAccountTransferDonation,
+      getPendingAccountTransferDonations,
+      confirmAccountTransferDonation,
+    },
   },
   ui: {
     ProfileImageEditModal,
@@ -145,4 +161,13 @@ export {
 } from './game-record';
 
 export { getRanking, useRanking } from './ranking';
-export { getLatestDonations, getAllDonations, useLatestDonations, useAllDonations } from './donation';
+export {
+  getLatestDonations,
+  getAllDonations,
+  createAccountTransferDonation,
+  getPendingAccountTransferDonations,
+  confirmAccountTransferDonation,
+  useLatestDonations,
+  useAllDonations,
+  usePendingAccountTransferDonations,
+} from './donation';

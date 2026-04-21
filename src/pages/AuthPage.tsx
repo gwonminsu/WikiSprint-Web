@@ -167,7 +167,7 @@ export default function AuthPage(): React.ReactElement {
   };
 
   return (
-    <div className="relative flex min-h-screen min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-gray-50 px-4 py-24 dark:bg-gray-900">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-gray-50 px-4 py-24 dark:bg-gray-900">
       <div className="fixed right-4 top-4 z-40 flex items-center gap-2 sm:right-6 sm:top-6 sm:gap-3">
         <ThemeOrbitToggle
           checked={resolvedTheme === 'dark'}
