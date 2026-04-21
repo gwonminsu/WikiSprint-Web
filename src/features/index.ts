@@ -50,6 +50,7 @@ import {
 
 // Ranking feature
 import { getRanking, useRanking } from './ranking';
+import { getLatestDonations, getAllDonations, useLatestDonations, useAllDonations } from './donation';
 
 // 네임스페이스 export
 export const f = {
@@ -74,6 +75,9 @@ export const f = {
     useSharedRecord,
     // Ranking
     useRanking,
+    // Donation
+    useLatestDonations,
+    useAllDonations,
   },
   api: {
     wiki: { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord },
@@ -98,6 +102,7 @@ export const f = {
       getSharedRecord,
     },
     ranking: { getRanking },
+    donation: { getLatestDonations, getAllDonations },
   },
   ui: {
     ProfileImageEditModal,
@@ -140,3 +145,4 @@ export {
 } from './game-record';
 
 export { getRanking, useRanking } from './ranking';
+export { getLatestDonations, getAllDonations, useLatestDonations, useAllDonations } from './donation';

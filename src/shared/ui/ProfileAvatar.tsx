@@ -5,6 +5,7 @@ type ProfileAvatarProps = {
   name: string;
   size?: 'sm' | 'md' | 'rg' | 'lg' | 'xl';
   className?: string;
+  fallbackContent?: React.ReactNode;
 };
 
 // 이름에서 첫 글자 추출
@@ -56,6 +57,7 @@ export function ProfileAvatar({
   name,
   size = 'md',
   className = '',
+  fallbackContent,
 }: ProfileAvatarProps): React.ReactElement {
   const [imageError, setImageError] = useState(false);
 
@@ -73,7 +75,7 @@ export function ProfileAvatar({
       } ${className}`}
     >
       {showFallback ? (
-        <span className="font-semibold text-white">{getInitial(name)}</span>
+        fallbackContent ?? <span className="font-semibold text-white">{getInitial(name)}</span>
       ) : (
         <img
           src={imageUrl}

@@ -1,38 +1,28 @@
-// Main Layout 위젯
 import { Header } from './main-layout';
 import { AuthLanguageDropdown } from './auth';
-
-// Settings 위젯
 import { SettingsView } from './settings';
-
-// Doc Button 위젯 (WikiSprint 소개 페이지 플로팅 버튼)
 import { DocFloatingButton } from './doc-button';
-
-// Doc Content 위젯 (WikiSprint 소개 페이지 콘텐츠)
+import { DonationFloatingButton } from './donation-floating';
+import { DonationTestWidget } from './donation-test-widget';
+import { DonationInfoListWidget } from './donation-info-list';
 import { DocContentView } from './doc-content';
-
-// Game Intro 위젯 (홈 게임 플로우 — talker + 말풍선 + iframe)
+import { DonationSection } from './donation-section';
 import { GameIntroView } from './game-intro';
-
-// Game Result 위젯 (게임 결과 화면 — 카드 타임라인 + 요약)
 import { GameResultView } from './game-result';
-
-// Game Record 위젯 (전적 페이지 — 요약 + 카드 리스트)
 import { GameRecordView } from './game-record';
-
-// Ranking 위젯 (랭킹 페이지 — 아케이드 스타일 리더보드)
 import { RankingView } from './ranking';
-
-// Consent 위젯 (약관 동의 모달 — 신규 회원가입 플로우)
 import { ConsentModal } from './consent';
 
-// 네임스페이스 export
 export const w = {
   Header,
   AuthLanguageDropdown,
   SettingsView,
   DocFloatingButton,
+  DonationFloatingButton,
+  DonationTestWidget,
+  DonationInfoListWidget,
   DocContentView,
+  DonationSection,
   GameIntroView,
   GameResultView,
   GameRecordView,
@@ -40,12 +30,15 @@ export const w = {
   ConsentModal,
 } as const;
 
-// 개별 export (직접 import 용도)
 export { Header } from './main-layout';
 export { AuthLanguageDropdown } from './auth';
 export { SettingsView } from './settings';
 export { DocFloatingButton } from './doc-button';
+export { DonationFloatingButton } from './donation-floating';
+export { DonationTestWidget } from './donation-test-widget';
+export { DonationInfoListWidget } from './donation-info-list';
 export { DocContentView } from './doc-content';
+export { DonationSection } from './donation-section';
 export { GameIntroView } from './game-intro';
 export { GameResultView } from './game-result';
 export { GameRecordView } from './game-record';
