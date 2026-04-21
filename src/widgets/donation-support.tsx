@@ -9,21 +9,13 @@ export function AnonymousSupporterIcon(): React.ReactElement {
       className="h-5 w-5"
       fill="none"
     >
-      <circle cx="16" cy="10" r="5.25" fill="currentColor" opacity="0.82" />
+      <circle cx="16" cy="10" r="4.5" fill="currentColor" opacity="0.88" />
       <path
-        d="M7.2 26.2c1.1-4.9 4.5-7.5 8.8-7.5 4.3 0 7.7 2.6 8.8 7.5"
+        d="M9.2 24.6c1.2-3.6 4.1-5.9 6.8-5.9 2.7 0 5.6 2.3 6.8 5.9"
         stroke="currentColor"
-        strokeWidth="2.4"
+        strokeWidth="2.3"
         strokeLinecap="round"
       />
-      <path
-        d="M23.1 16.4c2.1 0 3.7 1.6 3.7 3.6 0 1.2-.6 2.1-1.3 2.9-.7.7-1.5 1.4-2 2.2"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="23.4" cy="27.1" r="1.15" fill="currentColor" />
     </svg>
   );
 }
@@ -34,18 +26,18 @@ export function SupportButtonIcon(): React.ReactElement {
     <svg
       viewBox="0 0 32 32"
       aria-hidden="true"
-      className="h-16 w-16"
+      className="h-7 w-7"
       fill="none"
     >
       <path
-        d="M16 28.8c-7.8-5.4-11.9-9.4-11.9-14.5 0-4 3.1-7 6.9-7 2.2 0 4.1 1 5 2.7 1-1.7 2.9-2.7 5.1-2.7 3.8 0 6.9 3 6.9 7 0 5.1-4.1 9.1-11.9 14.5l-.1.1-.1-.1Z"
-        fill="#f97316"
+        d="M16 28.3c-7-4.8-10.9-8.5-10.9-13.1 0-3.6 2.8-6.2 6.1-6.2 2 0 3.8.9 4.8 2.4 1-1.5 2.8-2.4 4.8-2.4 3.4 0 6.1 2.7 6.1 6.2 0 4.6-3.8 8.2-10.9 13.1Z"
+        fill="currentColor"
+        opacity="0.96"
       />
-
-      <g transform="translate(16 16) scale(0.75) translate(-16 -16)">
+      <g transform="translate(16 16) scale(0.82) translate(-16 -16)">
         <path
           d="M16 11.8v9M19.2 14.4c0-1.3-1.5-2.3-3.2-2.3s-3.2 1-3.2 2.3 1 2 3.2 2.5 3.2 1.2 3.2 2.5-1.5 2.3-3.2 2.3-3.2-1-3.2-2.3"
-          stroke="#fdba74"
+          stroke="#0ea5e9"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -118,4 +110,57 @@ export function buildDonationIdentityKey(donation: DonationListItem): string {
 
   const displayName = resolveDonationDisplayName(donation, 'anonymous');
   return `name:${displayName.toLowerCase()}`;
+}
+
+function parseDonationAmount(amount: string | null): number | null {
+  if (!amount) {
+    return null;
+  }
+
+  const numericAmount = Number(amount);
+  return Number.isFinite(numericAmount) ? numericAmount : null;
+}
+
+export function getDonationTierGlowClass(donation: DonationListItem): string {
+  const amount = parseDonationAmount(donation.amount);
+  if (amount === null) {
+    return 'donation-tier-default';
+  }
+
+  if (donation.source === 'account transfer') {
+    if (amount <= 5000) {
+      return 'donation-tier-bronze';
+    }
+    if (amount <= 10000) {
+      return 'donation-tier-silver';
+    }
+    if (amount <= 20000) {
+      return 'donation-tier-gold';
+    }
+    return 'donation-tier-rainbow-inner';
+  }
+
+  if (amount <= 5) {
+    return 'donation-tier-bronze';
+  }
+  if (amount <= 10) {
+    return 'donation-tier-silver';
+  }
+  if (amount <= 20) {
+    return 'donation-tier-gold';
+  }
+  return 'donation-tier-rainbow-inner';
+}
+
+export function isRainbowDonationTier(donation: DonationListItem): boolean {
+  const amount = parseDonationAmount(donation.amount);
+  if (amount === null) {
+    return false;
+  }
+
+  if (donation.source === 'account transfer') {
+    return amount > 20000;
+  }
+
+  return amount > 20;
 }

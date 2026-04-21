@@ -10,7 +10,7 @@ import {
   setAuthUpdateCallback,
   getTokenStorage,
 } from '@shared';
-import { DonationFloatingButton, DonationTestWidget } from '@widgets';
+import { DonationFloatingButton } from '@widgets';
 import { QueryProvider } from './providers/QueryProvider';
 import { Router } from './router/Router';
 
@@ -87,7 +87,6 @@ export function App(): React.ReactElement {
         <ViewportScaleInitializer />
         <Router />
         <DonationFloatingButton />
-        <DonationTestWidget />
         <Dialog />
         <ToastContainer />
       </QueryProvider>

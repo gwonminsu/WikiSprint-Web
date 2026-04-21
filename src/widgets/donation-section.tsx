@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useLatestDonations } from '@features';
+import { getProfileImageUrl, useLatestDonations } from '@features';
 import { EmbossButton, ProfileAvatar, useTranslation } from '@shared';
 import type { DonationListItem } from '@entities';
 import {
@@ -49,6 +49,9 @@ export function DonationSection(): React.ReactElement {
           <>
             {previewSupporters.map((donation) => {
               const displayName = resolveDonationDisplayName(donation, t('donation.anonymous'));
+              const profileImageUrl = donation.isAnonymous === true
+                ? null
+                : getProfileImageUrl(donation.accountProfileImgUrl);
 
               return (
                 <div
@@ -57,10 +60,14 @@ export function DonationSection(): React.ReactElement {
                   className="flex items-center justify-center"
                 >
                   <ProfileAvatar
-                    imageUrl={donation.isAnonymous === true ? null : donation.accountProfileImgUrl}
+                    imageUrl={profileImageUrl}
                     name={displayName}
                     size="md"
-                    className="h-12 w-12 rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-700"
+                    className={`h-12 w-12 rounded-2xl shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700 ${
+                      donation.isAnonymous === true
+                        ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
+                        : 'bg-white dark:bg-slate-900'
+                    }`}
                     fallbackContent={donation.isAnonymous === true ? <AnonymousSupporterIcon /> : undefined}
                   />
                 </div>

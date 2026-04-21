@@ -1,7 +1,9 @@
-import { useAllDonations } from '@features';
-import { ProfileAvatar, useTranslation } from '@shared';
+import { getProfileImageUrl, useAllDonations } from '@features';
+import { ProfileAvatar, useAuthStore, useTranslation } from '@shared';
 import {
   AnonymousSupporterIcon,
+  getDonationTierGlowClass,
+  isRainbowDonationTier,
   normalizeDonationType,
   resolveDonationDisplayName,
 } from './donation-support';
@@ -33,7 +35,9 @@ function formatDonationAmount(amount: string | null, currency: string | null, fa
 // 임시 위젯: 후원정보 페이지에서 전체 후원 목록을 간단히 표시한다.
 export function DonationInfoListWidget(): React.ReactElement {
   const { t, language } = useTranslation();
+  const accountInfo = useAuthStore((state) => state.accountInfo);
   const { data, isLoading, isError } = useAllDonations();
+  const isAdmin = accountInfo?.is_admin === true;
 
   return (
     <section className="rounded-4xl border border-white/70 bg-white/85 p-6 shadow-[0_18px_40px_rgba(15,23,42,0.08)] backdrop-blur dark:border-gray-700 dark:bg-gray-900/80 dark:shadow-[0_18px_40px_rgba(0,0,0,0.28)] sm:p-8">
@@ -73,19 +77,29 @@ export function DonationInfoListWidget(): React.ReactElement {
         <div className="mt-5 space-y-3">
           {data?.map((donation) => {
             const displayName = resolveDonationDisplayName(donation, t('donation.anonymous'));
+            const glowClass = getDonationTierGlowClass(donation);
+            const isRainbowTier = isRainbowDonationTier(donation);
+            const profileImageUrl = donation.isAnonymous === true
+              ? null
+              : getProfileImageUrl(donation.accountProfileImgUrl);
 
-            return (
+            const article = (
               <article
-                key={donation.donationId}
-                className="rounded-3xl border border-white bg-white/90 p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900/80"
+                className={`rounded-3xl border bg-white/90 p-4 shadow-sm dark:bg-gray-900/80 ${glowClass} ${
+                  donation.isAnonymous === true ? 'border-slate-300/80 dark:border-slate-600' : ''
+                }`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <ProfileAvatar
-                      imageUrl={donation.isAnonymous === true ? null : donation.accountProfileImgUrl}
+                      imageUrl={profileImageUrl}
                       name={displayName}
                       size="md"
-                      className="h-11 w-11 rounded-2xl"
+                      className={`h-11 w-11 rounded-2xl ${
+                        donation.isAnonymous === true
+                          ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
+                          : ''
+                      }`}
                       fallbackContent={donation.isAnonymous === true ? <AnonymousSupporterIcon /> : undefined}
                     />
 
@@ -103,13 +117,15 @@ export function DonationInfoListWidget(): React.ReactElement {
                   </div>
 
                   <div className="text-right">
-                    <p className="text-sm font-black text-amber-700 dark:text-amber-300">
-                      {formatDonationAmount(
-                        donation.amount,
-                        donation.currency,
-                        t('donation.amountFallback'),
-                      )}
-                    </p>
+                    {isAdmin ? (
+                      <p className="text-sm font-black text-amber-700 dark:text-amber-300">
+                        {formatDonationAmount(
+                          donation.amount,
+                          donation.currency,
+                          t('donation.amountFallback'),
+                        )}
+                      </p>
+                    ) : null}
                     <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                       {formatDonationDate(donation.receivedAt, language)}
                     </p>
@@ -122,6 +138,21 @@ export function DonationInfoListWidget(): React.ReactElement {
                     : donation.message ?? t('donation.noMessage')}
                 </p>
               </article>
+            );
+
+            return isRainbowTier ? (
+              <div
+                key={donation.donationId}
+                className="donation-tier-rainbow rounded-3xl p-[1.5px]"
+              >
+                <div className="rounded-3xl bg-white dark:bg-gray-900">
+                  {article}
+                </div>
+              </div>
+            ) : (
+              <div key={donation.donationId}>
+                {article}
+              </div>
             );
           })}
         </div>
