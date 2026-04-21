@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Accordion, EmbossButton, getLogoByLanguage, talkerFinger, talkerStart, useTranslation } from '@shared';
+import { DonationSection } from '../../donation-section';
 import { DocInteractiveTutorial } from './DocInteractiveTutorial';
 import { DocVideoAccordion } from './DocVideoAccordion';
 
-type DocSectionId = 'overview' | 'tutorial' | 'rules' | 'faq' | 'video' | 'play';
+type DocSectionId = 'overview' | 'tutorial' | 'rules' | 'faq' | 'video' | 'donation' | 'play';
 
 function useScrollReveal(): RefObject<HTMLElement | null> {
   const ref = useRef<HTMLElement>(null);
@@ -116,6 +117,7 @@ function TocPanel({
 export function DocContentView(): React.ReactElement {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
+  const hasKofiUrl = Boolean(import.meta.env.VITE_KOFI_URL);
   const [activeSectionId, setActiveSectionId] = useState<DocSectionId>('overview');
   const [floatingTocOpacity, setFloatingTocOpacity] = useState<number>(0);
   const [isFloatingTocOpen, setIsFloatingTocOpen] = useState<boolean>(false);
@@ -126,6 +128,7 @@ export function DocContentView(): React.ReactElement {
   const rulesRef = useScrollReveal();
   const faqRef = useScrollReveal();
   const videoRef = useScrollReveal();
+  const donationRef = useScrollReveal();
   const ctaRef = useScrollReveal();
   const tocSectionRef = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -137,7 +140,11 @@ export function DocContentView(): React.ReactElement {
         { id: 'faq', ref: faqRef },
         { id: 'video', ref: videoRef },
         { id: 'play', ref: ctaRef },
-      ] as const satisfies ReadonlyArray<{ id: DocSectionId; ref: RefObject<HTMLElement | null> }>;
+      ] as Array<{ id: DocSectionId; ref: RefObject<HTMLElement | null> }>;
+
+      if (hasKofiUrl) {
+        docSections.push({ id: 'donation', ref: donationRef });
+      }
       const viewportAnchor = window.innerHeight * 0.28;
       let nextActiveSectionId: DocSectionId = 'overview';
 
@@ -156,7 +163,7 @@ export function DocContentView(): React.ReactElement {
       const scrollBottom = window.scrollY + window.innerHeight;
       const documentBottom = document.documentElement.scrollHeight;
       if (documentBottom - scrollBottom <= 32) {
-        nextActiveSectionId = 'play';
+        nextActiveSectionId = hasKofiUrl ? 'donation' : 'play';
       }
 
       setActiveSectionId(nextActiveSectionId);
@@ -170,7 +177,7 @@ export function DocContentView(): React.ReactElement {
       window.removeEventListener('scroll', updateActiveSection);
       window.removeEventListener('resize', updateActiveSection);
     };
-  }, [overviewRef, tutorialRef, rulesRef, faqRef, videoRef, ctaRef]);
+  }, [overviewRef, tutorialRef, rulesRef, faqRef, videoRef, donationRef, ctaRef, hasKofiUrl]);
 
   useEffect(() => {
     const handleFloatingTocOpacity = (): void => {
@@ -218,7 +225,12 @@ export function DocContentView(): React.ReactElement {
     { id: 'faq', label: t('doc.toc.faq'), icon: '🧠' },
     { id: 'video', label: t('doc.toc.video'), icon: '🎬' },
     { id: 'play', label: t('doc.toc.play'), icon: '🏁' },
+    { id: 'donation', label: t('doc.toc.donation'), icon: 'K' },
   ];
+
+  if (!hasKofiUrl) {
+    tocItems.pop();
+  }
 
   const handleScrollToSection = (sectionId: DocSectionId): void => {
     document.getElementById(sectionId)?.scrollIntoView({
@@ -736,6 +748,17 @@ export function DocContentView(): React.ReactElement {
               </p>
             </div>
           </section>
+
+          {hasKofiUrl ? (
+            <section
+              id="donation"
+              data-doc-section=""
+              ref={donationRef}
+              className="scroll-reveal-section"
+            >
+              <DonationSection />
+            </section>
+          ) : null}
         </div>
         </div>
       </div>

@@ -46,4 +46,10 @@ export const API_ENDPOINTS = {
   RANKING: {
     LIST: '/api/ranking/list',
   },
+  DONATION: {
+    ALL: '/api/donations',
+    LATEST: '/api/donations/latest',
+    DETAIL: '/api/donations', // + /{donationId}
+    WEBHOOK_KOFI: '/api/webhook/kofi',
+  },
 } as const;
