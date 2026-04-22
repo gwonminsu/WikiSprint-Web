@@ -1,6 +1,6 @@
 import { confirmAccountTransferDonation, getProfileImageUrl, usePendingAccountTransferDonations } from '@features';
 import { ProfileAvatar, queryClient, useDialog, useToast, useTranslation } from '@shared';
-import { AnonymousSupporterIcon } from '../lib/donationSupport';
+import { AnonymousSupporterIcon, shouldUseAnonymousDonationAvatar } from '../lib/donationSupport';
 
 function formatDonationDate(receivedAt: string, language: string): string {
   const locale = language === 'ko'
@@ -106,7 +106,12 @@ export function DonationPendingListWidget(): React.ReactElement | null {
               donation.accountNick,
               t('donation.pendingLoggedOutAccountNick'),
             );
-            const profileImageUrl = donation.isAnonymous === true
+            const useAnonymousAvatar = shouldUseAnonymousDonationAvatar(
+              donation.accountNick,
+              donation.supporterName,
+              donation.isAnonymous,
+            );
+            const profileImageUrl = useAnonymousAvatar
               ? null
               : getProfileImageUrl(donation.accountProfileImgUrl);
 
@@ -122,11 +127,11 @@ export function DonationPendingListWidget(): React.ReactElement | null {
                       name={supporterDisplayName}
                       size="md"
                       className={`h-11 w-11 rounded-2xl ${
-                        donation.isAnonymous === true
+                        useAnonymousAvatar
                           ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
                           : ''
                       }`}
-                      fallbackContent={donation.isAnonymous === true ? <AnonymousSupporterIcon /> : undefined}
+                      fallbackContent={useAnonymousAvatar ? <AnonymousSupporterIcon /> : undefined}
                     />
 
                     <div>
