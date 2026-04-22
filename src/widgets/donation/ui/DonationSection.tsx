@@ -55,6 +55,7 @@ export function DonationSection(): React.ReactElement {
                 donation.supporterName,
                 donation.isAnonymous,
               );
+              const useAnonymousIcon = donation.isAnonymous === true;
               const profileImageUrl = useAnonymousAvatar
                 ? null
                 : getProfileImageUrl(donation.accountProfileImgUrl);
@@ -70,11 +71,11 @@ export function DonationSection(): React.ReactElement {
                     name={displayName}
                     size="md"
                     className={`h-12 w-12 rounded-2xl shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700 ${
-                      useAnonymousAvatar
+                      useAnonymousIcon
                         ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
                         : 'bg-white dark:bg-slate-900'
                     }`}
-                    fallbackContent={useAnonymousAvatar ? <AnonymousSupporterIcon /> : undefined}
+                    fallbackContent={useAnonymousIcon ? <AnonymousSupporterIcon /> : undefined}
                   />
                 </div>
               );
