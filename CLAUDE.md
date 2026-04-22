@@ -279,6 +279,11 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.11.0)
+
+- 게임 진행 중 브라우저 뒤로가기 이탈 가드가 추가됐습니다. `features/game-record/lib/useGameLeaveGuard.ts`의 `GameLeaveGuard` 컴포넌트가 `Router.tsx` 최상단에 상시 마운트되며, `phase === 'playing'`일 때 history sentinel을 삽입하고 `popstate` 시 확인 다이얼로그를 띄웁니다.
+- `Header.tsx`의 자체 `guardedNavigate` 로직이 `useGameLeaveGuard` 훅으로 분리됐습니다. 다른 위젯/페이지에서도 `const { guardedNavigate } = useGameLeaveGuard()` 형태로 재사용 가능합니다.
+
 ## 최근 변경 메모 (v2.10.0)
 
 - 후원 기능이 추가됐습니다. `app/App.tsx`에서 `<DonationFloatingButton />`이 전역 마운트되며 `intro` → `overseas`(Ko-fi iframe) / `domestic`(계좌이체 요청 폼) 3-패널로 전환합니다.

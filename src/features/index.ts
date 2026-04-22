@@ -44,6 +44,8 @@ import {
   getGameRecords,
   getSharedRecord,
   useGameRecord,
+  useGameLeaveGuard,
+  GameLeaveGuard,
   useGameRecords,
   useSharedRecord,
 } from './game-record';
@@ -80,6 +82,8 @@ export const f = {
     useDeleteTargetWord,
     // GameRecord
     useGameRecord,
+    useGameLeaveGuard,
+    GameLeaveGuard,
     useGameRecords,
     useSharedRecord,
     // Ranking
@@ -156,6 +160,8 @@ export {
   getGameRecords,
   getSharedRecord,
   useGameRecord,
+  useGameLeaveGuard,
+  GameLeaveGuard,
   useGameRecords,
   useSharedRecord,
 } from './game-record';
