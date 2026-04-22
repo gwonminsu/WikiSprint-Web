@@ -6,7 +6,7 @@ import {
   isRainbowDonationTier,
   normalizeDonationType,
   resolveDonationDisplayName,
-} from './donation-support';
+} from '../lib/donationSupport';
 
 function formatDonationDate(receivedAt: string, language: string): string {
   const locale = language === 'ko'
@@ -32,7 +32,7 @@ function formatDonationAmount(amount: string | null, currency: string | null, fa
   return [amount, currency].filter(Boolean).join(' ');
 }
 
-// 임시 위젯: 후원정보 페이지에서 전체 후원 목록을 간단히 표시한다.
+// 후원 정보 페이지에서 전체 후원 목록을 표시한다.
 export function DonationInfoListWidget(): React.ReactElement {
   const { t, language } = useTranslation();
   const accountInfo = useAuthStore((state) => state.accountInfo);

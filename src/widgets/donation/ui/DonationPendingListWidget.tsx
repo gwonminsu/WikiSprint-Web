@@ -1,6 +1,6 @@
 import { confirmAccountTransferDonation, getProfileImageUrl, usePendingAccountTransferDonations } from '@features';
 import { ProfileAvatar, queryClient, useDialog, useToast, useTranslation } from '@shared';
-import { AnonymousSupporterIcon } from './donation-support';
+import { AnonymousSupporterIcon } from '../lib/donationSupport';
 
 function formatDonationDate(receivedAt: string, language: string): string {
   const locale = language === 'ko'

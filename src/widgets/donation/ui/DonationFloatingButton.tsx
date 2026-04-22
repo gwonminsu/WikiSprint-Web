@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createAccountTransferDonation } from '@features';
 import { EmbossButton, queryClient, useAuthStore, useDialog, useToast, useTranslation } from '@shared';
-import { SupportButtonIcon } from '../../donation-support';
+import { SupportButtonIcon } from '../lib/donationSupport';
 
 const KOFI_URL = 'https://ko-fi.com/minjoy';
 const KOFI_EMBED_URL = 'https://ko-fi.com/minjoy/?hidefeed=true&widget=true&embed=true&preview=true';
-const DOMESTIC_ACCOUNT_INFO = 'IM뱅크 508-13-061547-7 권민수';
+const DOMESTIC_ACCOUNT_INFO = 'IM뱅크 508-13-061547-7 권민정';
 const KRW_PER_COFFEE = 2000;
 
 type PanelMode = 'intro' | 'overseas' | 'domestic';
@@ -109,13 +109,13 @@ export function DonationFloatingButton(): React.ReactElement {
   const handleDomesticSubmit = (): void => {
     const normalizedRemitterName = remitterName.trim();
     if (normalizedRemitterName.length === 0) {
-      toast.error('입금자명은 필수입니다');
+      toast.error('입금자명은 필수입니다.');
       return;
     }
 
     showConfirm({
       title: '국내 후원 확인',
-      message: `입금자명 ${normalizedRemitterName}이(가) 확실합니까?`,
+      message: `입금자명 ${normalizedRemitterName}으로 신청하시겠습니까?`,
       confirmText: '확인 후 요청',
       cancelText: t('common.cancel'),
       onConfirm: () => {

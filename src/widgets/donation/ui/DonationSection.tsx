@@ -6,7 +6,7 @@ import {
   AnonymousSupporterIcon,
   buildDonationIdentityKey,
   resolveDonationDisplayName,
-} from './donation-support';
+} from '../lib/donationSupport';
 
 function getUniqueRecentSupporters(donations: DonationListItem[]): DonationListItem[] {
   const seenKeys = new Set<string>();
