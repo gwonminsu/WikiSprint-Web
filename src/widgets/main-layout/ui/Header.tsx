@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage, tutoDoc, useGameStore } from '@shared';
-import { getProfileImageUrl, useGameRecord } from '@features';
+import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage, tutoDoc } from '@shared';
+import { getProfileImageUrl, useGameLeaveGuard } from '@features';
 
 function NavDivider(): React.ReactElement {
   return (
@@ -12,41 +12,9 @@ export function Header(): React.ReactElement {
   const { accountInfo, clearAuth } = useAuthStore();
   const { showConfirm } = useDialog();
   const { t, language } = useTranslation();
-  const { info: showInfo, success: showSuccess } = useToast();
+  const { success: showSuccess } = useToast();
   const navigate = useNavigate();
-
-  const phase = useGameStore((s) => s.phase);
-  const resetGame = useGameStore((s) => s.resetGame);
-  const { abandonRecord } = useGameRecord();
-
-  // 결과 화면에서 /auth 로 이동할 때는 결과 상태를 유지해야 로그인 후 공유를 이어서 할 수 있다.
-  const guardedNavigate = (path: string): void => {
-    if (phase === 'playing') {
-      showConfirm({
-        message: t('game.leaveConfirm'),
-        onConfirm: () => {
-          abandonRecord();
-          resetGame();
-          navigate(path);
-          showInfo(t('game.abandonedByNavigation'));
-        },
-      });
-      return;
-    }
-
-    if (phase === 'completed' || phase === 'result') {
-      if (path === '/auth') {
-        navigate(path);
-        return;
-      }
-
-      resetGame();
-      navigate(path);
-      return;
-    }
-
-    navigate(path);
-  };
+  const { guardedNavigate } = useGameLeaveGuard();
 
   const profileImageUrl = accountInfo?.profile_img_url
     ? getProfileImageUrl(accountInfo.profile_img_url)

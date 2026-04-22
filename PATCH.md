@@ -1,3 +1,22 @@
+## v2.11.0 (2026-04-22)
+
+### Added
+- 게임 진행 중 브라우저 뒤로가기 이탈 가드 추가
+  - `features/game-record/lib/useGameLeaveGuard.ts` 신규 — `GameLeaveGuard` 전역 컴포넌트가 `phase === 'playing'` 진입 시 history에 sentinel 상태를 삽입하고, `popstate` 발생 시 이탈 확인 다이얼로그를 띄움
+  - 확인 시 `abandonRecord()` + `resetGame()` 실행 후 이동, 취소 시 sentinel을 다시 push해 현재 화면 유지
+  - `Router.tsx` 최상단에 `<GameLeaveGuard />` 상시 마운트
+- Header 네비게이션 이탈 가드 훅 공개: `useGameLeaveGuard()` → `guardedNavigate(path)` 형태로 외부 위젯/페이지에서도 재사용 가능
+- 네임스페이스 등록: `f.hook.useGameLeaveGuard`, `f.GameLeaveGuard`
+
+### Changed
+- `widgets/main-layout/ui/Header.tsx`: 자체적으로 관리하던 `guardedNavigate` 로컬 구현을 제거하고 `useGameLeaveGuard` 훅 사용으로 전환 (중복 제거)
+- `app/router/Router.tsx` `GlobalModals`의 탈퇴 취소 `useEffect` 의존성 배열을 실제 참조하는 값으로 보강
+- 설정 화면 버전 표기를 `2.11.0`으로 갱신
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.10.0 (2026-04-22)
 
 ### Added
