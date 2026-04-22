@@ -26,18 +26,17 @@ export function SupportButtonIcon(): React.ReactElement {
     <svg
       viewBox="0 0 32 32"
       aria-hidden="true"
-      className="h-7 w-7"
+      className="h-10 w-10"
       fill="none"
     >
       <path
-        d="M16 28.3c-7-4.8-10.9-8.5-10.9-13.1 0-3.6 2.8-6.2 6.1-6.2 2 0 3.8.9 4.8 2.4 1-1.5 2.8-2.4 4.8-2.4 3.4 0 6.1 2.7 6.1 6.2 0 4.6-3.8 8.2-10.9 13.1Z"
-        fill="currentColor"
-        opacity="0.96"
+        d="M16 28.8c-7.8-5.4-11.9-9.4-11.9-14.5 0-4 3.1-7 6.9-7 2.2 0 4.1 1 5 2.7 1-1.7 2.9-2.7 5.1-2.7 3.8 0 6.9 3 6.9 7 0 5.1-4.1 9.1-11.9 14.5l-.1.1-.1-.1Z"
+        fill="#f97316"
       />
-      <g transform="translate(16 16) scale(0.82) translate(-16 -16)">
+      <g transform="translate(16 16) scale(0.75) translate(-16 -16)">
         <path
           d="M16 11.8v9M19.2 14.4c0-1.3-1.5-2.3-3.2-2.3s-3.2 1-3.2 2.3 1 2 3.2 2.5 3.2 1.2 3.2 2.5-1.5 2.3-3.2 2.3-3.2-1-3.2-2.3"
-          stroke="#0ea5e9"
+          stroke="#fdba74"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
