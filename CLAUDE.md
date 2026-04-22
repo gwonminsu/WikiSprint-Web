@@ -71,7 +71,8 @@ src/
 │   ├── SettingsPage.tsx
 │   ├── DocPage.tsx         # WikiSprint 소개 문서
 │   ├── RankingPage.tsx     # 랭킹 페이지
-│   └── SharePage.tsx       # 공유 결과 페이지 (/share/:shareId)
+│   ├── SharePage.tsx       # 공유 결과 페이지 (/share/:shareId)
+│   └── DonationInfoPage.tsx # 후원 정보 페이지 (/donations) — 관리자에게만 대기 목록·금액 노출
 │
 ├── widgets/                # 독립적 UI 블록
 │   ├── index.ts            # 네임스페이스 export (w.*)
@@ -86,8 +87,14 @@ src/
 │   ├── game-record/        # GameRecordView (전적 페이지 — 요약 바 + 카드 리스트)
 │   │   ├── ui/             # GameRecordView, RecordSummaryBar, RecordCard, RecordPathSegment, EmptyRecordView
 │   │   └── lib/            # formatRecordTime
-│   └── ranking/            # RankingView (랭킹 페이지 — 아케이드 스타일 리더보드)
-│       └── ui/             # RankingView, RankingCard, RankingTabs, RankingMedalFrame, MyRankingCard
+│   ├── ranking/            # RankingView (랭킹 페이지 — 아케이드 스타일 리더보드)
+│   │   └── ui/             # RankingView, RankingCard, RankingTabs, RankingMedalFrame, MyRankingCard
+│   ├── donation-floating/  # DonationFloatingButton (전역 플로팅 버튼 — intro/overseas/domestic 3-패널)
+│   │   └── ui/             # DonationFloatingButton.tsx
+│   ├── donation-section.tsx   # DonationSection (/doc 하단 최근 후원자 5명 프리뷰)
+│   ├── donation-info-list.tsx # DonationInfoListWidget (전체 후원 목록, 티어 글로우)
+│   ├── donation-pending-list.tsx # DonationPendingListWidget (관리자 전용 대기 목록)
+│   └── donation-support.tsx   # 후원 공용 유틸 — AnonymousSupporterIcon, resolveDonationDisplayName, getDonationTierGlowClass 등
 │
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
@@ -96,7 +103,8 @@ src/
 │   ├── consent/            # 회원가입 (register API, useRegister 훅)
 │   ├── admin/              # 관리자 전용 (제시어 CRUD — adminApi, useTargetWords 등)
 │   ├── game-record/        # 게임 전적 (useGameRecord, useGameRecords, gameRecordApi)
-│   └── ranking/            # 랭킹 조회 (getRanking, useRanking)
+│   ├── ranking/            # 랭킹 조회 (getRanking, useRanking)
+│   └── donation/           # 후원 API + 훅 (features/donation.ts — getLatestDonations/getAllDonations/createAccountTransferDonation 등)
 │
 ├── entities/               # 도메인 모델
 │   ├── index.ts            # 네임스페이스 export (e.*)
@@ -104,7 +112,8 @@ src/
 │   ├── account/            # Account, AccountResponse 등
 │   ├── consent/            # ConsentType, ConsentItem, RegisterRequest
 │   ├── game-record/        # GameRecord, RecordSummary, GameRecordListResponse, SharedGameRecord 등
-│   └── ranking/            # RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse 등
+│   ├── ranking/            # RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse 등
+│   └── donation.ts         # DonationListItem, PendingAccountTransferDonationItem, AccountTransferDonationCreateRequest
 │
 └── shared/                 # 공용 코드
     ├── index.ts            # 네임스페이스 export (shared.*)
@@ -147,6 +156,10 @@ w.GameIntroView  // DifficultyDropdown 포함 (ready 상태 우상단 난이도 
 w.GameResultView
 w.GameRecordView
 w.RankingView    // 기간×난이도 Top 100 리더보드
+w.DonationFloatingButton  // 전역 플로팅 후원 버튼 (intro/overseas/domestic 3-패널)
+w.DonationSection         // /doc 하단 최근 후원자 5명 프리뷰
+w.DonationInfoListWidget  // 전체 후원 목록 (티어 글로우, 금액은 관리자만)
+w.DonationPendingListWidget // 관리자 전용 계좌이체 대기 목록
 
 // f (features)
 f.hook.useGoogleLogin
@@ -166,6 +179,13 @@ f.api.auth.cancelDeletion    // POST /api/auth/cancel-deletion
 f.api.account.requestDeletion // POST /api/account/delete/request
 f.api.gameRecord.getSharedRecord  // POST /api/record/share/{shareId} (JWT 불필요)
 f.api.ranking          // getRanking (POST /api/ranking/list)
+f.hook.useLatestDonations            // 최근 후원 Top 20 (TanStack Query)
+f.hook.useAllDonations               // 전체 후원 목록 (TanStack Query)
+f.hook.usePendingAccountTransferDonations  // 관리자 전용 대기 목록
+f.api.donation.getLatestDonations, f.api.donation.getAllDonations
+f.api.donation.createAccountTransferDonation    // POST /api/donations/account-transfer/request
+f.api.donation.getPendingAccountTransferDonations  // 관리자
+f.api.donation.confirmAccountTransferDonation      // 관리자 입금 확인
 
 // e (entities)
 e.auth.type.GoogleLoginRequest, e.auth.type.GoogleLoginResponse
@@ -174,6 +194,7 @@ e.consent.type.*  // ConsentType, ConsentItem, RegisterRequest
 e.wiki.type.*     // WikiSummary, WikiArticle, TargetWordResponse
 e.gameRecord.type.*  // GameRecord, GameRecordStatus, RecordSummary, GameRecordListResponse, SharedGameRecord, StartGameRecordRequest 등
 e.ranking.type.*     // RankingPeriod, RankingDifficulty, RankingRecord, RankingListResponse, RankingListRequest
+e.donation.type.*    // DonationListItem, PendingAccountTransferDonationItem, AccountTransferDonationCreateRequest
 
 // shared
 shared.ui.Dialog, shared.ui.ToastContainer
@@ -204,6 +225,7 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 /doc             → DocPage       (WikiSprint 소개)
 /ranking         → RankingPage   (게스트 포함 누구나 접근 가능)
 /share/:shareId  → SharePage     (공유 결과 페이지, JWT 불필요)
+/donations       → DonationInfoPage (후원 정보 + 관리자 대기 목록, 누구나 접근 가능)
 ```
 
 > PrivateRoute 없음. 게임 진행 중(`playing`) 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
@@ -256,6 +278,13 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 - 문서 문구 수정 시 `ko`, `en`, `ja` locale을 함께 갱신합니다.
 
 ---
+
+## 최근 변경 메모 (v2.10.0)
+
+- 후원 기능이 추가됐습니다. `app/App.tsx`에서 `<DonationFloatingButton />`이 전역 마운트되며 `intro` → `overseas`(Ko-fi iframe) / `domestic`(계좌이체 요청 폼) 3-패널로 전환합니다.
+- 국내 후원은 Ko-fi가 한국 결제를 지원하지 않아 **계좌이체 + 관리자 수동 승인** 방식으로 설계되어 있습니다. 카카오페이/토스 등 간편결제는 미사용입니다.
+- 후원 티어는 `source === 'account transfer'`이면 KRW 기준(≤5000 bronze, ≤10000 silver, ≤20000 gold, >20000 rainbow), Ko-fi면 USD 기준(`widgets/donation-support.tsx`)으로 분기됩니다.
+- 관리자(`is_admin`)에게만 대기 목록(`DonationPendingListWidget`)과 후원 금액이 노출됩니다.
 
 ## 최근 변경 메모 (v2.9.1)
 

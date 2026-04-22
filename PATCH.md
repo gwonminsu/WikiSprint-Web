@@ -1,3 +1,40 @@
+## v2.10.0 (2026-04-22)
+
+### Added
+- 후원 기능 신규 도입
+  - 전역 플로팅 "Support me" 버튼(`widgets/donation-floating/ui/DonationFloatingButton.tsx`)을 `app/App.tsx`에 상시 마운트. `intro` / `overseas` / `domestic` 3-패널 전환식 UI
+  - 해외 후원: Ko-fi(`https://ko-fi.com/minjoy`) iframe 임베드 + `openKofiPage` 새 탭 이동 지원
+  - 국내 후원: Ko-fi가 한국 결제를 미지원하여 계좌이체 요청 + 관리자 수동 승인 방식 (IM뱅크 `508-13-061547-7 권민수`). 커피잔 수(1~100) × `KRW_PER_COFFEE = 2000` 스텝퍼, 표시 닉네임·입금자명·메시지·익명 체크박스 입력
+- 신규 라우트 `/donations` 및 `pages/DonationInfoPage.tsx` 추가 (`app/router/Router.tsx` lazy 로딩 및 Route 등록)
+  - 관리자(`is_admin`)에게만 `DonationPendingListWidget`과 후원 금액 공개
+- 위젯 4종 신규
+  - `DonationFloatingButton` — 후원 진입 플로팅 버튼
+  - `DonationSection` — `/doc` 페이지 하단 최근 후원자 5명 프리뷰
+  - `DonationInfoListWidget` — 전체 후원 목록(티어 글로우 적용, 금액은 관리자만 노출)
+  - `DonationPendingListWidget` — 관리자 전용 대기 목록 + "입금 확인 완료" 처리
+- 후원 티어 글로우 스타일(`shared/styles/index.css`)
+  - `.donation-tier-{bronze|silver|gold|rainbow}` 클래스 + `@keyframes donationRainbowShift`
+  - `source === 'account transfer'`이면 KRW 기준(≤5000/≤10000/≤20000/>20000), Ko-fi면 USD 기준(≤5/≤10/≤20/>20)
+- 엔드포인트 상수(`shared/api/constants/endpoints.ts` `DONATION.*`): `ALL`, `LATEST`, `DETAIL`, `ACCOUNT_TRANSFER_REQUEST`, `ADMIN_PENDING_ACCOUNT_TRANSFER`, `ADMIN_CONFIRM_ACCOUNT_TRANSFER`, `WEBHOOK_KOFI`
+- API/훅(`features/donation.ts`): `getLatestDonations`, `getAllDonations`, `createAccountTransferDonation`, `getPendingAccountTransferDonations`, `confirmAccountTransferDonation` + 훅 3종(`useLatestDonations`, `useAllDonations`, `usePendingAccountTransferDonations`)
+- 엔티티(`entities/donation.ts`): `DonationListItem`, `PendingAccountTransferDonationItem`, `AccountTransferDonationCreateRequest` (별도 status enum 없이 `source` + `currency` 필드로 분기)
+- 네임스페이스 등록: `w.DonationFloatingButton`, `w.DonationSection`, `w.DonationInfoListWidget`, `w.DonationPendingListWidget`, `f.hook.useLatestDonations`, `f.hook.useAllDonations`, `f.hook.usePendingAccountTransferDonations`, `f.api.donation.*`, `e.donation.type.*`
+- i18n(`ko/en/ja`) `donation.*` + `doc.donation.*` 약 50여 키 추가 (해외/국내 분기 문구 포함)
+
+### Changed
+- `shared/ui/ProfileAvatar.tsx`: `fallbackContent?: React.ReactNode` prop 추가 — 이미지 없을 때 이니셜 대신 `AnonymousSupporterIcon` 등 커스텀 노드 렌더 가능. 익명 후원자 표시에 활용
+- `widgets/doc-content/ui/DocContentView.tsx`: TOC `DocSectionId`에 `'donation'` 추가, `<DonationSection />`을 `/doc` 페이지 흐름 하단에 삽입
+- 설정 화면 버전 표기를 `2.10.0`으로 갱신
+
+### Fixed
+- 국내 후원 분기 보강(`942a80f`): Ko-fi가 한국 결제를 지원하지 않는 문제를 계좌이체 요청 + 관리자 승인 플로우로 보정
+  - `DonationFloatingButton`에 `'domestic'` 패널, 입금자명 필수 검증, 제출 전 확인 다이얼로그 추가
+  - 쿼리 캐시 3종(`latest`/`all`/`pending-account-transfer`) 무효화 처리
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.9.1 (2026-04-18)
 
 ### Fixed

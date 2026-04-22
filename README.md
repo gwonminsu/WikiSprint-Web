@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.9.1-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.10.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -49,6 +49,7 @@
 | 📘 인터랙티브 문서 가이드 | `/doc` 페이지에 TOC, 플레이형 튜토리얼, FAQ, 영상 아코디언 제공 |
 | 🏷️ 전적 난이도 태그 | `/record` 카드에서 제시어 난이도를 함께 표시 |
 | 🔗 공유 결과 링크 | 공유 전용 `shareId` 기반 URL 생성, 24시간 유효 공유 페이지 제공 |
+| 💖 후원 | Ko-fi 해외 후원(iframe) + 국내 계좌이체(관리자 수동 승인) 2-분기 구조, 티어 글로우 표시 |
 | 🌍 다국어 지원 | 한국어 · 영어 · 일본어 (i18n) |
 | 🎨 테마 지원 | 라이트 / 다크 / 시스템 자동 테마 |
 | 📱 웹뷰 호환 | `window.alert` 없이 커스텀 Dialog/Toast 사용 |
@@ -112,7 +113,8 @@ WikiSprint-Web/
     │   ├── DocPage.tsx           # WikiSprint 소개 문서
     │   ├── RecordPage.tsx        # 전적 조회 페이지
     │   ├── RankingPage.tsx       # 랭킹 페이지
-    │   └── SharePage.tsx         # 공유 결과 페이지 (/share/:shareId)
+    │   ├── SharePage.tsx         # 공유 결과 페이지 (/share/:shareId)
+    │   └── DonationInfoPage.tsx  # 후원 정보 페이지 (/donations)
     │
     ├── widgets/
     │   ├── main-layout/          # Header 네비게이션
@@ -122,7 +124,12 @@ WikiSprint-Web/
     │   ├── game-intro/           # GameIntroView (게임 진행 화면 + Wikipedia 렌더링)
     │   ├── game-result/          # GameResultView (게임 결과 카드 타임라인)
     │   ├── game-record/          # GameRecordView (전적 목록 + 통계 바)
-    │   └── ranking/              # RankingView (기간×난이도 리더보드)
+    │   ├── ranking/              # RankingView (기간×난이도 리더보드)
+    │   ├── donation-floating/    # DonationFloatingButton (전역 플로팅 후원 버튼)
+    │   ├── donation-section.tsx  # DonationSection (/doc 하단 후원자 프리뷰)
+    │   ├── donation-info-list.tsx    # DonationInfoListWidget (전체 목록, 티어 글로우)
+    │   ├── donation-pending-list.tsx # DonationPendingListWidget (관리자 대기 목록)
+    │   └── donation-support.tsx      # 후원 공용 유틸 (티어 계산, 익명 아이콘 등)
     │
     ├── features/
     │   ├── auth/                 # Google OAuth 로그인 훅 & API
@@ -131,7 +138,8 @@ WikiSprint-Web/
     │   ├── wiki/                 # Wikipedia API 클라이언트
     │   ├── admin/                # 관리자 제시어 CRUD
     │   ├── game-record/          # 게임 전적 훅 & API
-    │   └── ranking/              # 랭킹 조회 훅 & API
+    │   ├── ranking/              # 랭킹 조회 훅 & API
+    │   └── donation.ts           # 후원 API + 훅 (getLatestDonations, createAccountTransferDonation 등)
     │
     ├── entities/
     │   ├── auth/                 # GoogleLoginRequest/Response 타입
@@ -139,7 +147,8 @@ WikiSprint-Web/
     │   ├── consent/              # ConsentType, ConsentItem, RegisterRequest 타입
     │   ├── wiki/                 # WikiSummary, TargetWordResponse 타입
     │   ├── game-record/          # GameRecord, RecordSummary 타입
-    │   └── ranking/              # RankingRecord, RankingListResponse 타입
+    │   ├── ranking/              # RankingRecord, RankingListResponse 타입
+    │   └── donation.ts           # DonationListItem, PendingAccountTransferDonationItem 타입
     │
     └── shared/
         ├── api/                  # JWT 인터셉터, API 클라이언트, 엔드포인트
@@ -209,6 +218,7 @@ VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 | `/record` | `RecordPage` | ✅ |
 | `/ranking` | `RankingPage` | ❌ (게스트 포함) |
 | `/share/:shareId` | `SharePage` | ❌ |
+| `/donations` | `DonationInfoPage` | ❌ |
 
 > PrivateRoute 없음. 게임 진행 중 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
 
@@ -229,6 +239,17 @@ VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 - 결과 화면에서 공유 직전 `POST /api/record/share`를 호출해 공유 전용 `shareId`를 생성합니다.
 - 공유 URL은 전적 ID를 그대로 쓰지 않고, 서버가 발급한 `shareId`를 기반으로 만듭니다.
 - 공유 페이지는 24시간 동안 유효하며, 카카오톡 공유, QR 코드, 링크 복사 흐름과 연결됩니다.
+
+---
+
+## 💖 후원 메모
+
+- 전역 플로팅 버튼(`DonationFloatingButton`)은 `app/App.tsx`에서 상시 마운트됩니다.
+- 해외 후원: Ko-fi(`https://ko-fi.com/minjoy`) iframe 임베드를 통한 PayPal 결제.
+- 국내 후원: Ko-fi가 한국 결제를 지원하지 않아 계좌이체 + 관리자 수동 승인 방식으로 구현됩니다.
+  - 커피 1잔 = 2000 KRW, 1~100잔 선택 가능
+  - `POST /api/donations/account-transfer/request` 호출 → 관리자가 `/donations` 페이지에서 입금 확인
+- 후원 티어(`bronze/silver/gold/rainbow`)는 `widgets/donation-support.tsx`의 `getDonationTierGlowClass`에서 결정됩니다.
 
 ---
 
