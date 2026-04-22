@@ -5,6 +5,7 @@ import {
   getDonationTierGlowClass,
   isRainbowDonationTier,
   normalizeDonationType,
+  shouldUseAnonymousDonationAvatar,
 } from '../lib/donationSupport';
 
 function formatDonationDate(receivedAt: string, language: string): string {
@@ -96,14 +97,19 @@ export function DonationInfoListWidget(): React.ReactElement {
             );
             const glowClass = getDonationTierGlowClass(donation);
             const isRainbowTier = isRainbowDonationTier(donation);
-            const profileImageUrl = donation.isAnonymous === true
+            const useAnonymousAvatar = shouldUseAnonymousDonationAvatar(
+              donation.accountNick,
+              donation.supporterName,
+              donation.isAnonymous,
+            );
+            const profileImageUrl = useAnonymousAvatar
               ? null
               : getProfileImageUrl(donation.accountProfileImgUrl);
 
             const article = (
               <article
                 className={`rounded-3xl border bg-white/90 p-4 shadow-sm dark:bg-gray-900/80 ${glowClass} ${
-                  donation.isAnonymous === true ? 'border-slate-300/80 dark:border-slate-600' : ''
+                  useAnonymousAvatar ? 'border-slate-300/80 dark:border-slate-600' : ''
                 }`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -113,11 +119,11 @@ export function DonationInfoListWidget(): React.ReactElement {
                       name={displayName}
                       size="md"
                       className={`h-11 w-11 rounded-2xl ${
-                        donation.isAnonymous === true
+                        useAnonymousAvatar
                           ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
                           : ''
                       }`}
-                      fallbackContent={donation.isAnonymous === true ? <AnonymousSupporterIcon /> : undefined}
+                      fallbackContent={useAnonymousAvatar ? <AnonymousSupporterIcon /> : undefined}
                     />
 
                     <div>

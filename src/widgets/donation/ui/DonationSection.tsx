@@ -6,6 +6,7 @@ import {
   AnonymousSupporterIcon,
   buildDonationIdentityKey,
   resolveDonationDisplayName,
+  shouldUseAnonymousDonationAvatar,
 } from '../lib/donationSupport';
 
 function getUniqueRecentSupporters(donations: DonationListItem[]): DonationListItem[] {
@@ -49,7 +50,12 @@ export function DonationSection(): React.ReactElement {
           <>
             {previewSupporters.map((donation) => {
               const displayName = resolveDonationDisplayName(donation, t('donation.anonymous'));
-              const profileImageUrl = donation.isAnonymous === true
+              const useAnonymousAvatar = shouldUseAnonymousDonationAvatar(
+                donation.accountNick,
+                donation.supporterName,
+                donation.isAnonymous,
+              );
+              const profileImageUrl = useAnonymousAvatar
                 ? null
                 : getProfileImageUrl(donation.accountProfileImgUrl);
 
@@ -64,11 +70,11 @@ export function DonationSection(): React.ReactElement {
                     name={displayName}
                     size="md"
                     className={`h-12 w-12 rounded-2xl shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700 ${
-                      donation.isAnonymous === true
+                      useAnonymousAvatar
                         ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
                         : 'bg-white dark:bg-slate-900'
                     }`}
-                    fallbackContent={donation.isAnonymous === true ? <AnonymousSupporterIcon /> : undefined}
+                    fallbackContent={useAnonymousAvatar ? <AnonymousSupporterIcon /> : undefined}
                   />
                 </div>
               );
