@@ -1,6 +1,6 @@
 import type { DonationListItem } from '@entities';
 
-// 익명 후원자용 실루엣 아이콘이다.
+// 익명 후원자용 아바타 대체 아이콘이다.
 export function AnonymousSupporterIcon(): React.ReactElement {
   return (
     <svg
@@ -46,20 +46,6 @@ export function SupportButtonIcon(): React.ReactElement {
   );
 }
 
-// 프로필 URL이 안전한지 확인한다.
-export function isSafeProfileImageUrl(url: string | null): boolean {
-  if (!url) {
-    return false;
-  }
-
-  try {
-    const parsedUrl = new URL(url);
-    return parsedUrl.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
-
 // 후원자의 표시 이름을 계산한다.
 export function resolveDonationDisplayName(
   donation: DonationListItem,
@@ -72,7 +58,7 @@ export function resolveDonationDisplayName(
   return donation.accountNick ?? donation.supporterName ?? anonymousLabel;
 }
 
-// 후원 타입을 사용자 친화적인 라벨로 정규화한다.
+// 후원 타입을 화면 표시에 맞는 텍스트로 정규화한다.
 export function normalizeDonationType(
   donationType: string | null,
   labels: { oneTime: string; monthly: string },
@@ -97,7 +83,7 @@ export function normalizeDonationType(
   return donationType;
 }
 
-// 최근 후원자 미리보기용 고유 키를 만든다.
+// 최근 후원자 중복 제거용 키를 만든다.
 export function buildDonationIdentityKey(donation: DonationListItem): string {
   if (donation.isAnonymous === true) {
     return `anonymous:${donation.donationId}`;

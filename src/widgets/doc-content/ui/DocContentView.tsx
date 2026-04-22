@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Accordion, EmbossButton, getLogoByLanguage, talkerFinger, talkerStart, useTranslation } from '@shared';
-import { DonationSection } from '../../donation-section';
+import { DonationSection } from '../../donation';
 import { DocInteractiveTutorial } from './DocInteractiveTutorial';
 import { DocVideoAccordion } from './DocVideoAccordion';
 
