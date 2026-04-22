@@ -5,7 +5,7 @@ import { SupportButtonIcon } from '../lib/donationSupport';
 
 const KOFI_URL = 'https://ko-fi.com/minjoy';
 const KOFI_EMBED_URL = 'https://ko-fi.com/minjoy/?hidefeed=true&widget=true&embed=true&preview=true';
-const DOMESTIC_ACCOUNT_INFO = 'IM뱅크 508-13-061547-7 권민정';
+const DOMESTIC_ACCOUNT_INFO = 'IM뱅크 508-13-061547-7 권민수';
 const KRW_PER_COFFEE = 2000;
 
 type PanelMode = 'intro' | 'overseas' | 'domestic';
