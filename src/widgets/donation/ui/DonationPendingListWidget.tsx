@@ -18,23 +18,30 @@ function formatDonationDate(receivedAt: string, language: string): string {
   }).format(new Date(receivedAt));
 }
 
+function resolvePendingSupporterDisplayName(
+  supporterName: string | null,
+  isAnonymous: boolean | null,
+  anonymousLabel: string,
+): string {
+  if (isAnonymous === true) {
+    return anonymousLabel;
+  }
+
+  return supporterName ?? anonymousLabel;
+}
+
+function resolvePendingAccountNick(
+  accountNick: string | null,
+  loggedOutLabel: string,
+): string {
+  return accountNick ?? loggedOutLabel;
+}
+
 export function DonationPendingListWidget(): React.ReactElement | null {
   const { t, language } = useTranslation();
   const { showConfirm } = useDialog();
   const toast = useToast();
   const { data, isLoading, isError } = usePendingAccountTransferDonations();
-
-  const resolvePendingDisplayName = (
-    supporterName: string | null,
-    accountNick: string | null,
-    isAnonymous: boolean | null,
-  ): string => {
-    if (isAnonymous === true) {
-      return t('donation.anonymous');
-    }
-
-    return accountNick ?? supporterName ?? t('donation.anonymous');
-  };
 
   const handleConfirm = (donationId: string): void => {
     showConfirm({
@@ -90,10 +97,14 @@ export function DonationPendingListWidget(): React.ReactElement | null {
       {!isLoading && !isError && (data?.length ?? 0) > 0 ? (
         <div className="mt-5 space-y-3">
           {data?.map((donation) => {
-            const displayName = resolvePendingDisplayName(
+            const supporterDisplayName = resolvePendingSupporterDisplayName(
               donation.supporterName,
-              donation.accountNick,
               donation.isAnonymous,
+              t('donation.anonymous'),
+            );
+            const accountNickDisplay = resolvePendingAccountNick(
+              donation.accountNick,
+              t('donation.pendingLoggedOutAccountNick'),
             );
             const profileImageUrl = donation.isAnonymous === true
               ? null
@@ -108,7 +119,7 @@ export function DonationPendingListWidget(): React.ReactElement | null {
                   <div className="flex items-center gap-3">
                     <ProfileAvatar
                       imageUrl={profileImageUrl}
-                      name={displayName}
+                      name={supporterDisplayName}
                       size="md"
                       className={`h-11 w-11 rounded-2xl ${
                         donation.isAnonymous === true
@@ -120,7 +131,10 @@ export function DonationPendingListWidget(): React.ReactElement | null {
 
                     <div>
                       <p className="text-sm font-black text-gray-900 dark:text-white">
-                        {displayName}
+                        {supporterDisplayName}
+                      </p>
+                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        {t('donation.pendingAccountNick')}: {accountNickDisplay}
                       </p>
                       <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                         {t('donation.pendingRemitterName')}: {donation.remitterName}

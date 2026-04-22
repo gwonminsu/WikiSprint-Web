@@ -155,7 +155,7 @@ export function DonationFloatingButton(): React.ReactElement {
             onClick={closePanel}
           />
 
-          <section className="absolute bottom-20 right-4 z-10 flex h-[min(78vh,780px)] w-[min(calc(100vw-2rem),430px)] flex-col overflow-hidden rounded-[2rem] bg-white shadow-[0_28px_70px_rgba(15,23,42,0.24)] dark:bg-slate-950 sm:bottom-24 sm:right-6">
+          <section className="absolute bottom-20 right-4 z-10 flex h-[min(78vh,780px)] w-[min(calc(100vw-2rem),430px)] flex-col overflow-hidden rounded-4xl bg-white shadow-[0_28px_70px_rgba(15,23,42,0.24)] dark:bg-slate-950 sm:bottom-24 sm:right-6">
             <div className="border-b border-slate-200/80 px-6 pb-5 pt-6 dark:border-slate-800">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -273,7 +273,7 @@ export function DonationFloatingButton(): React.ReactElement {
                     id="kofiframe"
                     src={KOFI_EMBED_URL}
                     title={t('donation.embedTitle')}
-                    className="min-h-[640px] w-full rounded-[1.5rem] bg-slate-50 p-1 dark:bg-slate-900"
+                    className="min-h-[640px] w-full rounded-3xl bg-slate-50 p-1 dark:bg-slate-900"
                     style={{ border: 'none' }}
                   />
 

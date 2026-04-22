@@ -5,7 +5,6 @@ import {
   getDonationTierGlowClass,
   isRainbowDonationTier,
   normalizeDonationType,
-  resolveDonationDisplayName,
 } from '../lib/donationSupport';
 
 function formatDonationDate(receivedAt: string, language: string): string {
@@ -30,6 +29,19 @@ function formatDonationAmount(amount: string | null, currency: string | null, fa
   }
 
   return [amount, currency].filter(Boolean).join(' ');
+}
+
+function resolveDonationInfoDisplayName(
+  supporterName: string | null,
+  accountNick: string | null,
+  isAnonymous: boolean | null,
+  anonymousLabel: string,
+): string {
+  if (isAnonymous === true) {
+    return anonymousLabel;
+  }
+
+  return supporterName ?? accountNick ?? anonymousLabel;
 }
 
 // 후원 정보 페이지에서 전체 후원 목록을 표시한다.
@@ -76,7 +88,12 @@ export function DonationInfoListWidget(): React.ReactElement {
       {!isLoading && !isError && (data?.length ?? 0) > 0 ? (
         <div className="mt-5 space-y-3">
           {data?.map((donation) => {
-            const displayName = resolveDonationDisplayName(donation, t('donation.anonymous'));
+            const displayName = resolveDonationInfoDisplayName(
+              donation.supporterName,
+              donation.accountNick,
+              donation.isAnonymous,
+              t('donation.anonymous'),
+            );
             const glowClass = getDonationTierGlowClass(donation);
             const isRainbowTier = isRainbowDonationTier(donation);
             const profileImageUrl = donation.isAnonymous === true
