@@ -1,7 +1,7 @@
 import { confirmAccountTransferDonation, getProfileImageUrl, usePendingAccountTransferDonations } from '@features';
 import { ProfileAvatar, getTokenStorage, queryClient, useAuthStore, useDialog, useToast, useTranslation } from '@shared';
 import { toDonationAlertFromPendingItem, useDonationAlertStore } from '../lib/donationAlert';
-import { AnonymousSupporterIcon, shouldUseAnonymousDonationAvatar } from '../lib/donationSupport';
+import { AnonymousSupporterIcon } from '../lib/donationSupport';
 
 function formatDonationDate(receivedAt: string, language: string): string {
   const locale = language === 'ko'
@@ -116,13 +116,9 @@ export function DonationPendingListWidget(): React.ReactElement | null {
               donation.accountNick,
               t('donation.pendingLoggedOutAccountNick'),
             );
-            const useAnonymousAvatar = shouldUseAnonymousDonationAvatar(
-              donation.accountNick,
-              donation.supporterName,
-              donation.isAnonymous,
-            );
             const useAnonymousIcon = donation.isAnonymous === true;
-            const profileImageUrl = useAnonymousAvatar
+            const useLetterFallback = !useAnonymousIcon && donation.isAccountLinkedDisplay !== true;
+            const profileImageUrl = useLetterFallback
               ? null
               : getProfileImageUrl(donation.accountProfileImgUrl);
 
@@ -172,7 +168,7 @@ export function DonationPendingListWidget(): React.ReactElement | null {
                 </div>
 
                 <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                  {donation.message ?? t('donation.noMessage')}
+                  {donation.message ?? ''}
                 </p>
 
                 <div className="mt-4">

@@ -33,6 +33,18 @@ export const API_ENDPOINTS = {
     WORDS_ADD: '/api/admin/words/add',
     WORDS_DELETE: '/api/admin/words/delete',
   },
+  REPORT: {
+    CREATE: '/api/reports',
+  },
+  ADMIN_ACCOUNT: {
+    LIST: '/api/admin/accounts/list',
+    PENDING_COUNT: '/api/admin/accounts/reports/pending-count',
+    REPORT_SUMMARY: '/api/admin/accounts/reports/summary',
+    RESOLVE_REPORTS: '/api/admin/accounts/reports/resolve',
+    CENSOR_PROFILE: '/api/admin/accounts/censor-profile',
+    CENSOR_NICKNAME: '/api/admin/accounts/censor-nickname',
+    GRANT_ADMIN: '/api/admin/accounts/grant-admin',
+  },
   // 게임 전적 엔드포인트
   RECORD: {
     START: '/api/record/start',
@@ -56,6 +68,11 @@ export const API_ENDPOINTS = {
     ADMIN_PENDING_ACCOUNT_TRANSFER: '/api/admin/donations/account-transfer/pending',
     ADMIN_CONFIRM_ACCOUNT_TRANSFER: '/api/admin/donations/account-transfer/confirm',
     ADMIN_REPLAY_ALERT: '/api/admin/donations/alert-replay',
+    ADMIN_REPORT_SUMMARY: '/api/admin/donations/reports/summary',
+    ADMIN_RESOLVE_REPORTS: '/api/admin/donations/reports/resolve',
+    ADMIN_CENSOR_SUPPORTER_NAME: '/api/admin/donations/censor-supporter-name',
+    ADMIN_CENSOR_MESSAGE: '/api/admin/donations/censor-message',
+    ADMIN_DELETE: '/api/admin/donations/delete',
     WEBHOOK_KOFI: '/api/webhook/kofi',
   },
 } as const;

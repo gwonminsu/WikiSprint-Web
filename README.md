@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.12.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.13.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -262,3 +262,27 @@ VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 **WikiSprint** — Built with ❤️ using React & TypeScript
 
 </div>
+---
+
+## 🆕 v2.13.0 문서 메모
+
+### 관리자/신고 기능
+
+- 신고 모달(`widgets/report/ui/ReportModal.tsx`)을 통해 랭킹과 후원 정보에서 사용자 신고를 접수합니다.
+- 관리자 전용 `/admin/accounts` 페이지에서 계정 신고 요약, 기타 사유 목록, 프로필/닉네임 검열, 관리자 권한 부여를 처리합니다.
+- `/donations` 관리자 화면에서 후원 카드 확장 패널로 신고 요약, 서포터 네임 검열/복구, 후원 내용 검열, 처리 완료, 삭제를 수행합니다.
+
+### 추가 라우트
+
+| 경로 | 페이지 | 접근 |
+|------|--------|------|
+| `/admin/accounts` | `AdminAccountPage` | 관리자 전용 |
+
+### 추가 슬라이스
+
+- `pages/AdminAccountPage.tsx`
+- `widgets/admin-account/`
+- `widgets/report/`
+- `features/admin-account.ts`
+- `features/report.ts`
+- `entities/report.ts`

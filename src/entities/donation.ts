@@ -8,6 +8,7 @@ export interface DonationListItem {
   type: string;
   supporterName: string | null;
   message: string | null;
+  isAccountLinkedDisplay: boolean | null;
   amount: string | null;
   currency: string | null;
   isAnonymous: boolean | null;
@@ -31,6 +32,7 @@ export interface PendingAccountTransferDonationItem {
   supporterName: string | null;
   remitterName: string;
   message: string | null;
+  isAccountLinkedDisplay: boolean | null;
   coffeeCount: number;
   amount: string;
   currency: string;

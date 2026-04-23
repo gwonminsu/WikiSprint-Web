@@ -61,10 +61,27 @@ import {
   getPendingAccountTransferDonations,
   confirmAccountTransferDonation,
   replayDonationAlert,
+  getDonationReportSummary,
+  resolveDonationReports,
+  censorDonationSupporterName,
+  censorDonationMessage,
+  deleteDonation,
   useLatestDonations,
   useAllDonations,
   usePendingAccountTransferDonations,
 } from './donation';
+import { createReport } from './report';
+import {
+  censorAccountNickname,
+  censorAccountProfile,
+  getAccountReportSummary,
+  getAdminAccounts,
+  getPendingReportCount,
+  grantAccountAdmin,
+  resolveAccountReports,
+  useAdminAccounts,
+  usePendingReportCount,
+} from './admin-account';
 
 // 네임스페이스 export
 export const f = {
@@ -95,6 +112,8 @@ export const f = {
     useLatestDonations,
     useAllDonations,
     usePendingAccountTransferDonations,
+    useAdminAccounts,
+    usePendingReportCount,
   },
   api: {
     wiki: { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord },
@@ -128,6 +147,21 @@ export const f = {
       getPendingAccountTransferDonations,
       confirmAccountTransferDonation,
       replayDonationAlert,
+      getDonationReportSummary,
+      resolveDonationReports,
+      censorDonationSupporterName,
+      censorDonationMessage,
+      deleteDonation,
+    },
+    report: { createReport },
+    adminAccount: {
+      getAdminAccounts,
+      getPendingReportCount,
+      getAccountReportSummary,
+      resolveAccountReports,
+      censorAccountProfile,
+      censorAccountNickname,
+      grantAccountAdmin,
     },
   },
   ui: {
@@ -182,7 +216,24 @@ export {
   getPendingAccountTransferDonations,
   confirmAccountTransferDonation,
   replayDonationAlert,
+  getDonationReportSummary,
+  resolveDonationReports,
+  censorDonationSupporterName,
+  censorDonationMessage,
+  deleteDonation,
   useLatestDonations,
   useAllDonations,
   usePendingAccountTransferDonations,
 } from './donation';
+export { createReport } from './report';
+export {
+  getAdminAccounts,
+  getPendingReportCount,
+  getAccountReportSummary,
+  resolveAccountReports,
+  censorAccountProfile,
+  censorAccountNickname,
+  grantAccountAdmin,
+  useAdminAccounts,
+  usePendingReportCount,
+} from './admin-account';

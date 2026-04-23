@@ -15,6 +15,7 @@ import {
   type CountryOption,
   ApiException,
 } from '@shared';
+import { usePendingReportCount } from '@features';
 import { getProfileImageUrl, useUpdateNick, useUpdateNationality, useRequestDeletion, ProfileImageEditModal } from '@/features/account';
 import { AdminTargetWordsSection } from './AdminTargetWordsSection';
 
@@ -35,6 +36,8 @@ export function SettingsView(): React.ReactElement {
   const updateNationalityMutation = useUpdateNationality();
   const requestDeletionMutation = useRequestDeletion();
   const navigate = useNavigate();
+  const isAdmin = accountInfo?.is_admin === true;
+  const { data: pendingReportCount = 0 } = usePendingReportCount(isAdmin);
 
   const profileImageUrl = accountInfo?.profile_img_url
     ? getProfileImageUrl(accountInfo.profile_img_url)
@@ -158,10 +161,24 @@ export function SettingsView(): React.ReactElement {
     <div className="space-y-6">
 
       {/* 내 계정 */}
-      <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <section className="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">
           {t('common.account')}
         </h2>
+        {isAdmin ? (
+          <button
+            type="button"
+            onClick={() => navigate('/admin/accounts')}
+            className="absolute right-4 top-4 inline-flex rounded-2xl border border-orange-300/70 bg-orange-50 px-3 py-2 text-[11px] font-black text-orange-700 shadow-sm transition-colors hover:bg-orange-100 dark:border-orange-400/40 dark:bg-orange-400/10 dark:text-orange-200 sm:right-6 sm:top-1/2 sm:-translate-y-1/2 sm:px-4 sm:py-3 sm:text-xs"
+          >
+            {t('adminAccount.manageButton')}
+            {pendingReportCount > 0 ? (
+              <span className="absolute -right-2 -top-2 min-w-6 rounded-full bg-rose-600 px-1.5 py-0.5 text-center text-[10px] font-black leading-5 text-white">
+                {pendingReportCount > 99 ? '99+' : pendingReportCount}
+              </span>
+            ) : null}
+          </button>
+        ) : null}
         {accountInfo ? (
           // 로그인 상태: 기존 프로필 UI
           <div className="flex items-start gap-4">
@@ -473,7 +490,7 @@ export function SettingsView(): React.ReactElement {
         </h2>
         <div className="flex items-center justify-between">
           <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-          <span className="text-gray-500 dark:text-gray-400">2.12.0</span>
+          <span className="text-gray-500 dark:text-gray-400">2.13.0</span>
         </div>
       </section>
 

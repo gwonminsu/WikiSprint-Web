@@ -4,6 +4,7 @@ import type {
   AccountTransferDonationCreateRequest,
   DonationListItem,
   PendingAccountTransferDonationItem,
+  ReportSummary,
 } from '@/entities';
 
 // 최신 후원 목록을 조회한다.
@@ -75,6 +76,53 @@ export async function confirmAccountTransferDonation(donationId: string): Promis
 export async function replayDonationAlert(donationId: string): Promise<string | null> {
   const response = await apiClient.post<DonationListItem>(
     API_ENDPOINTS.DONATION.ADMIN_REPLAY_ALERT,
+    { donationId },
+  );
+  return response.message ?? null;
+}
+
+export async function getDonationReportSummary(donationId: string): Promise<ReportSummary> {
+  const response = await apiClient.post<ReportSummary>(
+    API_ENDPOINTS.DONATION.ADMIN_REPORT_SUMMARY,
+    { donationId },
+  );
+  return response.data ?? {
+    profileImageCount: 0,
+    nicknameCount: 0,
+    donationContentCount: 0,
+    otherCount: 0,
+    totalPendingCount: 0,
+    otherDetails: [],
+  };
+}
+
+export async function resolveDonationReports(donationId: string): Promise<string | null> {
+  const response = await apiClient.post<{ deletedCount: number }>(
+    API_ENDPOINTS.DONATION.ADMIN_RESOLVE_REPORTS,
+    { donationId },
+  );
+  return response.message ?? null;
+}
+
+export async function censorDonationSupporterName(donationId: string): Promise<string | null> {
+  const response = await apiClient.post<null>(
+    API_ENDPOINTS.DONATION.ADMIN_CENSOR_SUPPORTER_NAME,
+    { donationId },
+  );
+  return response.message ?? null;
+}
+
+export async function censorDonationMessage(donationId: string): Promise<string | null> {
+  const response = await apiClient.post<null>(
+    API_ENDPOINTS.DONATION.ADMIN_CENSOR_MESSAGE,
+    { donationId },
+  );
+  return response.message ?? null;
+}
+
+export async function deleteDonation(donationId: string): Promise<string | null> {
+  const response = await apiClient.post<null>(
+    API_ENDPOINTS.DONATION.ADMIN_DELETE,
     { donationId },
   );
   return response.message ?? null;
