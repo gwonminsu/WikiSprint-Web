@@ -287,7 +287,6 @@ export const ko = {
     error: '후원 내역을 불러오지 못했습니다.',
     empty: '아직 후원 내역이 없습니다.',
     anonymous: '익명',
-    privateMessage: '익명 후원입니다.',
     noMessage: '메시지 없음',
     amountFallback: '금액 미표시',
     typeOneTime: '일회성 후원',
@@ -327,6 +326,10 @@ export const ko = {
     pendingLoggedOutAccountNick: '(비로그인)',
     pendingRemitterName: '입금자명',
     pendingCoffeeCount: '커피 {{count}}잔',
+    alertDonatedPrefix: '님이 ',
+    alertCoffeeCount: '☕커피 {{count}}잔',
+    alertDonatedSuffix: '을 기부했습니다!',
+    alertSkip: '후원 알림 건너뛰기',
   },
   game: {
     readyMessage: '이 버튼을 누르면 게임이 시작됩니다!',

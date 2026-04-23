@@ -1,0 +1,150 @@
+import { useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getLatestDonations } from '@features';
+import { donationAwake, donationBarrel, donationCoffee, donationOverdose, useTranslation } from '@shared';
+import {
+  toDonationAlertFromListItem,
+  useDonationAlertStore,
+  type DonationAlertItem,
+  type DonationEffectType,
+} from '../lib/donationAlert';
+
+const EFFECT_IMAGE_MAP: Record<DonationEffectType, string> = {
+  coffee: donationCoffee,
+  awake: donationAwake,
+  barrel: donationBarrel,
+  overdose: donationOverdose,
+};
+
+const EFFECT_LABEL_MAP: Record<DonationEffectType, string> = {
+  coffee: 'coffee shake',
+  awake: 'caffeine awake',
+  barrel: 'caffeine barrel',
+  overdose: 'caffeine overdose',
+};
+
+function getEffectClassName(effectType: DonationEffectType): string {
+  return `donation-alert__image donation-alert__image--${effectType}`;
+}
+
+function DonationAlertContent({ item }: { item: DonationAlertItem }): React.ReactElement {
+  const { t } = useTranslation();
+  const message = item.message?.trim();
+
+  return (
+    <>
+      <img
+        src={EFFECT_IMAGE_MAP[item.effectType]}
+        alt=""
+        aria-hidden="true"
+        className={getEffectClassName(item.effectType)}
+      />
+
+      <div className="donation-alert__text">
+        <p className="donation-alert__headline">
+          <span className="donation-alert__name">{item.displayName}</span>
+          {t('donation.alertDonatedPrefix')}
+          <span className="donation-alert__coffee">
+            {t('donation.alertCoffeeCount', { count: item.coffeeCount })}
+          </span>
+          {t('donation.alertDonatedSuffix')}
+        </p>
+
+        {message ? (
+          <p className="donation-alert__message">
+            {message}
+          </p>
+        ) : null}
+
+        <span className="sr-only">{EFFECT_LABEL_MAP[item.effectType]}</span>
+      </div>
+    </>
+  );
+}
+
+export function DonationAlertOverlay(): React.ReactElement | null {
+  const { t } = useTranslation();
+  const phase = useDonationAlertStore((state) => state.phase);
+  const current = useDonationAlertStore((state) => state.current);
+  const queueLength = useDonationAlertStore((state) => state.queue.length);
+  const enqueue = useDonationAlertStore((state) => state.enqueue);
+  const startNext = useDonationAlertStore((state) => state.startNext);
+  const requestExit = useDonationAlertStore((state) => state.requestExit);
+  const finishExit = useDonationAlertStore((state) => state.finishExit);
+  const markHandled = useDonationAlertStore((state) => state.markHandled);
+  const initializedIdsRef = useRef<Set<string>>(new Set());
+  const hasInitializedRef = useRef(false);
+
+  const { data } = useQuery({
+    queryKey: ['donations', 'latest', 'alert-watch'],
+    queryFn: getLatestDonations,
+    refetchInterval: 1000 * 15,
+    staleTime: 1000 * 10,
+  });
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    const nextIds = new Set(data.map((donation) => donation.donationId));
+
+    if (!hasInitializedRef.current) {
+      nextIds.forEach((id) => markHandled(id));
+      initializedIdsRef.current = nextIds;
+      hasInitializedRef.current = true;
+      return;
+    }
+
+    data
+      .filter((donation) => !initializedIdsRef.current.has(donation.donationId))
+      .sort((left, right) => new Date(left.receivedAt).getTime() - new Date(right.receivedAt).getTime())
+      .forEach((donation) => {
+        enqueue(toDonationAlertFromListItem(donation, t('donation.anonymous')));
+      });
+
+    initializedIdsRef.current = nextIds;
+  }, [data, enqueue, markHandled, t]);
+
+  useEffect(() => {
+    if (phase !== 'idle' || queueLength === 0) {
+      return;
+    }
+
+    const timerId = window.setTimeout(startNext, 150);
+    return () => window.clearTimeout(timerId);
+  }, [phase, queueLength, startNext]);
+
+  useEffect(() => {
+    if (phase !== 'showing' || !current) {
+      return;
+    }
+
+    const timerId = window.setTimeout(requestExit, 5000);
+    return () => window.clearTimeout(timerId);
+  }, [current, phase, requestExit]);
+
+  useEffect(() => {
+    if (phase !== 'exiting') {
+      return;
+    }
+
+    const timerId = window.setTimeout(finishExit, 520);
+    return () => window.clearTimeout(timerId);
+  }, [finishExit, phase]);
+
+  if (!current) {
+    return null;
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label={t('donation.alertSkip')}
+      className={`donation-alert donation-alert--${phase}`}
+      onClick={requestExit}
+    >
+      <DonationAlertContent item={current} />
+    </button>
+  );
+}

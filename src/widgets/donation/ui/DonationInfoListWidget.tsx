@@ -157,9 +157,7 @@ export function DonationInfoListWidget(): React.ReactElement {
                 </div>
 
                 <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                  {donation.isAnonymous === true
-                    ? t('donation.privateMessage')
-                    : donation.message ?? t('donation.noMessage')}
+                  {donation.message ?? t('donation.noMessage')}
                 </p>
               </article>
             );

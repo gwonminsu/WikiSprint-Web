@@ -1,5 +1,6 @@
 import { confirmAccountTransferDonation, getProfileImageUrl, usePendingAccountTransferDonations } from '@features';
 import { ProfileAvatar, queryClient, useDialog, useToast, useTranslation } from '@shared';
+import { toDonationAlertFromPendingItem, useDonationAlertStore } from '../lib/donationAlert';
 import { AnonymousSupporterIcon, shouldUseAnonymousDonationAvatar } from '../lib/donationSupport';
 
 function formatDonationDate(receivedAt: string, language: string): string {
@@ -42,8 +43,9 @@ export function DonationPendingListWidget(): React.ReactElement | null {
   const { showConfirm } = useDialog();
   const toast = useToast();
   const { data, isLoading, isError } = usePendingAccountTransferDonations();
+  const enqueueDonationAlert = useDonationAlertStore((state) => state.enqueue);
 
-  const handleConfirm = (donationId: string): void => {
+  const handleConfirm = (donation: NonNullable<typeof data>[number]): void => {
     showConfirm({
       title: t('donation.pendingConfirmTitle'),
       message: t('donation.pendingConfirmMessage'),
@@ -51,7 +53,8 @@ export function DonationPendingListWidget(): React.ReactElement | null {
       onConfirm: () => {
         void (async () => {
           try {
-            await confirmAccountTransferDonation(donationId);
+            await confirmAccountTransferDonation(donation.donationId);
+            enqueueDonationAlert(toDonationAlertFromPendingItem(donation, t('donation.anonymous')));
             await Promise.all([
               queryClient.invalidateQueries({ queryKey: ['donations', 'all'] }),
               queryClient.invalidateQueries({ queryKey: ['donations', 'latest'] }),
@@ -168,7 +171,7 @@ export function DonationPendingListWidget(): React.ReactElement | null {
                 <div className="mt-4">
                   <button
                     type="button"
-                    onClick={() => handleConfirm(donation.donationId)}
+                    onClick={() => handleConfirm(donation)}
                     className="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-900 px-5 text-sm font-black text-white shadow-[0_12px_28px_rgba(15,23,42,0.18)] transition-colors hover:bg-slate-800 dark:bg-sky-400 dark:text-slate-950 dark:hover:bg-sky-300"
                   >
                     {t('donation.pendingConfirmButton')}

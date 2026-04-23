@@ -2,7 +2,7 @@ import { Header } from './main-layout';
 import { AuthLanguageDropdown } from './auth';
 import { SettingsView } from './settings';
 import { DocFloatingButton } from './doc-button';
-import { DonationFloatingButton, DonationInfoListWidget, DonationPendingListWidget, DonationSection } from './donation';
+import { DonationAlertOverlay, DonationFloatingButton, DonationInfoListWidget, DonationPendingListWidget, DonationSection } from './donation';
 import { DocContentView } from './doc-content';
 import { GameIntroView } from './game-intro';
 import { GameResultView } from './game-result';
@@ -16,6 +16,7 @@ export const w = {
   SettingsView,
   DocFloatingButton,
   DonationFloatingButton,
+  DonationAlertOverlay,
   DonationInfoListWidget,
   DonationPendingListWidget,
   DocContentView,
@@ -31,7 +32,7 @@ export { Header } from './main-layout';
 export { AuthLanguageDropdown } from './auth';
 export { SettingsView } from './settings';
 export { DocFloatingButton } from './doc-button';
-export { DonationFloatingButton, DonationInfoListWidget, DonationPendingListWidget, DonationSection } from './donation';
+export { DonationAlertOverlay, DonationFloatingButton, DonationInfoListWidget, DonationPendingListWidget, DonationSection } from './donation';
 export { DocContentView } from './doc-content';
 export { GameIntroView } from './game-intro';
 export { GameResultView } from './game-result';
