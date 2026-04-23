@@ -287,7 +287,6 @@ export const en = {
     error: 'Failed to load donations.',
     empty: 'There are no donations yet.',
     anonymous: 'Anonymous',
-    privateMessage: 'This was an anonymous donation.',
     noMessage: 'No message',
     amountFallback: 'Amount hidden',
     typeOneTime: 'One-time Support',
@@ -327,6 +326,10 @@ export const en = {
     pendingLoggedOutAccountNick: '(Logged out)',
     pendingRemitterName: 'Remitter',
     pendingCoffeeCount: '{{count}} coffee(s)',
+    alertDonatedPrefix: ' donated ',
+    alertCoffeeCount: '{{count}} coffee(s)',
+    alertDonatedSuffix: '!',
+    alertSkip: 'Skip donation alert',
   },
   game: {
     readyMessage: 'Press this button to start the game!',

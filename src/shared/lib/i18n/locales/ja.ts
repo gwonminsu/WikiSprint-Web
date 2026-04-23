@@ -287,7 +287,6 @@ export const ja = {
     error: '後援履歴を読み込めませんでした。',
     empty: 'まだ後援履歴がありません。',
     anonymous: '匿名',
-    privateMessage: '匿名後援です。',
     noMessage: 'メッセージなし',
     amountFallback: '金額非表示',
     typeOneTime: '単発後援',
@@ -327,6 +326,10 @@ export const ja = {
     pendingLoggedOutAccountNick: '(未ログイン)',
     pendingRemitterName: '振込名義',
     pendingCoffeeCount: 'コーヒー {{count}}杯',
+    alertDonatedPrefix: 'さんが',
+    alertCoffeeCount: 'コーヒー {{count}}杯',
+    alertDonatedSuffix: 'を後援しました！',
+    alertSkip: '後援通知をスキップ',
   },
   game: {
     readyMessage: 'このボタンを押すとゲームが始まります！',

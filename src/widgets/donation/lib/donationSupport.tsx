@@ -133,10 +133,10 @@ export function getDonationTierGlowClass(donation: DonationListItem): string {
     if (amount <= 5000) {
       return 'donation-tier-bronze';
     }
-    if (amount <= 10000) {
+    if (amount <= 11000) {
       return 'donation-tier-silver';
     }
-    if (amount <= 20000) {
+    if (amount <= 21000) {
       return 'donation-tier-gold';
     }
     return 'donation-tier-rainbow-inner';
@@ -145,10 +145,10 @@ export function getDonationTierGlowClass(donation: DonationListItem): string {
   if (amount <= 5) {
     return 'donation-tier-bronze';
   }
-  if (amount <= 10) {
+  if (amount <= 11) {
     return 'donation-tier-silver';
   }
-  if (amount <= 20) {
+  if (amount <= 21) {
     return 'donation-tier-gold';
   }
   return 'donation-tier-rainbow-inner';

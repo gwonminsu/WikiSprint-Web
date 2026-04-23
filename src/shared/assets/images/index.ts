@@ -14,6 +14,10 @@ import talkerOk from './talker-ok.png';
 import talkerLate from './talker-late.png';
 import talkerWarn from './talker-warn.png';
 import gameClear from './game-clear.png';
+import donationCoffee from './donation-coffee.png';
+import donationAwake from './donation-awake.png';
+import donationBarrel from './donation-barrel.png';
+import donationOverdose from './donation-overdose.png';
 
 // 언어별 로고 이미지 맵
 const logoMap: Record<Language, string> = {
@@ -35,3 +39,6 @@ export { talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerG
 
 // 결과 화면 이미지
 export { gameClear };
+
+// 후원 알림 연출 이미지
+export { donationCoffee, donationAwake, donationBarrel, donationOverdose };
