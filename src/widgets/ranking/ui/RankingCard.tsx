@@ -7,6 +7,7 @@ import {
 } from '@shared';
 import { getProfileImageUrl } from '@features';
 import type { RankingRecord } from '@/entities/ranking/types';
+import { ReportModal } from '@/widgets/report';
 import { RankingMedalFrame } from './RankingMedalFrame';
 
 // 밀리초 → "n분 nn.nn초" 포맷
@@ -61,6 +62,7 @@ export function RankingCard({
   isMe = false,
 }: RankingCardProps): React.ReactElement {
   const [expanded, setExpanded] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const { t } = useTranslation();
 
   const profileImageUrl = record.profileImageUrl
@@ -153,6 +155,19 @@ export function RankingCard({
 
         {/* 클리어 시간 */}
         <div className="shrink-0 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              setIsReportOpen(true);
+            }}
+            aria-label="🚨"
+            title="🚨"
+            className="appearance-none bg-transparent px-1 py-1 text-[12px] leading-none text-rose-600 transition-colors hover:text-rose-700 dark:text-rose-200 dark:hover:text-rose-100"
+          >
+            🚨
+          </button>
+
           <span className="ranking-time-pill">
             {formatMs(record.elapsedMs)}
           </span>
@@ -229,7 +244,29 @@ export function RankingCard({
   );
 
   if (rank <= 3) {
-    return <RankingMedalFrame rank={rank}>{cardBody}</RankingMedalFrame>;
+    return (
+      <>
+        <RankingMedalFrame rank={rank}>{cardBody}</RankingMedalFrame>
+        <ReportModal
+          isOpen={isReportOpen}
+          targetNick={record.nickname}
+          targetType="ACCOUNT"
+          targetAccountId={record.accountId}
+          onClose={() => setIsReportOpen(false)}
+        />
+      </>
+    );
   }
-  return cardBody;
+  return (
+    <>
+      {cardBody}
+      <ReportModal
+        isOpen={isReportOpen}
+        targetNick={record.nickname}
+        targetType="ACCOUNT"
+        targetAccountId={record.accountId}
+        onClose={() => setIsReportOpen(false)}
+      />
+    </>
+  );
 }

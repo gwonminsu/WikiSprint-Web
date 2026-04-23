@@ -313,3 +313,9 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 - 공유 페이지의 24시간 유효 안내, 카카오톡 공유, Web Share, QR 코드, 링크 복사는 같은 공유 스냅샷 데이터를 기준으로 동작합니다.
 - 공유 관련 문구는 `ko`, `en`, `ja` 로케일 파일에서만 관리합니다.
 - 로그인 직후 `/record`, `/ranking` 초기 조회 정합성과 비로그인 클리어 이후 공유 버튼 동작 보강이 `v2.9.0` 범위에 포함됩니다.
+## 최근 변경 메모 (v2.13.0)
+
+- 신고 시스템이 추가됐습니다. `entities/report.ts`, `features/report.ts`, `widgets/report/ui/ReportModal.tsx`를 중심으로 랭킹 카드와 후원 정보 카드에서 사용자 신고를 접수합니다.
+- 관리자 계정 관리 페이지 `/admin/accounts`가 추가됐습니다. `pages/AdminAccountPage.tsx`, `widgets/admin-account/ui/AdminAccountManagementView.tsx`, `features/admin-account.ts`가 핵심입니다.
+- `/donations` 관리자 화면은 신고 요약 프리페치, 서포터 네임 검열/복구 토글, 후원 내용 검열, 처리 완료, 삭제 액션을 포함한 확장 패널 구조로 바뀌었습니다.
+- 후원 표시 기준은 클라이언트 휴리스틱 대신 서버 필드 `isAccountLinkedDisplay`를 따릅니다. 계정 연동 후원은 `계정 연동` 배지를 표시합니다.

@@ -50,6 +50,18 @@ import type {
   DonationListItem,
   PendingAccountTransferDonationItem,
 } from './donation';
+import type {
+  AdminAccountDirection,
+  AdminAccountItem,
+  AdminAccountListRequest,
+  AdminAccountListResponse,
+  AdminAccountListView,
+  AdminAccountSort,
+  ReportCreateRequest,
+  ReportReason,
+  ReportSummary,
+  ReportTargetType,
+} from './report';
 
 // 네임스페이스 export
 export const e = {
@@ -99,6 +111,20 @@ export const e = {
       DonationListItem: DonationListItem;
       PendingAccountTransferDonationItem: PendingAccountTransferDonationItem;
       AccountTransferDonationCreateRequest: AccountTransferDonationCreateRequest;
+    },
+  },
+  report: {
+    type: {} as {
+      ReportTargetType: ReportTargetType;
+      ReportReason: ReportReason;
+      ReportCreateRequest: ReportCreateRequest;
+      ReportSummary: ReportSummary;
+      AdminAccountListView: AdminAccountListView;
+      AdminAccountSort: AdminAccountSort;
+      AdminAccountDirection: AdminAccountDirection;
+      AdminAccountListRequest: AdminAccountListRequest;
+      AdminAccountItem: AdminAccountItem;
+      AdminAccountListResponse: AdminAccountListResponse;
     },
   },
   gameRecord: {
@@ -152,6 +178,19 @@ export type {
   PendingAccountTransferDonationItem,
   AccountTransferDonationCreateRequest,
 } from './donation';
+
+export type {
+  ReportTargetType,
+  ReportReason,
+  ReportCreateRequest,
+  ReportSummary,
+  AdminAccountListView,
+  AdminAccountSort,
+  AdminAccountDirection,
+  AdminAccountListRequest,
+  AdminAccountItem,
+  AdminAccountListResponse,
+} from './report';
 
 export type {
   GameRecordStatus,
