@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.11.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.12.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -125,11 +125,9 @@ WikiSprint-Web/
     │   ├── game-result/          # GameResultView (게임 결과 카드 타임라인)
     │   ├── game-record/          # GameRecordView (전적 목록 + 통계 바)
     │   ├── ranking/              # RankingView (기간×난이도 리더보드)
-    │   ├── donation-floating/    # DonationFloatingButton (전역 플로팅 후원 버튼)
-    │   ├── donation-section.tsx  # DonationSection (/doc 하단 후원자 프리뷰)
-    │   ├── donation-info-list.tsx    # DonationInfoListWidget (전체 목록, 티어 글로우)
-    │   ├── donation-pending-list.tsx # DonationPendingListWidget (관리자 대기 목록)
-    │   └── donation-support.tsx      # 후원 공용 유틸 (티어 계산, 익명 아이콘 등)
+    │   └── donation/             # 후원 위젯 슬라이스
+    │       ├── lib/              # donationSupport.tsx (공용 유틸), donationAlert.ts (알림 로직)
+    │       └── ui/               # DonationFloatingButton, DonationSection, DonationInfoListWidget, DonationPendingListWidget, DonationAlertOverlay
     │
     ├── features/
     │   ├── auth/                 # Google OAuth 로그인 훅 & API

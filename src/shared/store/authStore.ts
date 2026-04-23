@@ -59,7 +59,10 @@ export const useAuthStore = create<AuthState>()(
 
       checkAuth: (): void => {
         const hasToken = !!getTokenStorage().getAccessToken();
-        set({ isAuthenticated: hasToken });
+        set((state) => ({
+          isAuthenticated: hasToken,
+          accountInfo: hasToken ? state.accountInfo : null,
+        }));
       },
 
       // 약관 동의 대기 상태 초기값

@@ -54,6 +54,7 @@ import {
 import { getRanking, useRanking } from './ranking';
 import {
   getLatestDonations,
+  getRecentAlertDonations,
   getAllDonations,
   createAccountTransferDonation,
   getPendingAccountTransferDonations,
@@ -118,6 +119,7 @@ export const f = {
     ranking: { getRanking },
     donation: {
       getLatestDonations,
+      getRecentAlertDonations,
       getAllDonations,
       createAccountTransferDonation,
       getPendingAccountTransferDonations,
@@ -169,6 +171,7 @@ export {
 export { getRanking, useRanking } from './ranking';
 export {
   getLatestDonations,
+  getRecentAlertDonations,
   getAllDonations,
   createAccountTransferDonation,
   getPendingAccountTransferDonations,

@@ -89,12 +89,16 @@ src/
 │   │   └── lib/            # formatRecordTime
 │   ├── ranking/            # RankingView (랭킹 페이지 — 아케이드 스타일 리더보드)
 │   │   └── ui/             # RankingView, RankingCard, RankingTabs, RankingMedalFrame, MyRankingCard
-│   ├── donation-floating/  # DonationFloatingButton (전역 플로팅 버튼 — intro/overseas/domestic 3-패널)
-│   │   └── ui/             # DonationFloatingButton.tsx
-│   ├── donation-section.tsx   # DonationSection (/doc 하단 최근 후원자 5명 프리뷰)
-│   ├── donation-info-list.tsx # DonationInfoListWidget (전체 후원 목록, 티어 글로우)
-│   ├── donation-pending-list.tsx # DonationPendingListWidget (관리자 전용 대기 목록)
-│   └── donation-support.tsx   # 후원 공용 유틸 — AnonymousSupporterIcon, resolveDonationDisplayName, getDonationTierGlowClass 등
+│   └── donation/           # 후원 위젯 슬라이스 (FSD 단일 슬라이스로 통합)
+│       ├── lib/
+│       │   ├── donationSupport.tsx   # AnonymousSupporterIcon, resolveDonationDisplayName, getDonationTierGlowClass
+│       │   └── donationAlert.ts      # 후원 알림 단계별 메시지/이미지 로직
+│       └── ui/
+│           ├── DonationFloatingButton.tsx  # 전역 플로팅 버튼 (intro/overseas/domestic 3-패널)
+│           ├── DonationSection.tsx         # /doc 하단 최근 후원자 5명 프리뷰
+│           ├── DonationInfoListWidget.tsx  # 전체 후원 목록 (티어 글로우, 금액은 관리자만)
+│           ├── DonationPendingListWidget.tsx # 관리자 전용 계좌이체 대기 목록
+│           └── DonationAlertOverlay.tsx    # 후원 알림 오버레이 (커피 단계별 이미지)
 │
 ├── features/               # 비즈니스 로직
 │   ├── index.ts            # 네임스페이스 export (f.*)
@@ -160,6 +164,7 @@ w.DonationFloatingButton  // 전역 플로팅 후원 버튼 (intro/overseas/dome
 w.DonationSection         // /doc 하단 최근 후원자 5명 프리뷰
 w.DonationInfoListWidget  // 전체 후원 목록 (티어 글로우, 금액은 관리자만)
 w.DonationPendingListWidget // 관리자 전용 계좌이체 대기 목록
+w.DonationAlertOverlay    // 후원 수신 시 표시되는 알림 오버레이 (App.tsx 상시 마운트)
 
 // f (features)
 f.hook.useGoogleLogin
@@ -278,6 +283,12 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 - 문서 문구 수정 시 `ko`, `en`, `ja` locale을 함께 갱신합니다.
 
 ---
+
+## 최근 변경 메모 (v2.12.0)
+
+- 후원 알림 오버레이(`DonationAlertOverlay`)가 추가됐습니다. `widgets/donation/lib/donationAlert.ts`의 단계별 알림 로직을 기반으로 `<DonationAlertOverlay />`가 `app/App.tsx`에 상시 마운트됩니다. 후원 이미지 4종(`donation-coffee/barrel/overdose/awake.png`)이 `shared/assets/images/`에 추가됐습니다.
+- donation 위젯들이 `widgets/donation/` 단일 슬라이스로 통합됐습니다. 기존에 `widgets/` 루트에 분산되어 있던 `donation-floating.tsx`, `donation-support.tsx`, `donation-info-list.tsx`, `donation-pending-list.tsx`, `donation-section.tsx`가 삭제되고 `widgets/donation/lib/` + `widgets/donation/ui/` 구조로 재편됐습니다.
+- 서포터 닉네임과 계정 닉네임이 다를 경우 익명 처리됩니다(`resolveDonationDisplayName`). 닉네임 불일치 후원의 아바타는 익명 아이콘 대신 첫 글자 아바타로 표시됩니다.
 
 ## 최근 변경 메모 (v2.11.0)
 

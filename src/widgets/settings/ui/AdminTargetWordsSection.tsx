@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { WidgetDropdown, useTranslation, useToast, useDialog, EmbossButton } from '@shared';
+import { WidgetDropdown, getTokenStorage, useTranslation, useToast, useDialog, EmbossButton, useAuthStore } from '@shared';
 import { useTargetWords, useAddTargetWord, useDeleteTargetWord } from '@features';
 import type { TargetWordResponse } from '@entities';
 
@@ -69,12 +69,15 @@ function SelectDropdown({
   );
 }
 
-export function AdminTargetWordsSection(): React.ReactElement {
+export function AdminTargetWordsSection(): React.ReactElement | null {
   const { t } = useTranslation();
   const { success: toastSuccess, error: toastError } = useToast();
   const { showConfirm } = useDialog();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAdmin = useAuthStore((state) => state.accountInfo?.is_admin === true);
+  const canLoadTargetWords = isAuthenticated && isAdmin && !!getTokenStorage().getAccessToken();
 
-  const { data: words, isLoading } = useTargetWords();
+  const { data: words, isLoading } = useTargetWords(canLoadTargetWords);
   const addMutation = useAddTargetWord();
   const deleteMutation = useDeleteTargetWord();
 
@@ -186,6 +189,10 @@ export function AdminTargetWordsSection(): React.ReactElement {
     { value: 'name', label: t('admin.sortName') },
     { value: 'difficulty', label: t('admin.difficulty') },
   ];
+
+  if (!canLoadTargetWords) {
+    return null;
+  }
 
   return (
     <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">

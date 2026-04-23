@@ -16,6 +16,15 @@ export async function getLatestDonations(): Promise<DonationListItem[]> {
 }
 
 // 전체 후원 목록을 조회한다.
+// 후원 알림 초기 표시용 최근 후원 목록을 조회한다.
+export async function getRecentAlertDonations(): Promise<DonationListItem[]> {
+  const response = await apiClient.post<DonationListItem[]>(
+    API_ENDPOINTS.DONATION.RECENT_ALERTS,
+    {},
+  );
+  return response.data ?? [];
+}
+
 export async function getAllDonations(): Promise<DonationListItem[]> {
   const response = await apiClient.post<DonationListItem[]>(
     API_ENDPOINTS.DONATION.ALL,
@@ -72,10 +81,14 @@ export function useAllDonations(): UseQueryResult<DonationListItem[], Error> {
 }
 
 // 관리자용 국내 후원 확인 대기 목록 쿼리
-export function usePendingAccountTransferDonations(): UseQueryResult<PendingAccountTransferDonationItem[], Error> {
+export function usePendingAccountTransferDonations(
+  enabled = true,
+): UseQueryResult<PendingAccountTransferDonationItem[], Error> {
   return useQuery({
     queryKey: ['donations', 'pending-account-transfer'],
     queryFn: getPendingAccountTransferDonations,
+    enabled,
+    retry: false,
     staleTime: 1000 * 10,
   });
 }
