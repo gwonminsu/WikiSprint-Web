@@ -1,4 +1,5 @@
 export interface DonationListItem {
+  alertId?: string | null;
   donationId: string;
   source: string;
   accountId: string | null;

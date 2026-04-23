@@ -50,10 +50,12 @@ export const API_ENDPOINTS = {
     ALL: '/api/donations',
     LATEST: '/api/donations/latest',
     RECENT_ALERTS: '/api/donations/alerts/recent',
+    RECENT_ALERT_REPLAYS: '/api/donations/alerts/replays/recent',
     DETAIL: '/api/donations', // + /{donationId}
     ACCOUNT_TRANSFER_REQUEST: '/api/donations/account-transfer/request',
     ADMIN_PENDING_ACCOUNT_TRANSFER: '/api/admin/donations/account-transfer/pending',
     ADMIN_CONFIRM_ACCOUNT_TRANSFER: '/api/admin/donations/account-transfer/confirm',
+    ADMIN_REPLAY_ALERT: '/api/admin/donations/alert-replay',
     WEBHOOK_KOFI: '/api/webhook/kofi',
   },
 } as const;

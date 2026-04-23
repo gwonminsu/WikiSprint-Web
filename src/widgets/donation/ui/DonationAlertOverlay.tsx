@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getLatestDonations, getRecentAlertDonations } from '@features';
+import { getLatestDonations, getRecentAlertDonations, getRecentDonationAlertReplays } from '@features';
+import type { DonationListItem } from '@entities';
 import { donationAwake, donationBarrel, donationCoffee, donationOverdose, useTranslation } from '@shared';
 import {
   toDonationAlertFromListItem,
@@ -24,6 +25,56 @@ const EFFECT_LABEL_MAP: Record<DonationEffectType, string> = {
 };
 
 const RECENT_ALERT_WINDOW_MS = 1000 * 60 * 60;
+const SEEN_ALERT_STORAGE_KEY = 'wikisprint-seen-donation-alerts';
+
+type SeenDonationAlertRecord = {
+  id: string;
+  seenAt: number;
+};
+
+function readSeenDonationAlerts(): SeenDonationAlertRecord[] {
+  try {
+    const rawValue = window.localStorage.getItem(SEEN_ALERT_STORAGE_KEY);
+    if (!rawValue) {
+      return [];
+    }
+
+    const parsedValue = JSON.parse(rawValue) as SeenDonationAlertRecord[];
+    if (!Array.isArray(parsedValue)) {
+      return [];
+    }
+
+    const cutoff = Date.now() - RECENT_ALERT_WINDOW_MS;
+    return parsedValue.filter((record) => (
+      typeof record.id === 'string' &&
+      typeof record.seenAt === 'number' &&
+      record.seenAt >= cutoff
+    ));
+  } catch {
+    return [];
+  }
+}
+
+function writeSeenDonationAlerts(records: SeenDonationAlertRecord[]): void {
+  try {
+    window.localStorage.setItem(SEEN_ALERT_STORAGE_KEY, JSON.stringify(records));
+  } catch {
+    // localStorage를 사용할 수 없는 환경에서는 현재 세션 중복 방지만 적용한다.
+  }
+}
+
+function hasSeenDonationAlert(alertId: string): boolean {
+  return readSeenDonationAlerts().some((record) => record.id === alertId);
+}
+
+function markSeenDonationAlert(alertId: string): void {
+  const records = readSeenDonationAlerts().filter((record) => record.id !== alertId);
+  writeSeenDonationAlerts([...records, { id: alertId, seenAt: Date.now() }].slice(-120));
+}
+
+function resolveAlertId(donation: { alertId?: string | null; donationId: string }): string {
+  return donation.alertId ?? donation.donationId;
+}
 
 function isWithinRecentAlertWindow(receivedAt: string): boolean {
   const receivedTime = new Date(receivedAt).getTime();
@@ -84,8 +135,20 @@ export function DonationAlertOverlay(): React.ReactElement | null {
   const finishExit = useDonationAlertStore((state) => state.finishExit);
   const markHandled = useDonationAlertStore((state) => state.markHandled);
   const initializedIdsRef = useRef<Set<string>>(new Set());
+  const replayInitializedIdsRef = useRef<Set<string>>(new Set());
   const hasInitializedRef = useRef(false);
   const [hasLoadedRecentAlerts, setHasLoadedRecentAlerts] = useState(false);
+
+  const enqueueIfUnseen = (donation: DonationListItem): void => {
+    const alertId = resolveAlertId(donation);
+    if (hasSeenDonationAlert(alertId)) {
+      markHandled(alertId);
+      return;
+    }
+
+    markSeenDonationAlert(alertId);
+    enqueue(toDonationAlertFromListItem(donation, t('donation.anonymous')));
+  };
 
   const { data: recentAlertData, isError: isRecentAlertError } = useQuery({
     queryKey: ['donations', 'alerts', 'recent'],
@@ -101,6 +164,13 @@ export function DonationAlertOverlay(): React.ReactElement | null {
     staleTime: 1000 * 10,
   });
 
+  const { data: replayAlertData } = useQuery({
+    queryKey: ['donations', 'alerts', 'replays', 'recent'],
+    queryFn: getRecentDonationAlertReplays,
+    refetchInterval: 1000 * 15,
+    staleTime: 0,
+  });
+
   useEffect(() => {
     if (hasLoadedRecentAlerts || !recentAlertData) {
       return;
@@ -111,11 +181,11 @@ export function DonationAlertOverlay(): React.ReactElement | null {
       .sort((left, right) => new Date(left.receivedAt).getTime() - new Date(right.receivedAt).getTime())
       .forEach((donation) => {
         initializedIdsRef.current.add(donation.donationId);
-        enqueue(toDonationAlertFromListItem(donation, t('donation.anonymous')));
+        enqueueIfUnseen(donation);
       });
 
     setHasLoadedRecentAlerts(true);
-  }, [enqueue, hasLoadedRecentAlerts, recentAlertData, t]);
+  }, [enqueueIfUnseen, hasLoadedRecentAlerts, recentAlertData]);
 
   useEffect(() => {
     if (!isRecentAlertError || hasLoadedRecentAlerts) {
@@ -137,7 +207,7 @@ export function DonationAlertOverlay(): React.ReactElement | null {
         .filter((donation) => !initializedIdsRef.current.has(donation.donationId))
         .forEach((donation) => {
           if (isWithinRecentAlertWindow(donation.receivedAt)) {
-            enqueue(toDonationAlertFromListItem(donation, t('donation.anonymous')));
+            enqueueIfUnseen(donation);
           } else {
             markHandled(donation.donationId);
           }
@@ -151,11 +221,27 @@ export function DonationAlertOverlay(): React.ReactElement | null {
       .filter((donation) => !initializedIdsRef.current.has(donation.donationId))
       .sort((left, right) => new Date(left.receivedAt).getTime() - new Date(right.receivedAt).getTime())
       .forEach((donation) => {
-        enqueue(toDonationAlertFromListItem(donation, t('donation.anonymous')));
+        enqueueIfUnseen(donation);
       });
 
     initializedIdsRef.current = nextIds;
-  }, [data, enqueue, hasLoadedRecentAlerts, markHandled, t]);
+  }, [data, enqueueIfUnseen, hasLoadedRecentAlerts, markHandled]);
+
+  useEffect(() => {
+    if (!replayAlertData) {
+      return;
+    }
+
+    replayAlertData.forEach((donation) => {
+      const alertId = resolveAlertId(donation);
+      if (replayInitializedIdsRef.current.has(alertId)) {
+        return;
+      }
+
+      replayInitializedIdsRef.current.add(alertId);
+      enqueueIfUnseen(donation);
+    });
+  }, [enqueueIfUnseen, replayAlertData]);
 
   useEffect(() => {
     if (phase !== 'idle' || queueLength === 0) {

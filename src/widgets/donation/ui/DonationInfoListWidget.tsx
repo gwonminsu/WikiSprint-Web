@@ -1,5 +1,6 @@
-import { getProfileImageUrl, useAllDonations } from '@features';
-import { ProfileAvatar, useAuthStore, useTranslation } from '@shared';
+import { useState } from 'react';
+import { getProfileImageUrl, replayDonationAlert, useAllDonations } from '@features';
+import { getTokenStorage, ProfileAvatar, queryClient, useAuthStore, useDialog, useToast, useTranslation } from '@shared';
 import {
   AnonymousSupporterIcon,
   getDonationTierGlowClass,
@@ -48,9 +49,40 @@ function resolveDonationInfoDisplayName(
 // 후원 정보 페이지에서 전체 후원 목록을 표시한다.
 export function DonationInfoListWidget(): React.ReactElement {
   const { t, language } = useTranslation();
+  const { showConfirm } = useDialog();
+  const toast = useToast();
   const accountInfo = useAuthStore((state) => state.accountInfo);
   const { data, isLoading, isError } = useAllDonations();
-  const isAdmin = accountInfo?.is_admin === true;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAdmin = isAuthenticated && accountInfo?.is_admin === true && !!getTokenStorage().getAccessToken();
+  const [replayingIds, setReplayingIds] = useState<Set<string>>(new Set());
+
+  const handleReplayAlert = (donationId: string): void => {
+    showConfirm({
+      title: t('donation.replayAlertConfirmTitle'),
+      message: t('donation.replayAlertConfirmMessage'),
+      confirmText: t('donation.replayAlertConfirmButton'),
+      onConfirm: () => {
+        setReplayingIds((prev) => new Set(prev).add(donationId));
+
+        void replayDonationAlert(donationId)
+          .then((message) => {
+            void queryClient.invalidateQueries({ queryKey: ['donations', 'alerts', 'replays', 'recent'] });
+            toast.success(message ?? t('donation.replayAlertSuccess'));
+          })
+          .catch(() => {
+            toast.error(t('donation.replayAlertError'));
+          })
+          .finally(() => {
+            setReplayingIds((prev) => {
+              const next = new Set(prev);
+              next.delete(donationId);
+              return next;
+            });
+          });
+      },
+    });
+  };
 
   return (
     <section className="rounded-4xl border border-white/70 bg-white/85 p-6 shadow-[0_18px_40px_rgba(15,23,42,0.08)] backdrop-blur dark:border-gray-700 dark:bg-gray-900/80 dark:shadow-[0_18px_40px_rgba(0,0,0,0.28)] sm:p-8">
@@ -153,6 +185,18 @@ export function DonationInfoListWidget(): React.ReactElement {
                     <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                       {formatDonationDate(donation.receivedAt, language)}
                     </p>
+                    {isAdmin ? (
+                      <button
+                        type="button"
+                        onClick={() => handleReplayAlert(donation.donationId)}
+                        disabled={replayingIds.has(donation.donationId)}
+                        className="mt-3 inline-flex items-center justify-center rounded-2xl border border-amber-300/80 bg-amber-100/80 px-3 py-2 text-xs font-black text-amber-800 shadow-sm transition-colors hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-60 dark:border-amber-400/40 dark:bg-amber-400/15 dark:text-amber-200 dark:hover:bg-amber-400/25"
+                      >
+                        {replayingIds.has(donation.donationId)
+                          ? t('donation.replayAlertPending')
+                          : t('donation.replayAlertButton')}
+                      </button>
+                    ) : null}
                   </div>
                 </div>
 
