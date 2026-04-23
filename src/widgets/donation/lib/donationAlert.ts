@@ -111,7 +111,7 @@ export function toDonationAlertFromListItem(
   anonymousLabel: string,
 ): DonationAlertItem {
   return {
-    id: donation.donationId,
+    id: donation.alertId ?? donation.donationId,
     displayName: donation.isAnonymous === true
       ? anonymousLabel
       : donation.accountNick ?? donation.supporterName ?? anonymousLabel,

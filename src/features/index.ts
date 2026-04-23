@@ -55,10 +55,12 @@ import { getRanking, useRanking } from './ranking';
 import {
   getLatestDonations,
   getRecentAlertDonations,
+  getRecentDonationAlertReplays,
   getAllDonations,
   createAccountTransferDonation,
   getPendingAccountTransferDonations,
   confirmAccountTransferDonation,
+  replayDonationAlert,
   useLatestDonations,
   useAllDonations,
   usePendingAccountTransferDonations,
@@ -120,10 +122,12 @@ export const f = {
     donation: {
       getLatestDonations,
       getRecentAlertDonations,
+      getRecentDonationAlertReplays,
       getAllDonations,
       createAccountTransferDonation,
       getPendingAccountTransferDonations,
       confirmAccountTransferDonation,
+      replayDonationAlert,
     },
   },
   ui: {
@@ -172,10 +176,12 @@ export { getRanking, useRanking } from './ranking';
 export {
   getLatestDonations,
   getRecentAlertDonations,
+  getRecentDonationAlertReplays,
   getAllDonations,
   createAccountTransferDonation,
   getPendingAccountTransferDonations,
   confirmAccountTransferDonation,
+  replayDonationAlert,
   useLatestDonations,
   useAllDonations,
   usePendingAccountTransferDonations,

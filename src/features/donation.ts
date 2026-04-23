@@ -25,6 +25,15 @@ export async function getRecentAlertDonations(): Promise<DonationListItem[]> {
   return response.data ?? [];
 }
 
+// 관리자 재송출로 생성된 최근 후원 알림 목록을 조회한다.
+export async function getRecentDonationAlertReplays(): Promise<DonationListItem[]> {
+  const response = await apiClient.post<DonationListItem[]>(
+    API_ENDPOINTS.DONATION.RECENT_ALERT_REPLAYS,
+    {},
+  );
+  return response.data ?? [];
+}
+
 export async function getAllDonations(): Promise<DonationListItem[]> {
   const response = await apiClient.post<DonationListItem[]>(
     API_ENDPOINTS.DONATION.ALL,
@@ -57,6 +66,15 @@ export async function getPendingAccountTransferDonations(): Promise<PendingAccou
 export async function confirmAccountTransferDonation(donationId: string): Promise<string | null> {
   const response = await apiClient.post<null>(
     API_ENDPOINTS.DONATION.ADMIN_CONFIRM_ACCOUNT_TRANSFER,
+    { donationId },
+  );
+  return response.message ?? null;
+}
+
+// 관리자가 특정 후원 알림을 모든 클라이언트에 재송출하도록 요청한다.
+export async function replayDonationAlert(donationId: string): Promise<string | null> {
+  const response = await apiClient.post<DonationListItem>(
+    API_ENDPOINTS.DONATION.ADMIN_REPLAY_ALERT,
     { donationId },
   );
   return response.message ?? null;
