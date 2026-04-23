@@ -114,7 +114,7 @@ export function toDonationAlertFromListItem(
     id: donation.alertId ?? donation.donationId,
     displayName: donation.isAnonymous === true
       ? anonymousLabel
-      : donation.accountNick ?? donation.supporterName ?? anonymousLabel,
+      : donation.supporterName ?? donation.accountNick ?? anonymousLabel,
     message: donation.message,
     coffeeCount: resolveListDonationCoffeeCount(donation),
     effectType: resolveListDonationEffectType(donation),
