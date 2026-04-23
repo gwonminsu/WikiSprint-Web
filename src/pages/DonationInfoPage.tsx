@@ -22,7 +22,7 @@ export default function DonationInfoPage(): React.ReactElement {
           </p>
         </section>
 
-        {accountInfo?.is_admin ? <w.DonationPendingListWidget /> : null}
+        {accountInfo?.is_admin === true ? <w.DonationPendingListWidget /> : null}
         <w.DonationInfoListWidget />
       </main>
     </div>

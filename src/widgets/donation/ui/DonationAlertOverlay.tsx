@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getLatestDonations } from '@features';
+import { getLatestDonations, getRecentAlertDonations } from '@features';
 import { donationAwake, donationBarrel, donationCoffee, donationOverdose, useTranslation } from '@shared';
 import {
   toDonationAlertFromListItem,
@@ -22,6 +22,17 @@ const EFFECT_LABEL_MAP: Record<DonationEffectType, string> = {
   barrel: 'caffeine barrel',
   overdose: 'caffeine overdose',
 };
+
+const RECENT_ALERT_WINDOW_MS = 1000 * 60 * 60;
+
+function isWithinRecentAlertWindow(receivedAt: string): boolean {
+  const receivedTime = new Date(receivedAt).getTime();
+  if (!Number.isFinite(receivedTime)) {
+    return false;
+  }
+
+  return Date.now() - receivedTime <= RECENT_ALERT_WINDOW_MS;
+}
 
 function getEffectClassName(effectType: DonationEffectType): string {
   return `donation-alert__image donation-alert__image--${effectType}`;
@@ -74,6 +85,14 @@ export function DonationAlertOverlay(): React.ReactElement | null {
   const markHandled = useDonationAlertStore((state) => state.markHandled);
   const initializedIdsRef = useRef<Set<string>>(new Set());
   const hasInitializedRef = useRef(false);
+  const [hasLoadedRecentAlerts, setHasLoadedRecentAlerts] = useState(false);
+
+  const { data: recentAlertData, isError: isRecentAlertError } = useQuery({
+    queryKey: ['donations', 'alerts', 'recent'],
+    queryFn: getRecentAlertDonations,
+    staleTime: Number.POSITIVE_INFINITY,
+    gcTime: 1000 * 60 * 10,
+  });
 
   const { data } = useQuery({
     queryKey: ['donations', 'latest', 'alert-watch'],
@@ -83,14 +102,46 @@ export function DonationAlertOverlay(): React.ReactElement | null {
   });
 
   useEffect(() => {
-    if (!data) {
+    if (hasLoadedRecentAlerts || !recentAlertData) {
+      return;
+    }
+
+    recentAlertData
+      .slice()
+      .sort((left, right) => new Date(left.receivedAt).getTime() - new Date(right.receivedAt).getTime())
+      .forEach((donation) => {
+        initializedIdsRef.current.add(donation.donationId);
+        enqueue(toDonationAlertFromListItem(donation, t('donation.anonymous')));
+      });
+
+    setHasLoadedRecentAlerts(true);
+  }, [enqueue, hasLoadedRecentAlerts, recentAlertData, t]);
+
+  useEffect(() => {
+    if (!isRecentAlertError || hasLoadedRecentAlerts) {
+      return;
+    }
+
+    setHasLoadedRecentAlerts(true);
+  }, [hasLoadedRecentAlerts, isRecentAlertError]);
+
+  useEffect(() => {
+    if (!data || !hasLoadedRecentAlerts) {
       return;
     }
 
     const nextIds = new Set(data.map((donation) => donation.donationId));
 
     if (!hasInitializedRef.current) {
-      nextIds.forEach((id) => markHandled(id));
+      data
+        .filter((donation) => !initializedIdsRef.current.has(donation.donationId))
+        .forEach((donation) => {
+          if (isWithinRecentAlertWindow(donation.receivedAt)) {
+            enqueue(toDonationAlertFromListItem(donation, t('donation.anonymous')));
+          } else {
+            markHandled(donation.donationId);
+          }
+        });
       initializedIdsRef.current = nextIds;
       hasInitializedRef.current = true;
       return;
@@ -104,7 +155,7 @@ export function DonationAlertOverlay(): React.ReactElement | null {
       });
 
     initializedIdsRef.current = nextIds;
-  }, [data, enqueue, markHandled, t]);
+  }, [data, enqueue, hasLoadedRecentAlerts, markHandled, t]);
 
   useEffect(() => {
     if (phase !== 'idle' || queueLength === 0) {

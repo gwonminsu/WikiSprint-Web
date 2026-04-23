@@ -5,9 +5,9 @@ import { getMyAccount } from '../api/accountApi';
 
 // 내 계정 정보를 조회하고 authStore와 동기화한다.
 export function useMyAccount() {
-  const { hasHydrated, isAuthenticated, setAccountInfo, accountInfo } = useAuthStore();
+  const { hasHydrated, isAuthenticated, setAccountInfo } = useAuthStore();
 
-  const shouldFetch = hasHydrated && isAuthenticated && (!accountInfo || !accountInfo.nick);
+  const shouldFetch = hasHydrated && isAuthenticated;
 
   const query = useQuery({
     queryKey: ['myAccount'],

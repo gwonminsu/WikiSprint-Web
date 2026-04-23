@@ -1,3 +1,44 @@
+## v2.12.0 (2026-04-23)
+
+### Added
+- 후원 알림 오버레이(`DonationAlertOverlay`) 신규 추가
+  - `widgets/donation/lib/donationAlert.ts` 신규 — 후원 발생 시 단계별 알림 메시지 생성 로직
+  - `widgets/donation/ui/DonationAlertOverlay.tsx` 신규 — 커피 단계(coffee/barrel/overdose/awake)에 따른 오버레이 UI
+  - `app/App.tsx`에 `<DonationAlertOverlay />` 상시 마운트
+  - 후원 이미지 4종 추가 (`shared/assets/images/donation-{awake|barrel|coffee|overdose}.png`)
+  - i18n 후원 알림 관련 키 추가 (ko/en/ja)
+  - 후원 알림 관련 전역 CSS 애니메이션 추가 (`shared/styles/index.css`)
+- `w.DonationAlertOverlay` 네임스페이스 등록 (`widgets/donation/index.ts`)
+
+### Changed
+- `widgets/donation/` FSD 슬라이스 정리 — 기존에 `widgets/` 루트에 분산되어 있던 donation 관련 파일을 단일 슬라이스(`widgets/donation/`)로 통합
+  - 제거: `widgets/donation-floating.tsx`, `widgets/donation-floating/`, `widgets/donation-support.tsx`, `widgets/donation-info-list.tsx`, `widgets/donation-pending-list.tsx`, `widgets/donation-section.tsx`
+  - 통합 후 구조:
+    - `widgets/donation/lib/donationSupport.tsx` — AnonymousSupporterIcon, resolveDonationDisplayName, getDonationTierGlowClass 공용 유틸
+    - `widgets/donation/lib/donationAlert.ts` — 후원 알림 로직
+    - `widgets/donation/ui/DonationFloatingButton.tsx`
+    - `widgets/donation/ui/DonationInfoListWidget.tsx`
+    - `widgets/donation/ui/DonationPendingListWidget.tsx`
+    - `widgets/donation/ui/DonationSection.tsx`
+    - `widgets/donation/ui/DonationAlertOverlay.tsx`
+  - `widgets/index.ts` — donation export 경로 갱신
+- 후원자 목록 페이지(`/donations`) UI 개선
+  - `DonationInfoPage` 레이아웃 개선
+  - `DonationPendingListWidget` UI 및 i18n 보강
+  - `DonationInfoListWidget` UI 및 i18n 보강
+- 설정 화면 버전 표기를 `2.12.0`으로 갱신
+
+### Fixed
+- 서포터 닉네임과 계정 닉네임이 다를 경우 익명 아바타로 처리하도록 수정
+  - `resolveDonationDisplayName()` — 서포터명/계정닉 불일치 시 `isAnonymous: true` 처리
+  - `DonationInfoListWidget`, `DonationPendingListWidget`, `DonationSection` 적용
+- 닉네임 불일치 후원의 아바타를 익명 아이콘 → 첫 글자 아바타로 변경
+  - `DonationInfoListWidget`, `DonationPendingListWidget`, `DonationSection` 적용
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.11.0 (2026-04-22)
 
 ### Added

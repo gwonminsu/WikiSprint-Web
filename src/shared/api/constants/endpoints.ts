@@ -49,6 +49,7 @@ export const API_ENDPOINTS = {
   DONATION: {
     ALL: '/api/donations',
     LATEST: '/api/donations/latest',
+    RECENT_ALERTS: '/api/donations/alerts/recent',
     DETAIL: '/api/donations', // + /{donationId}
     ACCOUNT_TRANSFER_REQUEST: '/api/donations/account-transfer/request',
     ADMIN_PENDING_ACCOUNT_TRANSFER: '/api/admin/donations/account-transfer/pending',

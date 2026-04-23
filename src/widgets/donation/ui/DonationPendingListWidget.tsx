@@ -1,5 +1,5 @@
 import { confirmAccountTransferDonation, getProfileImageUrl, usePendingAccountTransferDonations } from '@features';
-import { ProfileAvatar, queryClient, useDialog, useToast, useTranslation } from '@shared';
+import { ProfileAvatar, getTokenStorage, queryClient, useAuthStore, useDialog, useToast, useTranslation } from '@shared';
 import { toDonationAlertFromPendingItem, useDonationAlertStore } from '../lib/donationAlert';
 import { AnonymousSupporterIcon, shouldUseAnonymousDonationAvatar } from '../lib/donationSupport';
 
@@ -42,8 +42,15 @@ export function DonationPendingListWidget(): React.ReactElement | null {
   const { t, language } = useTranslation();
   const { showConfirm } = useDialog();
   const toast = useToast();
-  const { data, isLoading, isError } = usePendingAccountTransferDonations();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAdmin = useAuthStore((state) => state.accountInfo?.is_admin === true);
+  const canLoadPendingDonations = isAuthenticated && isAdmin && !!getTokenStorage().getAccessToken();
+  const { data, isLoading, isError } = usePendingAccountTransferDonations(canLoadPendingDonations);
   const enqueueDonationAlert = useDonationAlertStore((state) => state.enqueue);
+
+  if (!canLoadPendingDonations) {
+    return null;
+  }
 
   const handleConfirm = (donation: NonNullable<typeof data>[number]): void => {
     showConfirm({
