@@ -421,7 +421,7 @@ export const en = {
     timer5min: '[Target-???] Yaaawn.. 5 minutes have passed! Better hurry up!',
     timer10min: '[Target-???] 10 minutes passed.. zzz.. Still not done..? Pick up the pace!',
     winMessage: 'You reached ??? in {{minutes}} min {{seconds}} sec! Congratulations!',
-    helpButton: 'Help!',
+    helpButton: 'Docs',
     externalLinkMessage: '[Target-???] Red links are external links and cannot be followed.',
     redlinkMessage: '[Target-???] This document link does not exist on Wikipedia and cannot be followed.',
     fetchErrorMessage: '[Target-???] Unable to navigate due to a temporary error. Please try again shortly or use a different link!',
