@@ -55,6 +55,8 @@ export const en = {
     account: 'Account',
     about: 'About',
     privacyPolicy: 'Privacy Policy',
+    developerContact: 'Developer Contact',
+    developerContactEmail: 'kd061590@gmail.com',
     version: 'Version',
   },
   privacy: {
