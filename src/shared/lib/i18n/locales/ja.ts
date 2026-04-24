@@ -498,6 +498,7 @@ export const ja = {
     emptyTitle: 'まだ戦績がありません',
     emptyDescription: 'ゲームをプレイすると記録がここに残ります！',
     savedAfterLogin: '以前のゲーム記録が保存されました！',
+    savedAfterLoginFailed: 'ルートの不一致により以前の記録を保存できませんでした。もう一度プレイしてください。',
     loginToSave: '記録を保存するにはログインしてみてください！',
   },
   ranking: {

@@ -101,7 +101,10 @@ export function useGameRecord(): {
       return;
     }
 
-    usePendingRecordStore.getState().completePendingGame(elapsedMs);
+    const lastArticle = navPath[navPath.length - 1];
+    if (!lastArticle) return;
+
+    usePendingRecordStore.getState().completePendingGame(navPath, lastArticle, elapsedMs);
   }, []);
 
   const abandonRecord = useCallback((): void => {
