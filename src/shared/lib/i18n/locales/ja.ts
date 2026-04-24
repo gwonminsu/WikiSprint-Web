@@ -571,7 +571,7 @@ export const ja = {
     webShareTitle: '{{nick}}さんがWikiSprintをクリアしました！',
     webShareText: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達！\n{{expiryNotice}}\n結果を見る',
     kakaoTitle: '{{nick}}さんがWikiSprintをクリアしました！',
-    kakaoDescription: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達しました。\n{{expiryNotice}}',
+    kakaoDescription: 'お題「{{targetWord}}」に{{pathCount}}個のルート、{{timeText}}で到達しました。\n{{expiryNotice}}\n{{shareUrl}}',
     kakaoButton: '結果を見る',
   },
   consent: {

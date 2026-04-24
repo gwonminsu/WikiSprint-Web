@@ -54,7 +54,7 @@ export default function HomePage(): React.ReactElement {
 
       {/* CC BY-SA 출처 표시 — playing/completed 단계에서만 (result 제외), 화면 하단 고정 */}
       {(phase === 'playing' || phase === 'completed') && (
-        <div className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-center gap-1.5 py-1 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-start gap-1.5 border-t border-gray-200 bg-gray-100 px-6 py-1 text-left dark:border-gray-700 dark:bg-gray-800 sm:px-8">
           <span className="text-xs text-gray-400 dark:text-gray-500">
             {t('common.contentSource')}
           </span>

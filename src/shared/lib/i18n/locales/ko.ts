@@ -642,7 +642,7 @@ export const ko = {
     webShareTitle: '{{nick}}님이 WikiSprint를 클리어했습니다!',
     webShareText: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달!\n{{expiryNotice}}\n결과 보러가기',
     kakaoTitle: '{{nick}}님이 WikiSprint를 클리어했습니다!',
-    kakaoDescription: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달했습니다.\n{{expiryNotice}}',
+    kakaoDescription: '제시어 "{{targetWord}}"에 {{pathCount}}개 경로, {{timeText}} 만에 도달했습니다.\n{{expiryNotice}}\n{{shareUrl}}',
     kakaoButton: '결과 보러가기',
   },
 } as const;
