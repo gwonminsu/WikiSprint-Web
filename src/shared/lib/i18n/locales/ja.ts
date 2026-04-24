@@ -55,6 +55,8 @@ export const ja = {
     account: 'アカウント',
     about: '情報',
     privacyPolicy: 'プライバシーポリシー',
+    developerContact: '開発者へのお問い合わせ',
+    developerContactEmail: 'kd061590@gmail.com',
     version: 'バージョン',
   },
   privacy: {

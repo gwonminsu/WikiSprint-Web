@@ -55,6 +55,8 @@ export const ko = {
     account: '계정',
     about: '정보',
     privacyPolicy: '개인정보 처리방침',
+    developerContact: '개발자 문의/건의',
+    developerContactEmail: 'kd061590@gmail.com',
     version: '버전',
   },
   privacy: {
