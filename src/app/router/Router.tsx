@@ -11,6 +11,7 @@ const HomePage = lazy(() => import('@/pages/HomePage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
 const DocPage = lazy(() => import('@/pages/DocPage'));
 const DonationInfoPage = lazy(() => import('@/pages/DonationInfoPage'));
+const PrivacyPage = lazy(() => import('@/pages/PrivacyPage'));
 const AdminAccountPage = lazy(() => import('@/pages/AdminAccountPage'));
 const RecordPage = lazy(() => import('@/pages/RecordPage'));
 const RankingPage = lazy(() => import('@/pages/RankingPage'));
@@ -123,6 +124,7 @@ export function Router(): React.ReactElement {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/doc" element={<DocPage />} />
           <Route path="/donations" element={<DonationInfoPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/admin/accounts" element={<AdminAccountPage />} />
           <Route path="/record" element={<RecordPage />} />
           <Route path="/ranking" element={<RankingPage />} />

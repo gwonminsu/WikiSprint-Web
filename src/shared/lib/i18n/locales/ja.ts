@@ -1,4 +1,6 @@
 ﻿// 日本語翻訳
+import { privacyPolicyLocale } from './privacyPolicy';
+
 export const ja = {
   common: {
     confirm: '確認',
@@ -52,7 +54,15 @@ export const ja = {
     themeControlHint: 'トグルはライトとダークを直接切り替え、システムボタンは端末テーマと同期します。',
     account: 'アカウント',
     about: '情報',
+    privacyPolicy: 'プライバシーポリシー',
     version: 'バージョン',
+  },
+  privacy: {
+    title: privacyPolicyLocale.ja.title,
+    documentTitle: privacyPolicyLocale.ja.documentTitle,
+    lastUpdatedLabel: privacyPolicyLocale.ja.lastUpdatedLabel,
+    lastUpdatedDate: privacyPolicyLocale.ja.lastUpdatedDate,
+    content: privacyPolicyLocale.ja.content,
   },
   profile: {
     edit: 'プロフィール編集',
@@ -599,27 +609,7 @@ export const ja = {
 
 第6条（免責事項）
 サービスは保証なしで提供され、利用による損害について責任を負いません。`,
-    privacyContent: `WikiSprintプライバシーポリシーに同意します。
-
-1. 収集情報
-- Googleアカウントのメール
-- 名前
-- プロフィール画像
-
-2. 利用目的
-- ログイン認証
-- ゲーム記録保存
-- サービス改善
-
-3. 保管期間
-- 退会申請後は即時利用停止
-- 最大7日後に完全削除
-
-4. 第三者提供
-個人情報は第三者に提供しません。
-
-5. 利用者の権利
-いつでもアカウント削除を申請できます。`,
+    privacyContent: privacyPolicyLocale.ja.content,
     ageContent: `私は14歳以上であることを確認します。
 
 - 14歳未満は保護者の同意が必要です。
