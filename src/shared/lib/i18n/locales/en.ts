@@ -498,6 +498,7 @@ export const en = {
     emptyTitle: 'No records yet',
     emptyDescription: 'Play a game and your records will show up here!',
     savedAfterLogin: 'Your previous game record has been saved!',
+    savedAfterLoginFailed: 'Could not save your previous record due to a path mismatch. Please play again.',
     loginToSave: 'Log in to save your results!',
   },
   ranking: {

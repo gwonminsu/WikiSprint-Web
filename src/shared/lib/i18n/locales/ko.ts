@@ -498,6 +498,7 @@ export const ko = {
     emptyTitle: '아직 전적이 없습니다',
     emptyDescription: '게임을 플레이하면 여기에 기록이 남습니다!',
     savedAfterLogin: '이전 게임 기록이 저장되었습니다!',
+    savedAfterLoginFailed: '경로 불일치로 이전 기록을 저장하지 못했습니다. 다시 플레이해 주세요.',
     loginToSave: '결과를 기록하려면 로그인해 보세요!',
   },
   ranking: {

@@ -9,6 +9,7 @@ import {
   startGameRecord,
   completeGameRecord,
   abandonGameRecord,
+  isRecoverableClearedPendingGame,
 } from '../../game-record';
 
 export function useRegister(): UseMutationResult<ApiResponse<GoogleLoginResponse>, Error, RegisterRequest> {
@@ -47,18 +48,24 @@ export function useRegister(): UseMutationResult<ApiResponse<GoogleLoginResponse
             startDoc: pending.startDoc,
           });
 
-          if (pending.status === 'cleared' && pending.elapsedMs != null) {
+          if (isRecoverableClearedPendingGame(pending)) {
             useGameStore.getState().setRecordId(resp.recordId);
             await completeGameRecord({
               recordId: resp.recordId,
               navPath: JSON.stringify(pending.navPath),
               elapsedMs: pending.elapsedMs,
             });
+            toast.success(t('record.savedAfterLogin'));
           } else {
             await abandonGameRecord({ recordId: resp.recordId });
+            if (pending.status === 'cleared') {
+              console.warn('[useRegister] 마지막 경로가 제시어와 달라 게스트 클리어 전적 복구를 중단합니다.', {
+                targetWord: pending.targetWord,
+                navPath: pending.navPath,
+              });
+              toast.warning(t('record.savedAfterLoginFailed'));
+            }
           }
-
-          toast.success(t('record.savedAfterLogin'));
         } catch {
           // 저장 실패는 로그인 자체를 막지 않는다.
         } finally {

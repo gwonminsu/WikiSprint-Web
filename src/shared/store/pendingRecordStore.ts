@@ -8,7 +8,7 @@ type PendingRecordState = {
   pendingGame: PendingGameState | null;
   setPendingGame: (game: PendingGameState) => void;
   updatePendingPath: (navPath: string[], lastArticle: string) => void;
-  completePendingGame: (elapsedMs: number) => void;
+  completePendingGame: (navPath: string[], lastArticle: string, elapsedMs: number) => void;
   abandonPendingGame: () => void;
   clearPendingGame: () => void;
 };
@@ -34,11 +34,17 @@ export const usePendingRecordStore = create<PendingRecordState>()(
       },
 
       // 클리어 처리
-      completePendingGame: (elapsedMs: number): void => {
+      completePendingGame: (navPath: string[], lastArticle: string, elapsedMs: number): void => {
         set((state) => {
           if (!state.pendingGame) return {};
           return {
-            pendingGame: { ...state.pendingGame, status: 'cleared', elapsedMs },
+            pendingGame: {
+              ...state.pendingGame,
+              navPath,
+              lastArticle,
+              status: 'cleared',
+              elapsedMs,
+            },
           };
         });
       },

@@ -284,6 +284,16 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.13.2)
+
+- 비로그인 클리어 후 로그인 시 공유 전적의 목적지와 제시어가 어긋나던 문제를 수정했습니다.
+  - `shared/store/pendingRecordStore.ts`의 `completePendingGame(navPath, lastArticle, elapsedMs)`가 최종 경로까지 보관합니다.
+  - `features/game-record/lib/useGameRecord.ts`의 비로그인 클리어 분기에서 `navPath`의 마지막 문서를 `pendingGame`에 함께 반영합니다.
+  - `features/game-record/lib/pendingGameRecovery.ts`에 `isRecoverableClearedPendingGame` 타입 가드가 추가됐습니다. `useGoogleLogin`, `useRegister`가 이 가드로 마지막 경로와 제시어 정규화 일치를 검증한 뒤에만 서버에 `cleared`로 복구합니다.
+- 복구 분기별 토스트를 분리했습니다.
+  - 정상 복구는 `record.savedAfterLogin`, 경로 불일치로 포기 처리된 케이스는 `record.savedAfterLoginFailed` 경고 토스트로 구분합니다.
+  - 새 로케일 키는 `ko`, `en`, `ja` 3종에 추가됐습니다.
+
 ## 최근 변경 메모 (v2.13.1)
 
 - `widgets/report/ui/ReportModal.tsx`는 신고 제출 전에 확인 다이얼로그를 한 번 더 띄웁니다.
