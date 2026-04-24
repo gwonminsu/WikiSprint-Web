@@ -93,7 +93,7 @@ export function Dialog(): React.ReactElement | null {
   const isConfirm = options.type === 'confirm';
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
       {/* 오버레이 */}
       <div
         className="absolute inset-0 z-0 bg-black/50 animate-fade-in"

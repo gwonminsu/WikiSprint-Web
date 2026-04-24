@@ -391,7 +391,18 @@ export function DonationInfoListWidget(): React.ReactElement {
                             disabled={moderatingIds.has(donation.donationId)}
                             onClick={(event) => {
                               event.stopPropagation();
-                              runDonationAction(donation.donationId, () => censorDonationSupporterName(donation.donationId));
+                              showConfirm({
+                                title: canRestoreLinkedNickname
+                                  ? t('donation.adminRestoreAccountNicknameConfirmTitle')
+                                  : t('donation.adminCensorSupporterNameConfirmTitle'),
+                                message: canRestoreLinkedNickname
+                                  ? t('donation.adminRestoreAccountNicknameConfirmMessage')
+                                  : t('donation.adminCensorSupporterNameConfirmMessage'),
+                                confirmText: canRestoreLinkedNickname
+                                  ? t('donation.adminRestoreAccountNickname')
+                                  : t('donation.adminCensorSupporterName'),
+                                onConfirm: () => runDonationAction(donation.donationId, () => censorDonationSupporterName(donation.donationId)),
+                              });
                             }}
                             className="rounded-2xl bg-slate-900 px-3 py-2 text-xs font-black text-white disabled:opacity-60 dark:bg-white dark:text-slate-950"
                           >
@@ -404,7 +415,12 @@ export function DonationInfoListWidget(): React.ReactElement {
                             disabled={moderatingIds.has(donation.donationId)}
                             onClick={(event) => {
                               event.stopPropagation();
-                              runDonationAction(donation.donationId, () => censorDonationMessage(donation.donationId));
+                              showConfirm({
+                                title: t('donation.adminCensorMessageConfirmTitle'),
+                                message: t('donation.adminCensorMessageConfirmMessage'),
+                                confirmText: t('donation.adminCensorMessage'),
+                                onConfirm: () => runDonationAction(donation.donationId, () => censorDonationMessage(donation.donationId)),
+                              });
                             }}
                             className="rounded-2xl bg-slate-900 px-3 py-2 text-xs font-black text-white disabled:opacity-60 dark:bg-white dark:text-slate-950"
                           >
@@ -415,7 +431,12 @@ export function DonationInfoListWidget(): React.ReactElement {
                             disabled={moderatingIds.has(donation.donationId)}
                             onClick={(event) => {
                               event.stopPropagation();
-                              runDonationAction(donation.donationId, () => resolveDonationReports(donation.donationId));
+                              showConfirm({
+                                title: t('donation.adminResolveConfirmTitle'),
+                                message: t('donation.adminResolveConfirmMessage'),
+                                confirmText: t('report.resolve'),
+                                onConfirm: () => runDonationAction(donation.donationId, () => resolveDonationReports(donation.donationId)),
+                              });
                             }}
                             className="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white disabled:opacity-60"
                           >

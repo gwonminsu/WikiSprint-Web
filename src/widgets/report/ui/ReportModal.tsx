@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createReport } from '@features';
-import { useToast, useTranslation } from '@shared';
+import { useDialog, useToast, useTranslation } from '@shared';
 import type { ReportReason, ReportTargetType } from '@/entities';
 
 type ReportModalProps = {
@@ -29,6 +29,7 @@ export function ReportModal({
 }: ReportModalProps): React.ReactElement | null {
   const { t } = useTranslation();
   const toast = useToast();
+  const { showConfirm } = useDialog();
   const [reason, setReason] = useState<ReportReason | null>(null);
   const [detail, setDetail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,12 +78,7 @@ export function ReportModal({
     };
   };
 
-  const handleSubmit = async (): Promise<void> => {
-    if (!reason) {
-      toast.warning(t('report.selectReasonRequired'));
-      return;
-    }
-
+  const submitReport = async (): Promise<void> => {
     setIsSubmitting(true);
     try {
       const requestTarget = resolveRequestTarget();
@@ -90,7 +86,7 @@ export function ReportModal({
         targetType: requestTarget.targetType,
         targetAccountId: requestTarget.targetAccountId,
         targetDonationId: targetDonationId ?? requestTarget.targetDonationId,
-        reason,
+        reason: reason!,
         detail: reason === 'OTHER' ? detail.trim() || null : null,
       });
       await onSubmitted?.();
@@ -101,6 +97,20 @@ export function ReportModal({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSubmit = (): void => {
+    if (!reason) {
+      toast.warning(t('report.selectReasonRequired'));
+      return;
+    }
+
+    showConfirm({
+      title: t('report.confirmTitle'),
+      message: t('report.confirmMessage'),
+      confirmText: t('report.confirmAction'),
+      onConfirm: () => { void submitReport(); },
+    });
   };
 
   return createPortal(
@@ -165,7 +175,7 @@ export function ReportModal({
         <button
           type="button"
           disabled={isSubmitting}
-          onClick={() => void handleSubmit()}
+          onClick={handleSubmit}
           className="mt-5 w-full rounded-2xl bg-orange-500 px-4 py-3 text-sm font-black text-white shadow-lg shadow-orange-500/25 transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? t('report.submitting') : t('report.submit')}

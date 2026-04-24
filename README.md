@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.13.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.13.1-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -263,6 +263,16 @@ VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 
 </div>
 ---
+
+## 🆕 v2.13.1 문서 메모
+
+### 후원/신고 UX 보정
+
+- 신고 제출은 `ReportModal`에서 확인 다이얼로그를 거친 뒤 진행됩니다.
+- `/admin/accounts`와 `/donations` 관리자 액션 버튼은 검열, 권한 부여, 처리 완료 전에 한 번 더 확인을 받습니다.
+- `/doc` 후원 미리보기는 서포터 네임 기준으로 서로 다른 후원자만 노출합니다.
+- 비연동 후원의 첫 글자 아바타는 `/donations`와 같은 컬러 배경 스타일로 맞췄습니다.
+- 게임 문서 도착 판정은 링크 문자열이 아니라 실제 문서의 canonical title 기준으로 보강됐습니다.
 
 ## 🆕 v2.13.0 문서 메모
 

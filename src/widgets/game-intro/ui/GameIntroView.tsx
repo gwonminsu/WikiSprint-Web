@@ -17,7 +17,7 @@ import {
   useGameStore,
   useToast,
 } from '@shared';
-import { getRandomArticle, getArticleHtml, getRandomTargetWord, useGameRecord } from '@features';
+import { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord, useGameRecord } from '@features';
 import { useTypewriter, useGameTimer } from '../lib';
 import { DifficultyDropdown } from './DifficultyDropdown';
 import { WikiLoadingOverlay } from './WikiLoadingOverlay';
@@ -358,8 +358,12 @@ export function GameIntroView(): React.ReactElement {
 
     setIsLoading(true);
     try {
-      const html = await getArticleHtml(title, language);
-      const sanitizedHtml = sanitizeWikiHtml(html, `${language}:${title}`);
+      const [html, summary] = await Promise.all([
+        getArticleHtml(title, language),
+        getArticleSummary(title, language).catch(() => null),
+      ]);
+      const resolvedTitle = summary?.title ?? title;
+      const sanitizedHtml = sanitizeWikiHtml(html, `${language}:${resolvedTitle}`);
       setArticleHtml(sanitizedHtml);
       // 새 문서로 이동했으므로 뒤로가기 버튼 초기화 (링크 없음 useEffect가 재판단)
       setShowBackButton(false);
@@ -372,13 +376,13 @@ export function GameIntroView(): React.ReactElement {
       const { elapsedMs: currentElapsedMs, navigationHistory } = useGameStore.getState();
 
       // 제시어 도달 여부 확인 (대소문자, 밑줄 무시)
-      const isTargetReached = normalizeTitle(title) === normalizeTitle(targetWord);
+      const isTargetReached = normalizeTitle(resolvedTitle) === normalizeTitle(targetWord);
 
       if (isTargetReached) {
         // 클리어 처리
-        navigateToDoc(title);
+        navigateToDoc(resolvedTitle);
         completeGame();
-        const fullHistory = [...navigationHistory, title];
+        const fullHistory = [...navigationHistory, resolvedTitle];
         // 전적 클리어 처리 — fire-and-forget
         completeRecord(fullHistory, currentElapsedMs);
         // 성공 오버레이 표시
@@ -397,19 +401,19 @@ export function GameIntroView(): React.ReactElement {
         console.log(`제시어-${targetWord}, ${fullHistory.join(' -> ')}`);
       } else {
         // 일반 문서 이동 — 경로 갱신 + talker 업데이트
-        navigateToDoc(title);
+        navigateToDoc(resolvedTitle);
         // 서버 경로 업데이트 (디바운스 적용)
-        updatePath([...navigationHistory, title], title);
+        updatePath([...navigationHistory, resolvedTitle], resolvedTitle);
 
         const talkerImg = getTalkerByElapsedMs(currentElapsedMs);
         const navigatedText = t('game.navigatedMessage')
           .replace('???', targetWord)
-          .replace('@@@', title);
+          .replace('@@@', resolvedTitle);
 
         setSpeechText(navigatedText);
         setSpeechHighlights([
           { word: targetWord, color: 'red' },
-          { word: title, color: 'blue' },
+          { word: resolvedTitle, color: 'blue' },
         ]);
         setCurrentTalkerImage(talkerImg);
       }
