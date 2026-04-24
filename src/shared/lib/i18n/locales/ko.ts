@@ -1,4 +1,6 @@
 ﻿// 한국어 번역
+import { privacyPolicyLocale } from './privacyPolicy';
+
 export const ko = {
   common: {
     confirm: '확인',
@@ -52,7 +54,15 @@ export const ko = {
     themeControlHint: '토글은 라이트와 다크를 직접 전환하고, 시스템 버튼은 기기 테마와 동기화됩니다.',
     account: '계정',
     about: '정보',
+    privacyPolicy: '개인정보 처리방침',
     version: '버전',
+  },
+  privacy: {
+    title: privacyPolicyLocale.ko.title,
+    documentTitle: privacyPolicyLocale.ko.documentTitle,
+    lastUpdatedLabel: privacyPolicyLocale.ko.lastUpdatedLabel,
+    lastUpdatedDate: privacyPolicyLocale.ko.lastUpdatedDate,
+    content: privacyPolicyLocale.ko.content,
   },
   profile: {
     edit: '프로필 편집',
@@ -578,27 +588,7 @@ export const ko = {
 
 제6조 (면책 조항)
 서비스는 별도의 보증 없이 제공되며, 운영자는 서비스 이용 중 발생한 손해에 대해 책임을 지지 않습니다.`,
-    privacyContent: `WikiSprint 개인정보 처리방침에 동의합니다.
-
-1. 수집하는 개인정보
-- 구글 계정 이메일
-- 구글 계정 이름
-- 프로필 이미지 URL
-
-2. 수집 목적
-- 회원 식별 및 로그인 처리
-- 게임 기록 저장 및 통계 제공
-- 서비스 개선 및 사용자 경험 향상
-
-3. 보관 기간
-- 회원 탈퇴 요청 시 즉시 이용 중지
-- 탈퇴 후 최대 7일간 데이터 보관 후 완전 삭제
-
-4. 제3자 제공
-서비스는 개인정보를 제3자에게 제공하지 않습니다.
-
-5. 이용자의 권리
-이용자는 언제든지 계정 삭제를 요청할 수 있으며, 요청 시 개인정보는 정책에 따라 삭제됩니다.`,
+    privacyContent: privacyPolicyLocale.ko.content,
     ageContent: `본인은 만 14세 이상임을 확인합니다.
 
 - 만 14세 미만 이용자는 법정대리인의 동의가 필요합니다.

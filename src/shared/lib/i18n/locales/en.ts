@@ -1,4 +1,6 @@
 // English translations
+import { privacyPolicyLocale } from './privacyPolicy';
+
 export const en = {
   common: {
     confirm: 'Confirm',
@@ -52,7 +54,15 @@ export const en = {
     themeControlHint: 'The switch follows light or dark directly, and the System button syncs with your device theme.',
     account: 'Account',
     about: 'About',
+    privacyPolicy: 'Privacy Policy',
     version: 'Version',
+  },
+  privacy: {
+    title: privacyPolicyLocale.en.title,
+    documentTitle: privacyPolicyLocale.en.documentTitle,
+    lastUpdatedLabel: privacyPolicyLocale.en.lastUpdatedLabel,
+    lastUpdatedDate: privacyPolicyLocale.en.lastUpdatedDate,
+    content: privacyPolicyLocale.en.content,
   },
   profile: {
     edit: 'Edit Profile',
@@ -599,27 +609,7 @@ The service provider may modify or terminate the service at any time.
 
 Article 6 (Disclaimer)
 The service is provided "as is" without warranties, and the provider is not liable for damages arising from its use.`,
-    privacyContent: `I agree to the WikiSprint Privacy Policy.
-
-1. Collected Information
-- Google account email
-- Name
-- Profile image URL
-
-2. Purpose of Collection
-- User identification and login
-- Game record storage and statistics
-- Service improvement and user experience enhancement
-
-3. Retention Period
-- Service access is immediately restricted upon account deletion request
-- Data is retained for up to 7 days and then permanently deleted
-
-4. Third-party Sharing
-Personal information is not shared with third parties.
-
-5. User Rights
-Users may request account deletion at any time, and their data will be deleted according to policy.`,
+    privacyContent: privacyPolicyLocale.en.content,
     ageContent: `I confirm that I am at least 14 years old.
 
 - Users under 14 require parental consent.

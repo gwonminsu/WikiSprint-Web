@@ -488,9 +488,36 @@ export function SettingsView(): React.ReactElement {
         <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">
           {t('settings.about')}
         </h2>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-          <span className="text-gray-500 dark:text-gray-400">2.13.1</span>
+        <div className="space-y-3">
+          <div className="rounded-xl border border-gray-100 bg-gray-50/80 px-4 py-3 dark:border-gray-700/80 dark:bg-gray-900/60">
+            <button
+              type="button"
+              onClick={() => navigate('/privacy')}
+              className="group flex w-full items-center justify-between text-left transition-colors"
+            >
+              <span className="text-gray-700 underline-offset-4 transition-colors group-hover:text-primary group-hover:underline dark:text-gray-300 dark:group-hover:text-primary">
+                {t('settings.privacyPolicy')}
+              </span>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-gray-400 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+                aria-hidden="true"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
+            <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
+            <span className="text-gray-500 dark:text-gray-400">2.13.1</span>
+          </div>
         </div>
       </section>
 
