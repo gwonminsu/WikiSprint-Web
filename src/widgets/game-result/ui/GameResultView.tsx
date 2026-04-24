@@ -105,6 +105,7 @@ export function GameResultView(): React.ReactElement {
         pathCount: String(navigationHistory.length),
         timeText,
         expiryNotice: t('share.validFor24Hours'),
+        shareUrl: preparedShare.shareUrl,
       }),
       buttonTitle: t('share.kakaoButton'),
       shareUrl: preparedShare.shareUrl,

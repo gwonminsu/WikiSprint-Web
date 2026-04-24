@@ -571,7 +571,7 @@ export const en = {
     webShareTitle: '{{nick}} cleared WikiSprint!',
     webShareText: 'Reached "{{targetWord}}" in {{pathCount}} steps, {{timeText}}!\n{{expiryNotice}}\nView results',
     kakaoTitle: '{{nick}} cleared WikiSprint!',
-    kakaoDescription: 'Reached "{{targetWord}}" in {{pathCount}} steps, {{timeText}}.\n{{expiryNotice}}',
+    kakaoDescription: 'Reached "{{targetWord}}" in {{pathCount}} steps, {{timeText}}.\n{{expiryNotice}}\n{{shareUrl}}',
     kakaoButton: 'View results',
   },
   consent: {
