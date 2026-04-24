@@ -4,20 +4,19 @@ import { EmbossButton, ProfileAvatar, useTranslation } from '@shared';
 import type { DonationListItem } from '@entities';
 import {
   AnonymousSupporterIcon,
-  buildDonationIdentityKey,
   resolveDonationDisplayName,
 } from '../lib/donationSupport';
 
 function getUniqueRecentSupporters(donations: DonationListItem[]): DonationListItem[] {
-  const seenKeys = new Set<string>();
+  const seenDisplayNames = new Set<string>();
 
   return donations.filter((donation) => {
-    const identityKey = buildDonationIdentityKey(donation);
-    if (seenKeys.has(identityKey)) {
+    const displayName = resolveDonationDisplayName(donation, 'anonymous').trim().toLowerCase();
+    if (seenDisplayNames.has(displayName)) {
       return false;
     }
 
-    seenKeys.add(identityKey);
+    seenDisplayNames.add(displayName);
     return true;
   });
 }
@@ -57,7 +56,7 @@ export function DonationSection(): React.ReactElement {
 
               return (
                 <div
-                  key={buildDonationIdentityKey(donation)}
+                  key={donation.donationId}
                   title={displayName}
                   className="flex items-center justify-center"
                 >
@@ -68,7 +67,7 @@ export function DonationSection(): React.ReactElement {
                     className={`h-12 w-12 rounded-2xl shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700 ${
                       useAnonymousIcon
                         ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
-                        : 'bg-white dark:bg-slate-900'
+                        : ''
                     }`}
                     fallbackContent={useAnonymousIcon ? <AnonymousSupporterIcon /> : undefined}
                   />

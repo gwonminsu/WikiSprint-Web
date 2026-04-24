@@ -55,26 +55,10 @@ export function resolveDonationDisplayName(
     return anonymousLabel;
   }
 
-  return donation.accountNick ?? donation.supporterName ?? anonymousLabel;
+  return donation.supporterName ?? donation.accountNick ?? anonymousLabel;
 }
 
 // 후원 표시 이름과 계정 닉네임이 다르면 실제 프로필 아바타를 숨긴다.
-export function shouldUseAnonymousDonationAvatar(
-  accountNick: string | null,
-  supporterName: string | null,
-  isAnonymous: boolean | null,
-): boolean {
-  if (isAnonymous === true) {
-    return true;
-  }
-
-  if (!accountNick || !supporterName) {
-    return false;
-  }
-
-  return accountNick.trim() !== supporterName.trim();
-}
-
 // 후원 타입을 화면 표시에 맞는 텍스트로 정규화한다.
 export function normalizeDonationType(
   donationType: string | null,
@@ -101,19 +85,6 @@ export function normalizeDonationType(
 }
 
 // 최근 후원자 중복 제거용 키를 만든다.
-export function buildDonationIdentityKey(donation: DonationListItem): string {
-  if (donation.isAnonymous === true) {
-    return `anonymous:${donation.donationId}`;
-  }
-
-  if (donation.accountId) {
-    return `account:${donation.accountId}`;
-  }
-
-  const displayName = resolveDonationDisplayName(donation, 'anonymous');
-  return `name:${displayName.toLowerCase()}`;
-}
-
 function parseDonationAmount(amount: string | null): number | null {
   if (!amount) {
     return null;

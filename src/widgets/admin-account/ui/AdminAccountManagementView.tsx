@@ -8,7 +8,7 @@ import {
   useAdminAccounts,
 } from '@features';
 import { getProfileImageUrl } from '@features/account';
-import { ProfileAvatar, queryClient, useToast, useTranslation } from '@shared';
+import { ProfileAvatar, queryClient, useDialog, useToast, useTranslation } from '@shared';
 import type {
   AdminAccountDirection,
   AdminAccountItem,
@@ -23,6 +23,7 @@ const PAGE_SIZE = 10;
 export function AdminAccountManagementView(): React.ReactElement {
   const { t } = useTranslation();
   const toast = useToast();
+  const { showConfirm } = useDialog();
   const [view, setView] = useState<AdminAccountListView>('REPORTED');
   const [sort, setSort] = useState<AdminAccountSort>('RECENT_LOGIN');
   const [direction, setDirection] = useState<AdminAccountDirection>('DESC');
@@ -94,11 +95,11 @@ export function AdminAccountManagementView(): React.ReactElement {
             <h1 className="mt-2 text-3xl font-black text-gray-950 dark:text-white">{t('adminAccount.title')}</h1>
           </div>
           <div className="flex flex-wrap gap-2">
-            <select value={view} onChange={(event) => { setView(event.target.value as AdminAccountListView); setPage(1); }} className="rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm font-bold dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+            <select value={view} onChange={(event) => { setView(event.target.value as AdminAccountListView); setPage(1); }} className="shrink-0 rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm font-bold dark:border-gray-700 dark:bg-gray-800 dark:text-white">
               <option value="REPORTED">{t('adminAccount.viewReported')}</option>
               <option value="ALL">{t('adminAccount.viewAll')}</option>
             </select>
-            <select value={sort} onChange={(event) => { setSort(event.target.value as AdminAccountSort); setPage(1); }} className="rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm font-bold dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+            <select value={sort} onChange={(event) => { setSort(event.target.value as AdminAccountSort); setPage(1); }} className="shrink-0 rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm font-bold dark:border-gray-700 dark:bg-gray-800 dark:text-white">
               <option value="RECENT_LOGIN">{t('adminAccount.sortRecentLogin')}</option>
               <option value="RECENT_JOIN">{t('adminAccount.sortRecentJoin')}</option>
               <option value="NAME">{t('adminAccount.sortName')}</option>
@@ -106,7 +107,7 @@ export function AdminAccountManagementView(): React.ReactElement {
             <button
               type="button"
               onClick={() => { setDirection(direction === 'ASC' ? 'DESC' : 'ASC'); setPage(1); }}
-              className="inline-flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm font-black dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+              className="inline-flex shrink-0 items-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm font-black dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               aria-label={direction === 'ASC' ? t('adminAccount.asc') : t('adminAccount.desc')}
             >
               <svg className={direction === 'ASC' ? 'rotate-180 transition-transform' : 'transition-transform'} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -114,10 +115,33 @@ export function AdminAccountManagementView(): React.ReactElement {
               </svg>
               {direction === 'ASC' ? t('adminAccount.asc') : t('adminAccount.desc')}
             </button>
-            <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} className="rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder={t('adminAccount.searchPlaceholder')} />
-            <button type="button" onClick={() => { setSearch(searchInput.trim()); setPage(1); }} className="rounded-2xl bg-orange-500 px-4 py-2 text-sm font-black text-white">
-              {t('common.search')}
-            </button>
+            <div className="flex min-w-0 flex-1 gap-2">
+              <input
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                onKeyDown={(event) => { if (event.key === 'Enter') { setSearch(searchInput.trim()); setPage(1); } }}
+                className="min-w-0 flex-1 rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                placeholder={t('adminAccount.searchPlaceholder')}
+              />
+              <button type="button" onClick={() => { setSearch(searchInput.trim()); setPage(1); }} className="shrink-0 rounded-2xl bg-orange-500 px-4 py-2 text-sm font-black text-white">
+                {t('common.search')}
+              </button>
+            </div>
+          </div>
+          <div className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+            {search.trim() ? (
+              <>
+                {t('adminAccount.searchResultPrefix', { keyword: search })}
+                <strong className="text-lg font-black text-rose-500">{data?.totalCount ?? 0}</strong>
+                {t('adminAccount.searchResultSuffix')}
+              </>
+            ) : (
+              <>
+                {t('adminAccount.totalCountPrefix')}
+                <strong className="text-lg font-black text-rose-500">{data?.totalCount ?? 0}</strong>
+                {t('adminAccount.totalCountSuffix')}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -134,10 +158,30 @@ export function AdminAccountManagementView(): React.ReactElement {
             summary={summaries[account.accountId]}
             busy={busyIds.has(account.accountId)}
             onToggle={() => toggleAccount(account.accountId)}
-            onCensorProfile={() => runAction(account.accountId, () => censorAccountProfile(account.accountId))}
-            onCensorNickname={() => runAction(account.accountId, () => censorAccountNickname(account.accountId))}
-            onGrantAdmin={() => runAction(account.accountId, () => grantAccountAdmin(account.accountId))}
-            onResolve={() => runAction(account.accountId, () => resolveAccountReports(account.accountId))}
+            onCensorProfile={() => showConfirm({
+              title: t('adminAccount.censorProfileConfirmTitle'),
+              message: t('adminAccount.censorProfileConfirmMessage'),
+              confirmText: t('adminAccount.censorProfile'),
+              onConfirm: () => runAction(account.accountId, () => censorAccountProfile(account.accountId)),
+            })}
+            onCensorNickname={() => showConfirm({
+              title: t('adminAccount.censorNicknameConfirmTitle'),
+              message: t('adminAccount.censorNicknameConfirmMessage'),
+              confirmText: t('adminAccount.censorNickname'),
+              onConfirm: () => runAction(account.accountId, () => censorAccountNickname(account.accountId)),
+            })}
+            onGrantAdmin={() => showConfirm({
+              title: t('adminAccount.grantAdminConfirmTitle'),
+              message: t('adminAccount.grantAdminConfirmMessage'),
+              confirmText: t('adminAccount.grantAdmin'),
+              onConfirm: () => runAction(account.accountId, () => grantAccountAdmin(account.accountId)),
+            })}
+            onResolve={() => showConfirm({
+              title: t('adminAccount.resolveConfirmTitle'),
+              message: t('adminAccount.resolveConfirmMessage'),
+              confirmText: t('report.resolve'),
+              onConfirm: () => runAction(account.accountId, () => resolveAccountReports(account.accountId)),
+            })}
           />
         ))}
       </div>

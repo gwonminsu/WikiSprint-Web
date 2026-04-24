@@ -284,6 +284,14 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.13.1)
+
+- `widgets/report/ui/ReportModal.tsx`는 신고 제출 전에 확인 다이얼로그를 한 번 더 띄웁니다.
+- `widgets/admin-account/ui/AdminAccountManagementView.tsx`와 `widgets/donation/ui/DonationInfoListWidget.tsx`의 관리자 액션은 검열/권한 부여/처리 완료 전에 확인 다이얼로그를 거칩니다.
+- `/doc` 후원 미리보기(`widgets/donation/ui/DonationSection.tsx`)는 서포터 네임 기준으로 중복을 제거합니다. 같은 계정이라도 서로 다른 서포터 네임이면 따로 보여주며, 비연동 후원 아바타는 `/donations`와 같은 컬러 배경 첫 글자 스타일을 사용합니다.
+- 게임 문서 이동 판정(`widgets/game-intro/ui/GameIntroView.tsx`)은 `getArticleSummary()`로 받은 canonical title 기준으로 클리어 여부를 판단합니다.
+- 공용 `Dialog`는 `z-[200]` 레이어를 사용해 신고 모달과 관리자 패널 위에서도 안정적으로 표시됩니다.
+
 ## 최근 변경 메모 (v2.12.0)
 
 - 후원 알림 오버레이(`DonationAlertOverlay`)가 추가됐습니다. `widgets/donation/lib/donationAlert.ts`의 단계별 알림 로직을 기반으로 `<DonationAlertOverlay />`가 `app/App.tsx`에 상시 마운트됩니다. 후원 이미지 4종(`donation-coffee/barrel/overdose/awake.png`)이 `shared/assets/images/`에 추가됐습니다.
