@@ -43,6 +43,14 @@ const initialState = {
 };
 
 const GAME_TAB_ID_STORAGE_KEY = 'game-tab-id';
+const GAME_HEARTBEAT_STORAGE_KEY = 'game-heartbeat';
+const GAME_HEARTBEAT_STALE_MS = 10_000;
+
+type GameHeartbeat = {
+  tabId: string;
+  recordId: string | null;
+  updatedAt: number;
+};
 
 function getCurrentGameTabId(): string {
   const existingTabId = sessionStorage.getItem(GAME_TAB_ID_STORAGE_KEY);
@@ -55,6 +63,44 @@ function getCurrentGameTabId(): string {
   return newTabId;
 }
 
+function readGameHeartbeat(): GameHeartbeat | null {
+  const raw = localStorage.getItem(GAME_HEARTBEAT_STORAGE_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw) as GameHeartbeat;
+  } catch {
+    return null;
+  }
+}
+
+function writeGameHeartbeat(recordId: string | null): void {
+  const heartbeat: GameHeartbeat = {
+    tabId: getCurrentGameTabId(),
+    recordId,
+    updatedAt: Date.now(),
+  };
+  localStorage.setItem(GAME_HEARTBEAT_STORAGE_KEY, JSON.stringify(heartbeat));
+}
+
+function clearGameHeartbeat(): void {
+  const heartbeat = readGameHeartbeat();
+  if (heartbeat?.tabId !== getCurrentGameTabId()) {
+    return;
+  }
+  localStorage.removeItem(GAME_HEARTBEAT_STORAGE_KEY);
+}
+
+export function syncGameHeartbeat(recordId: string | null): void {
+  writeGameHeartbeat(recordId);
+}
+
+export function releaseGameHeartbeat(): void {
+  clearGameHeartbeat();
+}
+
 export const useGameStore = create<GameState>()(
   persist(
     (set) => ({
@@ -65,6 +111,7 @@ export const useGameStore = create<GameState>()(
       },
 
       startGame: (targetWord: string, startDocTitle: string, recordId: string | null): void => {
+        writeGameHeartbeat(recordId);
         set({
           phase: 'playing',
           targetWord,
@@ -80,6 +127,10 @@ export const useGameStore = create<GameState>()(
 
       // 비로그인 클리어 후 로그인 저장된 전적 ID를 결과 화면에 다시 반영
       setRecordId: (recordId: string | null): void => {
+        const state = useGameStore.getState();
+        if (state.phase === 'playing' && state.ownerTabId === getCurrentGameTabId()) {
+          writeGameHeartbeat(recordId);
+        }
         set({ recordId });
       },
 
@@ -107,10 +158,12 @@ export const useGameStore = create<GameState>()(
       },
 
       completeGame: (): void => {
+        clearGameHeartbeat();
         set({ phase: 'completed', isTimerRunning: false });
       },
 
       resetGame: (): void => {
+        clearGameHeartbeat();
         set((state) => ({ ...initialState, difficulty: state.difficulty }));
       },
 
@@ -138,11 +191,31 @@ export const useGameStore = create<GameState>()(
         if (state.ownerTabId === null || state.ownerTabId === currentTabId) {
           return;
         }
+        if (state.phase !== 'playing' || state.recordId === null) {
+          useGameStore.setState((currentState) => ({
+            ...initialState,
+            difficulty: currentState.difficulty,
+          }));
+          return;
+        }
 
-        useGameStore.setState((currentState) => ({
-          ...initialState,
-          difficulty: currentState.difficulty,
-        }));
+        const heartbeat = readGameHeartbeat();
+        const hasActiveOwner =
+          heartbeat?.tabId === state.ownerTabId &&
+          heartbeat.updatedAt >= Date.now() - GAME_HEARTBEAT_STALE_MS;
+
+        if (hasActiveOwner) {
+          useGameStore.setState((currentState) => ({
+            ...initialState,
+            difficulty: currentState.difficulty,
+          }));
+          return;
+        }
+
+        // 원래 탭이 사라진 고아 세션이면 현재 탭이 소유권을 넘겨받아 자동 정리 효과를 이어간다.
+        useGameStore.setState({
+          ownerTabId: currentTabId,
+        });
       },
     }
   )

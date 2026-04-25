@@ -6,6 +6,9 @@ import {
   ToastContainer,
   useThemeStore,
   useAuthStore,
+  useGameStore,
+  syncGameHeartbeat,
+  releaseGameHeartbeat,
   useViewportScale,
   setAuthUpdateCallback,
   getTokenStorage,
@@ -78,6 +81,37 @@ function ViewportScaleInitializer(): null {
   return null;
 }
 
+function GameHeartbeatInitializer(): null {
+  const phase = useGameStore((state) => state.phase);
+  const recordId = useGameStore((state) => state.recordId);
+
+  useEffect(() => {
+    if (phase !== 'playing') {
+      releaseGameHeartbeat();
+      return;
+    }
+
+    syncGameHeartbeat(recordId);
+    const interval = window.setInterval(() => {
+      syncGameHeartbeat(useGameStore.getState().recordId);
+    }, 3000);
+
+    const handleBeforeUnload = (): void => {
+      releaseGameHeartbeat();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      releaseGameHeartbeat();
+    };
+  }, [phase, recordId]);
+
+  return null;
+}
+
 export function App(): React.ReactElement {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -85,6 +119,7 @@ export function App(): React.ReactElement {
         <ThemeInitializer />
         <AuthInitializer />
         <ViewportScaleInitializer />
+        <GameHeartbeatInitializer />
         <Router />
         <DonationAlertOverlay />
         <DonationFloatingButton />
