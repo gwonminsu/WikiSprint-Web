@@ -31,6 +31,11 @@ export default function HomePage(): React.ReactElement {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       <w.Header />
+      <section className="sr-only" aria-label="WikiSprint SEO introduction">
+        <h1>WikiSprint - 위키 링크 탐색 스피드런 게임</h1>
+        <p>WikiSprint는 랜덤 문서에서 시작해 목표 단어 문서까지 링크만으로 도달하는 위키 링크 탐색 스피드런 게임입니다.</p>
+        <p>WikiSprint is a wiki link exploration speedrun game where you start from a random article and reach the target article using links only.</p>
+      </section>
 
       {/* intro 단계 — 로고 + 인사 (페이드아웃) */}
       {phase === 'intro' && (
