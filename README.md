@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.13.2-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.13.3-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -263,6 +263,14 @@ VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 
 </div>
 ---
+
+## 🆕 v2.13.3 문서 메모
+
+### 게임 시작 동시성 보정
+
+- 로그인 계정은 다른 창이나 탭에서 이미 진행 중인 게임이 있으면 새 게임을 시작할 수 없습니다.
+- `GameIntroView`는 서버의 `409 CONFLICT` 응답을 감지하면 게임 시작을 반려하고 경고 토스트만 표시합니다.
+- 시작 반려 문구 `game.startBlockedByAnotherSession`이 `ko`, `en`, `ja` 로케일에 추가됐습니다.
 
 ## 🆕 v2.13.1 문서 메모
 

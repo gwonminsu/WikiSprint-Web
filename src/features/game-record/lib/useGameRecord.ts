@@ -24,12 +24,8 @@ export function useGameRecord(): {
 
   const startRecord = useCallback(async (targetWord: string, startDoc: string): Promise<string | null> => {
     if (isAuthRef.current) {
-      try {
-        const resp = await startGameRecord({ targetWord, startDoc });
-        return resp.recordId;
-      } catch {
-        return null;
-      }
+      const resp = await startGameRecord({ targetWord, startDoc });
+      return resp.recordId;
     }
 
     usePendingRecordStore.getState().setPendingGame({

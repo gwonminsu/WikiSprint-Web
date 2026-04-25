@@ -284,6 +284,13 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.13.3)
+
+- 로그인 계정은 다른 창/탭에서 이미 진행 중인 게임이 있으면 새 게임을 시작할 수 없습니다.
+- `widgets/game-intro/ui/GameIntroView.tsx`는 서버의 `409 CONFLICT` 응답을 감지하면 `ready` 상태를 유지하고 경고 토스트만 표시합니다.
+- `features/game-record/lib/useGameRecord.ts`의 `startRecord()`는 시작 실패를 상위로 올려 화면에서 원인별 토스트 분기를 할 수 있게 정리됐습니다.
+- `game.startBlockedByAnotherSession` 로케일 키가 `ko`, `en`, `ja`에 추가됐습니다.
+
 ## 최근 변경 메모 (v2.13.2)
 
 - 비로그인 클리어 후 로그인 시 공유 전적의 목적지와 제시어가 어긋나던 문제를 수정했습니다.

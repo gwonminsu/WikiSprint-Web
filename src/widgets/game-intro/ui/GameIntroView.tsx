@@ -18,6 +18,7 @@ import {
   useToast,
 } from '@shared';
 import { getRandomArticle, getArticleHtml, getArticleSummary, getRandomTargetWord, useGameRecord } from '@features';
+import { ApiException } from '@/shared/api';
 import { useTypewriter, useGameTimer } from '../lib';
 import { DifficultyDropdown } from './DifficultyDropdown';
 import { WikiLoadingOverlay } from './WikiLoadingOverlay';
@@ -162,6 +163,10 @@ function formatWinTime(ms: number): { minutes: number; seconds: string } {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = (totalSeconds % 60).toFixed(2).padStart(5, '0');
   return { minutes, seconds };
+}
+
+function isConcurrentGameStartError(error: unknown): error is ApiException {
+  return error instanceof ApiException && error.status === 409;
 }
 
 // 타이머 표시 전용 컴포넌트 — 100ms 리렌더를 이 컴포넌트 내부로만 격리
@@ -580,9 +585,17 @@ export function GameIntroView(): React.ReactElement {
             toast.info(t('game.startDocReselected'));
           }
           return;
-        } catch {
+        } catch (fallbackError) {
+          if (isConcurrentGameStartError(fallbackError)) {
+            toast.warning(fallbackError.message);
+            return;
+          }
           // 오마카세 폴백도 실패
         }
+      }
+      if (isConcurrentGameStartError(err)) {
+        toast.warning(err.message);
+        return;
       }
       // 그 외 게임 시작 실패 (타임아웃, 네트워크 오류 등) — 토스트 알림
       toast.error(t('game.startError'));

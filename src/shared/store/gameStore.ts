@@ -15,6 +15,7 @@ type GameState = {
   isTimerRunning: boolean;
   recordId: string | null;
   gameStartedAt: number | null;
+  ownerTabId: string | null;
   difficulty: Difficulty;
 
   setPhase: (phase: GamePhase) => void;
@@ -37,8 +38,22 @@ const initialState = {
   isTimerRunning: false,
   recordId: null,
   gameStartedAt: null,
+  ownerTabId: null,
   difficulty: 0 as Difficulty,
 };
+
+const GAME_TAB_ID_STORAGE_KEY = 'game-tab-id';
+
+function getCurrentGameTabId(): string {
+  const existingTabId = sessionStorage.getItem(GAME_TAB_ID_STORAGE_KEY);
+  if (existingTabId) {
+    return existingTabId;
+  }
+
+  const newTabId = crypto.randomUUID();
+  sessionStorage.setItem(GAME_TAB_ID_STORAGE_KEY, newTabId);
+  return newTabId;
+}
 
 export const useGameStore = create<GameState>()(
   persist(
@@ -59,6 +74,7 @@ export const useGameStore = create<GameState>()(
           isTimerRunning: true,
           recordId,
           gameStartedAt: Date.now(),
+          ownerTabId: getCurrentGameTabId(),
         });
       },
 
@@ -111,9 +127,23 @@ export const useGameStore = create<GameState>()(
         navigationHistory: state.navigationHistory,
         recordId: state.recordId,
         gameStartedAt: state.gameStartedAt,
+        ownerTabId: state.ownerTabId,
         difficulty: state.difficulty,
         elapsedMs: state.elapsedMs,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+
+        const currentTabId = getCurrentGameTabId();
+        if (state.ownerTabId === null || state.ownerTabId === currentTabId) {
+          return;
+        }
+
+        useGameStore.setState((currentState) => ({
+          ...initialState,
+          difficulty: currentState.difficulty,
+        }));
+      },
     }
   )
 );

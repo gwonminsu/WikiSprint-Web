@@ -439,6 +439,7 @@ export const en = {
     fetchErrorMessage: '[Target-???] Unable to navigate due to a temporary error. Please try again shortly or use a different link!',
     leaveConfirm: 'Navigating away will forcibly end your current game. Are you sure you want to leave?',
     startError: 'Unable to start the game. Please try again in a moment!',
+    startBlockedByAnotherSession: 'A game is already in progress in another window or tab. Please finish that game first.',
     successOverlayText: 'Destination Reached!',
     resultButton: 'See Results',
     resultHeader: "Let's take a look at your journey to the destination(???)!",

@@ -439,6 +439,7 @@ export const ja = {
     fetchErrorMessage: '[お題-???] 一時的なエラーにより移動できません。しばらくしてから再度クリックするか、他のリンクをご利用ください！',
     leaveConfirm: 'ページ移動すると進行中のゲームが強制終了されます。移動しますか？',
     startError: 'ゲームを開始できません。しばらくしてからもう一度お試しください！',
+    startBlockedByAnotherSession: '別のウィンドウまたはタブですでに進行中のゲームがあります。先にそのゲームを終了してください。',
     successOverlayText: '目的地に到着！',
     resultButton: '結果を確認',
     resultHeader: '目的地(???)までの旅を振り返ってみましょう！',

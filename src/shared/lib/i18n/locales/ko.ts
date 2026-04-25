@@ -439,6 +439,7 @@ export const ko = {
     fetchErrorMessage: '[제시어-???] 일시적 오류로 인해 해당 링크로 이동할 수 없습니다. 잠시 후에 다시 클릭하거나 다른 링크를 이용해 주세요!',
     leaveConfirm: '페이지 이동 시 진행중인 게임이 강제로 종료됩니다. 이동하시겠습니까?',
     startError: '게임을 시작 할 수 없습니다. 잠시 후 다시 시도해 주세요!',
+    startBlockedByAnotherSession: '이미 다른 창 또는 탭에서 진행 중인 게임이 있습니다. 먼저 해당 게임을 마무리해 주세요.',
     successOverlayText: '목적지 도착!',
     resultButton: '결과 확인',
     resultHeader: '목적지(???)까지의 여정을 한번 살펴봅시다!',
