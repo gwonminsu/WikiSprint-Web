@@ -1,5 +1,6 @@
 ﻿// 한국어 번역
 import { privacyPolicyLocale } from './privacyPolicy';
+import { patchNotesLocale } from './patchNotes';
 
 export const ko = {
   common: {
@@ -54,8 +55,10 @@ export const ko = {
     themeControlHint: '토글은 라이트와 다크를 직접 전환하고, 시스템 버튼은 기기 테마와 동기화됩니다.',
     account: '계정',
     about: '정보',
+    patchNotes: '패치노트',
     privacyPolicy: '개인정보 처리방침',
     developerContact: '개발자 문의/건의',
+    developerContactPodoAria: '권포도 소개 페이지 열기',
     developerContactEmail: 'kd061590@gmail.com',
     version: '버전',
   },
@@ -65,6 +68,29 @@ export const ko = {
     lastUpdatedLabel: privacyPolicyLocale.ko.lastUpdatedLabel,
     lastUpdatedDate: privacyPolicyLocale.ko.lastUpdatedDate,
     content: privacyPolicyLocale.ko.content,
+  },
+  patch: {
+    eyebrow: patchNotesLocale.ko.eyebrow,
+    title: patchNotesLocale.ko.title,
+    documentTitle: patchNotesLocale.ko.documentTitle,
+    lastUpdatedLabel: patchNotesLocale.ko.lastUpdatedLabel,
+    lastUpdatedDate: patchNotesLocale.ko.lastUpdatedDate,
+    content: patchNotesLocale.ko.content,
+  },
+  podo: {
+    eyebrow: 'GWONPODO ARCHIVE',
+    documentTitle: '권포도 | WikiSprint',
+    headingPrefix: '개발자의 반려고양이',
+    highlightedName: '권포도',
+    headingSuffix: '를 소개합니다!',
+    description: '권포도 글자를 클릭하면 권포도 인스타그램 프로필로 이동할 수 있어요!',
+    galleryEyebrow: 'PHOTO GALLERY',
+    galleryTitle: '포도의 순간들',
+    galleryCount: '총 {{count}}장의 사진',
+    photoAlt: '권포도 사진 {{order}}번',
+    photoCardLabel: '권포도 사진 {{order}}',
+    openImage: '권포도 사진 {{order}} 크게 보기',
+    closeLightbox: '권포도 갤러리 닫기',
   },
   profile: {
     edit: '프로필 편집',

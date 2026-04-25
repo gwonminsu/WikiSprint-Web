@@ -9,3 +9,5 @@ export { ThemeOrbitToggle } from './ThemeOrbitToggle';
 export { ThemeSystemButton } from './ThemeSystemButton';
 export { ThemeControlGroup } from './ThemeControlGroup';
 export { WidgetDropdown } from './WidgetDropdown';
+export { DocumentPageLayout } from './DocumentPageLayout';
+export { MarkdownDocument } from './MarkdownDocument';

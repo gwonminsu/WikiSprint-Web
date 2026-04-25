@@ -1,5 +1,6 @@
 ﻿// 日本語翻訳
 import { privacyPolicyLocale } from './privacyPolicy';
+import { patchNotesLocale } from './patchNotes';
 
 export const ja = {
   common: {
@@ -54,8 +55,10 @@ export const ja = {
     themeControlHint: 'トグルはライトとダークを直接切り替え、システムボタンは端末テーマと同期します。',
     account: 'アカウント',
     about: '情報',
+    patchNotes: 'パッチノート',
     privacyPolicy: 'プライバシーポリシー',
     developerContact: '開発者へのお問い合わせ',
+    developerContactPodoAria: 'GwonPodo紹介ページを開く',
     developerContactEmail: 'kd061590@gmail.com',
     version: 'バージョン',
   },
@@ -65,6 +68,29 @@ export const ja = {
     lastUpdatedLabel: privacyPolicyLocale.ja.lastUpdatedLabel,
     lastUpdatedDate: privacyPolicyLocale.ja.lastUpdatedDate,
     content: privacyPolicyLocale.ja.content,
+  },
+  patch: {
+    eyebrow: patchNotesLocale.ja.eyebrow,
+    title: patchNotesLocale.ja.title,
+    documentTitle: patchNotesLocale.ja.documentTitle,
+    lastUpdatedLabel: patchNotesLocale.ja.lastUpdatedLabel,
+    lastUpdatedDate: patchNotesLocale.ja.lastUpdatedDate,
+    content: patchNotesLocale.ja.content,
+  },
+  podo: {
+    eyebrow: 'GWONPODO ARCHIVE',
+    documentTitle: 'GwonPodo | WikiSprint',
+    headingPrefix: '開発者の愛猫',
+    highlightedName: 'GwonPodo',
+    headingSuffix: 'をご紹介します！',
+    description: 'GwonPodoの文字をクリックすると、GwonPodoのInstagramプロフィールへ移動できます！',
+    galleryEyebrow: 'PHOTO GALLERY',
+    galleryTitle: 'Podoの瞬間たち',
+    galleryCount: '全{{count}}枚の写真',
+    photoAlt: 'GwonPodoの写真 {{order}}',
+    photoCardLabel: 'GwonPodoの写真 {{order}}',
+    openImage: 'GwonPodoの写真 {{order}} を開く',
+    closeLightbox: 'GwonPodoギャラリーを閉じる',
   },
   profile: {
     edit: 'プロフィール編集',

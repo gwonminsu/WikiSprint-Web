@@ -1,5 +1,6 @@
 // English translations
 import { privacyPolicyLocale } from './privacyPolicy';
+import { patchNotesLocale } from './patchNotes';
 
 export const en = {
   common: {
@@ -54,8 +55,10 @@ export const en = {
     themeControlHint: 'The switch follows light or dark directly, and the System button syncs with your device theme.',
     account: 'Account',
     about: 'About',
+    patchNotes: 'Patch Notes',
     privacyPolicy: 'Privacy Policy',
     developerContact: 'Developer Contact',
+    developerContactPodoAria: 'Open the GwonPodo page',
     developerContactEmail: 'kd061590@gmail.com',
     version: 'Version',
   },
@@ -65,6 +68,29 @@ export const en = {
     lastUpdatedLabel: privacyPolicyLocale.en.lastUpdatedLabel,
     lastUpdatedDate: privacyPolicyLocale.en.lastUpdatedDate,
     content: privacyPolicyLocale.en.content,
+  },
+  patch: {
+    eyebrow: patchNotesLocale.en.eyebrow,
+    title: patchNotesLocale.en.title,
+    documentTitle: patchNotesLocale.en.documentTitle,
+    lastUpdatedLabel: patchNotesLocale.en.lastUpdatedLabel,
+    lastUpdatedDate: patchNotesLocale.en.lastUpdatedDate,
+    content: patchNotesLocale.en.content,
+  },
+  podo: {
+    eyebrow: 'GWONPODO ARCHIVE',
+    documentTitle: 'GwonPodo | WikiSprint',
+    headingPrefix: "Meet the developer's cat",
+    highlightedName: 'GwonPodo',
+    headingSuffix: '!',
+    description: 'Click the GwonPodo text to open GwonPodo\'s Instagram profile!',
+    galleryEyebrow: 'PHOTO GALLERY',
+    galleryTitle: 'Moments of Podo',
+    galleryCount: '{{count}} photos in total',
+    photoAlt: 'GwonPodo photo {{order}}',
+    photoCardLabel: 'GwonPodo photo {{order}}',
+    openImage: 'Open GwonPodo photo {{order}}',
+    closeLightbox: 'Close the GwonPodo gallery',
   },
   profile: {
     edit: 'Edit Profile',

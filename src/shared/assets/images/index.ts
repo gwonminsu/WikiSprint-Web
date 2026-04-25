@@ -18,6 +18,7 @@ import donationCoffee from './donation-coffee.png';
 import donationAwake from './donation-awake.png';
 import donationBarrel from './donation-barrel.png';
 import donationOverdose from './donation-overdose.png';
+export { podoGalleryImages, type PodoGalleryImage } from './cat';
 
 // 언어별 로고 이미지 맵
 const logoMap: Record<Language, string> = {

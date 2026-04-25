@@ -19,6 +19,19 @@ import { usePendingReportCount } from '@features';
 import { getProfileImageUrl, useUpdateNick, useUpdateNationality, useRequestDeletion, ProfileImageEditModal } from '@/features/account';
 import { AdminTargetWordsSection } from './AdminTargetWordsSection';
 
+const CAT_FACE_EMOJIS: readonly string[] = ['🐱', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'] as const;
+
+type CatSparkParticle = {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  rotate: number;
+  size: number;
+  duration: number;
+  delay: number;
+};
+
 // 이메일 마스킹: 첫 글자 제외 @ 이전을 ***으로 치환
 function maskEmail(email: string): string {
   const atIndex = email.indexOf('@');
@@ -27,6 +40,54 @@ function maskEmail(email: string): string {
 }
 
 // 설정 뷰 위젯
+type InfoLinkCardProps = {
+  label: string;
+  onClick: () => void;
+};
+
+function createCatSparkBurst(startId: number): CatSparkParticle[] {
+  return Array.from({ length: 5 }, (_, index) => ({
+    id: startId + index,
+    emoji: CAT_FACE_EMOJIS[Math.floor(Math.random() * CAT_FACE_EMOJIS.length)],
+    x: 18 + Math.random() * 118,
+    y: -52 + Math.random() * 104,
+    rotate: -36 + Math.random() * 72,
+    size: 16 + Math.random() * 12,
+    duration: 720 + Math.random() * 420,
+    delay: Math.random() * 180,
+  }));
+}
+
+function InfoLinkCard({ label, onClick }: InfoLinkCardProps): React.ReactElement {
+  return (
+    <div className="rounded-xl border border-gray-100 bg-gray-50/80 px-4 py-3 dark:border-gray-700/80 dark:bg-gray-900/60">
+      <button
+        type="button"
+        onClick={onClick}
+        className="group flex w-full items-center justify-between text-left transition-colors"
+      >
+        <span className="text-gray-700 underline-offset-4 transition-colors group-hover:text-primary group-hover:underline dark:text-gray-300 dark:group-hover:text-primary">
+          {label}
+        </span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-gray-400 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+          aria-hidden="true"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 export function SettingsView(): React.ReactElement {
   const { t, language, setLanguage } = useTranslation();
   const { accountInfo, setAccountInfo, clearAuth } = useAuthStore();
@@ -55,6 +116,29 @@ export function SettingsView(): React.ReactElement {
   const [isNationalityOpen, setIsNationalityOpen] = useState<boolean>(false);
   const [nationalitySearch, setNationalitySearch] = useState<string>('');
   const nationalityRef = useRef<HTMLDivElement>(null);
+  const [isCatSparkActive, setIsCatSparkActive] = useState<boolean>(false);
+  const [catSparkParticles, setCatSparkParticles] = useState<CatSparkParticle[]>([]);
+  const catSparkIntervalRef = useRef<number | null>(null);
+  const catSparkTimeoutRef = useRef<number[]>([]);
+  const catSparkIdRef = useRef<number>(0);
+
+  const spawnCatSparkBurst = (): void => {
+    const burst = createCatSparkBurst(catSparkIdRef.current);
+    catSparkIdRef.current += burst.length;
+
+    setCatSparkParticles((previousParticles) => [
+      ...previousParticles.slice(-28),
+      ...burst,
+    ]);
+
+    burst.forEach((particle) => {
+      const timeoutId = window.setTimeout(() => {
+        setCatSparkParticles((previousParticles) => previousParticles.filter(({ id }) => id !== particle.id));
+      }, particle.duration + particle.delay + 180);
+
+      catSparkTimeoutRef.current.push(timeoutId);
+    });
+  };
 
   // 닉네임 편집 시작
   const startEditNick = (): void => {
@@ -110,6 +194,38 @@ export function SettingsView(): React.ReactElement {
   }, [isNationalityOpen]);
 
   // 국적 선택 (null = 무국적)
+  useEffect(() => {
+    if (!isCatSparkActive) {
+      if (catSparkIntervalRef.current !== null) {
+        window.clearInterval(catSparkIntervalRef.current);
+        catSparkIntervalRef.current = null;
+      }
+      return;
+    }
+
+    spawnCatSparkBurst();
+    catSparkIntervalRef.current = window.setInterval(spawnCatSparkBurst, 240);
+
+    return () => {
+      if (catSparkIntervalRef.current !== null) {
+        window.clearInterval(catSparkIntervalRef.current);
+        catSparkIntervalRef.current = null;
+      }
+    };
+  }, [isCatSparkActive]);
+
+  useEffect(() => {
+    return () => {
+      if (catSparkIntervalRef.current !== null) {
+        window.clearInterval(catSparkIntervalRef.current);
+      }
+
+      catSparkTimeoutRef.current.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
+    };
+  }, []);
+
   const selectNationality = async (code: string | null): Promise<void> => {
     setIsNationalityOpen(false);
     setNationalitySearch('');
@@ -489,38 +605,45 @@ export function SettingsView(): React.ReactElement {
           {t('settings.about')}
         </h2>
         <div className="space-y-3">
-          <div className="rounded-xl border border-gray-100 bg-gray-50/80 px-4 py-3 dark:border-gray-700/80 dark:bg-gray-900/60">
+          <InfoLinkCard label={t('settings.patchNotes')} onClick={() => navigate('/patch')} />
+          <InfoLinkCard label={t('settings.privacyPolicy')} onClick={() => navigate('/privacy')} />
+          <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
             <button
               type="button"
-              onClick={() => navigate('/privacy')}
-              className="group flex w-full items-center justify-between text-left transition-colors"
+              onClick={() => navigate('/podo')}
+              onMouseEnter={() => setIsCatSparkActive(true)}
+              onMouseLeave={() => setIsCatSparkActive(false)}
+              onFocus={() => setIsCatSparkActive(true)}
+              onBlur={() => setIsCatSparkActive(false)}
+              className="group relative inline-flex items-center text-left text-gray-900 transition-colors hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 dark:text-white dark:hover:text-violet-300"
+              aria-label={t('settings.developerContactPodoAria')}
             >
-              <span className="text-gray-700 underline-offset-4 transition-colors group-hover:text-primary group-hover:underline dark:text-gray-300 dark:group-hover:text-primary">
-                {t('settings.privacyPolicy')}
+              <span className="relative z-10">{t('settings.developerContact')}</span>
+              <span className="pointer-events-none absolute inset-y-0 left-0 w-36 overflow-visible">
+                {catSparkParticles.map((particle) => (
+                  <span
+                    key={particle.id}
+                    className="cat-spark-particle"
+                    style={{
+                      '--cat-spark-x': `${particle.x}px`,
+                      '--cat-spark-y': `${particle.y}px`,
+                      '--cat-spark-rotate': `${particle.rotate}deg`,
+                      animationDuration: `${particle.duration}ms`,
+                      animationDelay: `${particle.delay}ms`,
+                      fontSize: `${particle.size}px`,
+                    } as React.CSSProperties}
+                    aria-hidden="true"
+                  >
+                    {particle.emoji}
+                  </span>
+                ))}
               </span>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-gray-400 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
-                aria-hidden="true"
-              >
-                <path d="m9 18 6-6-6-6" />
-              </svg>
             </button>
-          </div>
-          <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
-            <span className="text-gray-900 dark:text-white">{t('settings.developerContact')}</span>
             <span className="text-gray-500 dark:text-gray-400">{t('settings.developerContactEmail')}</span>
           </div>
           <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
             <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-            <span className="text-gray-500 dark:text-gray-400">2.13.3</span>
+            <span className="text-gray-500 dark:text-gray-400">2.14.0</span>
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@
 import { getLogoByLanguage } from './assets/images';
 
 // UI 컴포넌트
-import { Dialog, ToastContainer, useDialog, useToast, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup } from './ui';
+import { Dialog, ToastContainer, useDialog, useToast, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup, DocumentPageLayout, MarkdownDocument } from './ui';
 
 // 스토어
 import { useAuthStore, useThemeStore, useGameStore, usePendingRecordStore, syncGameHeartbeat, releaseGameHeartbeat } from './store';
@@ -34,6 +34,8 @@ export const shared = {
     ThemeOrbitToggle,
     ThemeSystemButton,
     ThemeControlGroup,
+    DocumentPageLayout,
+    MarkdownDocument,
   },
   store: {
     useAuthStore,
@@ -60,8 +62,8 @@ export const shared = {
 } as const;
 
 // 개별 export (직접 import 용도)
-export { getLogoByLanguage, tutoDoc, talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn, gameClear, donationCoffee, donationAwake, donationBarrel, donationOverdose } from './assets/images';
-export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup, WidgetDropdown } from './ui';
+export { getLogoByLanguage, tutoDoc, talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn, gameClear, donationCoffee, donationAwake, donationBarrel, donationOverdose, podoGalleryImages, type PodoGalleryImage } from './assets/images';
+export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup, WidgetDropdown, DocumentPageLayout, MarkdownDocument } from './ui';
 export {
   useAuthStore,
   useThemeStore,

@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.13.3-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.14.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -213,6 +213,8 @@ VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 | `/auth` | `AuthPage` | ❌ |
 | `/settings` | `SettingsPage` | ❌ (게스트 포함) |
 | `/doc` | `DocPage` | ❌ |
+| `/patch` | `PatchPage` | ❌ |
+| `/podo` | `PodoPage` | ❌ |
 | `/record` | `RecordPage` | ✅ |
 | `/ranking` | `RankingPage` | ❌ (게스트 포함) |
 | `/share/:shareId` | `SharePage` | ❌ |
