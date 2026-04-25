@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.wiki-sprint.com/sitemap.xml
