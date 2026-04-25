@@ -24,7 +24,7 @@ const EFFECT_LABEL_MAP: Record<DonationEffectType, string> = {
   overdose: 'caffeine overdose',
 };
 
-const RECENT_ALERT_WINDOW_MS = 1000 * 60 * 60;
+const RECENT_ALERT_WINDOW_MS = 1000 * 60 * 10;
 const SEEN_ALERT_STORAGE_KEY = 'wikisprint-seen-donation-alerts';
 
 type SeenDonationAlertRecord = {
