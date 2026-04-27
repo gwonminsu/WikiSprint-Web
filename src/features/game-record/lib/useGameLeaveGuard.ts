@@ -31,20 +31,23 @@ function useGameLeaveConfirm(): {
     if (isConfirmOpenRef.current) return;
 
     isConfirmOpenRef.current = true;
-    showConfirm({
-      message: t('game.leaveConfirm'),
-      onConfirm: () => {
-        isConfirmOpenRef.current = false;
-        abandonRecord();
-        resetGame();
-        onLeave();
-        showInfo(t('game.abandonedByNavigation'));
-      },
-      onCancel: () => {
-        isConfirmOpenRef.current = false;
-        onStay?.();
-      },
-    });
+    // 현재 클릭 이벤트와 같은 턴에 다이얼로그를 열면 터치 환경에서 즉시 닫히는 경우가 있어 한 프레임 뒤에 연다.
+    window.setTimeout(() => {
+      showConfirm({
+        message: t('game.leaveConfirm'),
+        onConfirm: () => {
+          isConfirmOpenRef.current = false;
+          abandonRecord();
+          resetGame();
+          onLeave();
+          showInfo(t('game.abandonedByNavigation'));
+        },
+        onCancel: () => {
+          isConfirmOpenRef.current = false;
+          onStay?.();
+        },
+      });
+    }, 0);
   }, [abandonRecord, resetGame, showConfirm, showInfo, t]);
 
   return { confirmLeave };

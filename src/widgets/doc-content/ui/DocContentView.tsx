@@ -665,6 +665,15 @@ export function DocContentView(): React.ReactElement {
 
             <div className="mt-8 space-y-3">
               <Accordion
+                title={t('doc.faq.item0Title')}
+                icon="📚"
+                contentClassName="px-5 py-5"
+              >
+                <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                  {t('doc.faq.item0Body')}
+                </p>
+              </Accordion>
+              <Accordion
                 title={t('doc.faq.item1Title')}
                 icon="❓"
                 contentClassName="px-5 py-5"
@@ -689,6 +698,15 @@ export function DocContentView(): React.ReactElement {
               >
                 <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600 dark:text-gray-300">
                   {t('doc.faq.item3Body')}
+                </p>
+              </Accordion>
+              <Accordion
+                title={t('doc.faq.item4Title')}
+                icon="🧾"
+                contentClassName="px-5 py-5"
+              >
+                <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                  {t('doc.faq.item4Body')}
                 </p>
               </Accordion>
             </div>
