@@ -46,16 +46,21 @@ type InfoLinkCardProps = {
 };
 
 function createCatSparkBurst(startId: number): CatSparkParticle[] {
-  return Array.from({ length: 5 }, (_, index) => ({
-    id: startId + index,
-    emoji: CAT_FACE_EMOJIS[Math.floor(Math.random() * CAT_FACE_EMOJIS.length)],
-    x: 18 + Math.random() * 118,
-    y: -52 + Math.random() * 104,
-    rotate: -36 + Math.random() * 72,
-    size: 16 + Math.random() * 12,
-    duration: 720 + Math.random() * 420,
-    delay: Math.random() * 180,
-  }));
+  return Array.from({ length: 5 }, (_, index) => {
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 28 + Math.random() * 74;
+
+    return {
+      id: startId + index,
+      emoji: CAT_FACE_EMOJIS[Math.floor(Math.random() * CAT_FACE_EMOJIS.length)],
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance,
+      rotate: -60 + Math.random() * 120,
+      size: 16 + Math.random() * 12,
+      duration: 720 + Math.random() * 420,
+      delay: Math.random() * 180,
+    };
+  });
 }
 
 function InfoLinkCard({ label, onClick }: InfoLinkCardProps): React.ReactElement {
@@ -619,7 +624,7 @@ export function SettingsView(): React.ReactElement {
               aria-label={t('settings.developerContactPodoAria')}
             >
               <span className="relative z-10">{t('settings.developerContact')}</span>
-              <span className="pointer-events-none absolute inset-y-0 left-0 w-36 overflow-visible">
+              <span className="pointer-events-none absolute inset-0 overflow-visible">
                 {catSparkParticles.map((particle) => (
                   <span
                     key={particle.id}

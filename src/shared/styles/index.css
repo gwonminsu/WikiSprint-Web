@@ -1980,7 +1980,7 @@ body {
 
 .cat-spark-particle {
   position: absolute;
-  left: 0.35rem;
+  left: 50%;
   top: 50%;
   display: inline-flex;
   align-items: center;
