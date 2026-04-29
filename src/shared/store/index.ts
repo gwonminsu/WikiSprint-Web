@@ -7,3 +7,4 @@ export {
   type Difficulty,
 } from './gameStore';
 export { usePendingRecordStore } from './pendingRecordStore';
+export { useRankingAlertStore } from './rankingAlertStore';

@@ -29,3 +29,28 @@ export interface RankingListRequest {
   periodType: RankingPeriod;
   difficulty: RankingDifficulty;
 }
+
+export interface RankingAlertPlayer {
+  accountId: string;
+  nickname: string;
+  profileImageUrl: string | null;
+  nationality: string | null;
+  startDoc: string;
+  targetWord: string;
+  pathLength: number;
+  elapsedMs: number;
+}
+
+export type RankingAlertKind = 'new-entry' | 'overtake';
+export type RankingAlertStatus = 'idle' | 'showing' | 'exiting';
+
+export interface RankingAlertResponse {
+  alertId: string;
+  kind: RankingAlertKind;
+  createdAt: string;
+  winner: RankingAlertPlayer;
+  loser: RankingAlertPlayer | null;
+  currentRank: number;
+  previousRank: number | null;
+  winnerRankDelta: number | null;
+}

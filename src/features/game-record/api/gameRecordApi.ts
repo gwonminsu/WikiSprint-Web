@@ -4,6 +4,7 @@ import type {
   StartGameRecordResponse,
   UpdatePathRequest,
   CompleteRecordRequest,
+  CompleteRecordResponse,
   AbandonRecordRequest,
   GameRecordListResponse,
   SharedGameRecord,
@@ -33,8 +34,9 @@ export const updateRecordPath = async (request: UpdatePathRequest): Promise<void
 };
 
 // 클리어 처리
-export const completeGameRecord = async (request: CompleteRecordRequest): Promise<void> => {
-  await apiClient.post(API_ENDPOINTS.RECORD.COMPLETE, request);
+export const completeGameRecord = async (request: CompleteRecordRequest): Promise<CompleteRecordResponse> => {
+  const response = await apiClient.post<CompleteRecordResponse>(API_ENDPOINTS.RECORD.COMPLETE, request);
+  return response.data ?? { rankingAlert: null };
 };
 
 // 포기 처리

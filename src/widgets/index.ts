@@ -10,6 +10,7 @@ import { GameIntroView } from './game-intro';
 import { GameResultView } from './game-result';
 import { GameRecordView } from './game-record';
 import { RankingView } from './ranking';
+import { RankingAlertOverlay } from './ranking-alert';
 import { ConsentModal } from './consent';
 
 export const w = {
@@ -29,6 +30,7 @@ export const w = {
   GameResultView,
   GameRecordView,
   RankingView,
+  RankingAlertOverlay,
   ConsentModal,
 } as const;
 
@@ -44,4 +46,5 @@ export { GameIntroView } from './game-intro';
 export { GameResultView } from './game-result';
 export { GameRecordView } from './game-record';
 export { RankingView } from './ranking';
+export { RankingAlertOverlay } from './ranking-alert';
 export { ConsentModal } from './consent';

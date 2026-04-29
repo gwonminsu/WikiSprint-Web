@@ -10,7 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.14.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.15.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
@@ -265,6 +265,16 @@ VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 
 </div>
 ---
+
+## 🆕 v2.15.0 문서 메모
+
+### 랭킹 알림 오버레이
+
+- 게임 클리어 후 일일 전체 랭킹에 변동이 생기면 전체 클라이언트에 알림 오버레이(`RankingAlertOverlay`)가 표시됩니다.
+- 신규 진입(`new-entry`)은 입성 카드 한 장, 추월(`overtake`)은 승자/패자 카드 두 장으로 구분됩니다.
+- 본인 클리어 시 클리어 응답 본문의 `rankingAlert`로 즉시 enqueue, 다른 클라이언트는 15초 폴링(`/api/ranking/alerts/recent`)으로 수신합니다.
+- `rankingAlertStore`(zustand) + localStorage `wikisprint-seen-ranking-alerts` 이중 중복 방지가 적용됩니다.
+- `widgets/ranking/ui/RankingCardDisplay.tsx`가 알림 오버레이와 랭킹 페이지 카드의 시각 표현을 공유합니다.
 
 ## 🆕 v2.13.3 문서 메모
 

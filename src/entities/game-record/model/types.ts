@@ -57,6 +57,10 @@ export type CompleteRecordRequest = {
   elapsedMs: number;
 };
 
+export type CompleteRecordResponse = {
+  rankingAlert: import('@/entities/ranking/types').RankingAlertResponse | null;
+};
+
 // 포기 요청
 export type AbandonRecordRequest = {
   recordId: string;

@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { useAuthStore, useGameStore, usePendingRecordStore, useToastStore } from '@shared';
+import { useAuthStore, useGameStore, usePendingRecordStore, useRankingAlertStore, useToastStore } from '@shared';
 import { queryClient } from '@/shared/config/queryClient';
 import {
   startGameRecord,
@@ -81,11 +81,18 @@ export function useGameRecord(): {
         navPath: JSON.stringify(navPath),
         elapsedMs,
       })
-        .then(() => Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['ranking'] }),
-          queryClient.invalidateQueries({ queryKey: ['gameRecords'] }),
-          queryClient.invalidateQueries({ queryKey: ['myAccount'] }),
-        ]))
+        .then((response) => {
+          if (response.rankingAlert) {
+            useRankingAlertStore.getState().enqueue(response.rankingAlert);
+          }
+
+          return Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['ranking'] }),
+            queryClient.invalidateQueries({ queryKey: ['rankingAlerts'] }),
+            queryClient.invalidateQueries({ queryKey: ['gameRecords'] }),
+            queryClient.invalidateQueries({ queryKey: ['myAccount'] }),
+          ]);
+        })
         .catch((err: unknown) => {
           console.error('[useGameRecord] 클리어 전적 저장 실패:', err);
           useToastStore.getState().add({

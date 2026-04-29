@@ -1,3 +1,26 @@
+## v2.15.0 (2026-04-29)
+
+### Added
+- 게임 클리어 직후 일일 전체 랭킹에 진입하거나 순위가 오르면 전체 클라이언트에 알림 오버레이를 표시하도록 추가했습니다.
+  - 랭킹에 처음 진입하는 신규 입성과 기존 순위권 플레이어를 추월하는 두 가지 장면을 시각적으로 구분합니다.
+  - `widgets/ranking-alert/RankingAlertOverlay` 신규 추가. 알림 큐 상태 머신(`idle` → `showing` → `exiting`)은 `shared/store/rankingAlertStore.ts`에서 관리합니다.
+  - 본인 클리어 시 서버 응답에서 즉시 enqueue, 다른 클라이언트는 `POST /api/ranking/alerts/recent` 15초 폴링으로 수신합니다.
+  - `localStorage` + zustand `handledIds` 이중 중복 방지로 같은 알림이 반복 표시되지 않습니다.
+  - 랭킹 카드 시각 표현을 `widgets/ranking/ui/RankingCardDisplay.tsx`로 추출해 알림 오버레이와 랭킹 페이지가 동일 카드 스타일을 공유합니다.
+  - `ranking.alertEntryHeadline / alertOvertakeHeadline / alertSkip / alertNewBadge` 로케일 키를 ko/en/ja에 추가했습니다.
+
+### Changed
+- 게임 클리어 응답이 `CompleteRecordResponse { rankingAlert }` 형태로 변경됐습니다.
+  - `rankingAlert`가 null이면 기존과 동일하게 동작합니다.
+- SettingsView 버전 표기를 `2.15.0`으로 갱신했습니다.
+
+### Notes
+- Web 버전을 `2.14.0`에서 `2.15.0`으로 올렸습니다.
+
+========================================================================================================
+========================================================================================================
+========================================================================================================
+
 ## v2.14.0 (2026-04-25)
 
 ### Added

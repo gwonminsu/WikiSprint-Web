@@ -51,7 +51,7 @@ import {
 } from './game-record';
 
 // Ranking feature
-import { getRanking, useRanking } from './ranking';
+import { getRanking, getRecentRankingAlerts, useRanking } from './ranking';
 import {
   getLatestDonations,
   getRecentAlertDonations,
@@ -137,7 +137,7 @@ export const f = {
       getGameRecords,
       getSharedRecord,
     },
-    ranking: { getRanking },
+    ranking: { getRanking, getRecentRankingAlerts },
     donation: {
       getLatestDonations,
       getRecentAlertDonations,
@@ -206,7 +206,7 @@ export {
   useSharedRecord,
 } from './game-record';
 
-export { getRanking, useRanking } from './ranking';
+export { getRanking, getRecentRankingAlerts, useRanking } from './ranking';
 export {
   getLatestDonations,
   getRecentAlertDonations,

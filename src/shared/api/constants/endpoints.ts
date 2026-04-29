@@ -57,6 +57,7 @@ export const API_ENDPOINTS = {
   // 랭킹 엔드포인트
   RANKING: {
     LIST: '/api/ranking/list',
+    RECENT_ALERTS: '/api/ranking/alerts/recent',
   },
   DONATION: {
     ALL: '/api/donations',

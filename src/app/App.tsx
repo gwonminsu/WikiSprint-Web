@@ -13,7 +13,7 @@ import {
   setAuthUpdateCallback,
   getTokenStorage,
 } from '@shared';
-import { DonationAlertOverlay, DonationFloatingButton } from '@widgets';
+import { DonationAlertOverlay, DonationFloatingButton, RankingAlertOverlay } from '@widgets';
 import { QueryProvider } from './providers/QueryProvider';
 import { Router } from './router/Router';
 
@@ -121,6 +121,7 @@ export function App(): React.ReactElement {
         <ViewportScaleInitializer />
         <GameHeartbeatInitializer />
         <Router />
+        <RankingAlertOverlay />
         <DonationAlertOverlay />
         <DonationFloatingButton />
         <Dialog />

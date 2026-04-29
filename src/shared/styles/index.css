@@ -2294,6 +2294,453 @@ body {
   border-color: transparent;
 }
 
+@keyframes ranking-alert-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(-18px, 20px, 0) scale(0.78);
+  }
+  58% {
+    opacity: 1;
+    transform: translate3d(0, -5px, 0) scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes ranking-alert-exit {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-18px, 18px, 0) scale(0.96);
+  }
+}
+
+@keyframes ranking-entry-card-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.42);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ranking-card-push-down {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(112px);
+  }
+  86% {
+    transform: translateY(102px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(108px);
+  }
+}
+
+@keyframes ranking-card-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ranking-card-settle-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.48);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ranking-rank-change {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ranking-badge-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.68);
+  }
+  72% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ranking-particle-burst {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.22);
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--ranking-particle-x), var(--ranking-particle-y), 0) scale(1.34);
+  }
+}
+
+@keyframes ranking-card-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.ranking-alert {
+  position: fixed;
+  left: max(24px, env(safe-area-inset-left));
+  bottom: 20%;
+  z-index: 68;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(420px, calc(100vw - 32px));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  animation: ranking-alert-pop 400ms cubic-bezier(0.2, 0.9, 0.24, 1.15) both;
+}
+
+.ranking-alert--exiting {
+  pointer-events: none;
+  animation: ranking-alert-exit 500ms ease both;
+}
+
+.ranking-alert__headline {
+  margin: 0 0 0.85rem;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 0.55rem 0.8rem;
+  border-radius: 1rem;
+  color: #f8fafc;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.58));
+  font-size: clamp(0.92rem, 1.8vw, 1.04rem);
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 10px rgba(15, 23, 42, 0.34);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+}
+
+.ranking-alert__scene {
+  width: 100%;
+}
+
+.ranking-alert__stage {
+  position: relative;
+  width: 100%;
+}
+
+.ranking-alert__stage--entry {
+  min-height: 182px;
+}
+
+.ranking-alert__stage--overtake {
+  min-height: 214px;
+}
+
+.ranking-alert__lane {
+  position: relative;
+  width: 100%;
+}
+
+.ranking-alert__lane--top {
+  min-height: 214px;
+}
+
+.ranking-alert__entry-card,
+.ranking-alert__overtake-loser-track,
+.ranking-alert__overtake-winner-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.ranking-alert__entry-card {
+  top: 0;
+  z-index: 3;
+  animation: ranking-entry-card-pop 400ms cubic-bezier(0.24, 0.9, 0.24, 1.18) both;
+}
+
+.ranking-alert__overtake-loser-track {
+  top: 0;
+  z-index: 2;
+  animation: ranking-card-push-down 620ms cubic-bezier(0.22, 0.88, 0.24, 1) 360ms both;
+}
+
+.ranking-alert__overtake-winner-wrap {
+  top: 0;
+  z-index: 4;
+  opacity: 0;
+  animation: ranking-card-settle-in 420ms cubic-bezier(0.24, 0.9, 0.24, 1.18) 760ms both;
+}
+
+.ranking-alert__particles {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.ranking-alert__particles--entry {
+  top: 58px;
+}
+
+.ranking-alert__particles--winner {
+  top: 58px;
+}
+
+.ranking-alert__particle {
+  position: absolute;
+  width: var(--ranking-particle-size);
+  height: var(--ranking-particle-size);
+  border-radius: 9999px;
+  background: var(--ranking-particle-color);
+  box-shadow:
+    0 0 16px color-mix(in srgb, var(--ranking-particle-color) 78%, white),
+    0 0 28px color-mix(in srgb, var(--ranking-particle-color) 50%, transparent);
+  animation: ranking-particle-burst var(--ranking-particle-duration) ease-out var(--ranking-particle-delay) both;
+}
+
+.ranking-alert__card-surface {
+  position: relative;
+  z-index: 2;
+}
+
+.ranking-alert__overtake-loser-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.ranking-alert__overtake-loser-layer--initial {
+  opacity: 1;
+  animation: ranking-card-fade-out 120ms linear 980ms both;
+}
+
+.ranking-alert__overtake-loser-layer--final {
+  opacity: 0;
+  animation: ranking-card-fade-in 160ms ease-out 940ms both;
+}
+
+.ranking-alert__rank-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+  padding: 0.1rem 0;
+  min-height: 3.4rem;
+}
+
+.ranking-alert__rank-slot--static {
+  animation: none;
+  opacity: 1;
+}
+
+.ranking-alert__rank-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 1.55rem;
+}
+
+.ranking-alert__rank-before,
+.ranking-alert__rank-after,
+.ranking-alert__rank-current {
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1;
+  color: rgb(17 24 39);
+  letter-spacing: -0.04em;
+}
+
+.ranking-alert__rank-before,
+.ranking-alert__rank-after {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ranking-alert__rank-before {
+  animation: ranking-rank-before-out 220ms ease-in 1000ms both;
+}
+
+.ranking-alert__rank-after {
+  opacity: 0;
+  animation: ranking-rank-after-in 260ms ease-out 1000ms both;
+}
+
+.dark .ranking-alert__rank-before,
+.dark .ranking-alert__rank-after,
+.dark .ranking-alert__rank-arrow,
+.dark .ranking-alert__rank-current {
+  color: rgb(248 250 252);
+}
+
+.ranking-alert__rank-after,
+.ranking-alert__rank-current {
+  color: rgb(8 145 178);
+}
+
+.dark .ranking-alert__rank-after,
+.dark .ranking-alert__rank-current {
+  color: rgb(103 232 249);
+}
+
+.ranking-alert__rank-slot--static .ranking-alert__rank-current {
+  position: static;
+}
+
+.ranking-alert__rank-arrow {
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1;
+  color: rgb(100 116 139);
+  opacity: 0;
+  animation: ranking-rank-after-in 260ms ease-out 1000ms both;
+}
+
+.dark .ranking-alert__rank-arrow {
+  color: rgb(148 163 184);
+}
+
+.ranking-alert__tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.1rem;
+  max-width: 100%;
+  padding: 0 0.42rem;
+  border-radius: 9999px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1;
+  animation: ranking-badge-pop 220ms ease-out 1160ms both;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.ranking-alert__tag--new {
+  color: #166534;
+  background: rgba(134, 239, 172, 0.92);
+  border: 1px solid rgba(34, 197, 94, 0.24);
+}
+
+.ranking-alert__tag--up {
+  color: #991b1b;
+  background: rgba(254, 202, 202, 0.94);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+}
+
+.ranking-alert__tag--down {
+  color: #1d4ed8;
+  background: rgba(191, 219, 254, 0.94);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+}
+
+.dark .ranking-alert__tag--new {
+  color: #dcfce7;
+  background: rgba(22, 163, 74, 0.3);
+  border-color: rgba(74, 222, 128, 0.28);
+}
+
+.dark .ranking-alert__tag--up {
+  color: #fee2e2;
+  background: rgba(185, 28, 28, 0.3);
+  border-color: rgba(248, 113, 113, 0.28);
+}
+
+.dark .ranking-alert__tag--down {
+  color: #dbeafe;
+  background: rgba(29, 78, 216, 0.3);
+  border-color: rgba(96, 165, 250, 0.28);
+}
+
+.ranking-alert__path {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  min-width: 0;
+}
+
+.ranking-alert__path-separator {
+  flex-shrink: 0;
+  color: rgb(148 163 184);
+}
+
+.dark .ranking-alert__path-separator {
+  color: rgb(100 116 139);
+}
+
+@keyframes ranking-rank-before-out {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -74%) scale(0.72);
+  }
+}
+
+@keyframes ranking-rank-after-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -28%) scale(0.76);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 @keyframes donationAlertEnter {
   0% {
     opacity: 0;
@@ -2548,6 +2995,29 @@ body {
 }
 
 @media (max-width: 640px) {
+  .ranking-alert {
+    left: max(16px, env(safe-area-inset-left));
+    bottom: 18%;
+    width: calc(100vw - 32px);
+  }
+
+  .ranking-alert__headline {
+    margin-bottom: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .ranking-alert__stage--overtake {
+    min-height: 204px;
+  }
+
+  .ranking-alert__rank-slot {
+    min-height: 3rem;
+  }
+
+  .ranking-alert__tag {
+    font-size: 0.54rem;
+  }
+
   .donation-alert {
     right: 0.75rem;
     top: 48%;
@@ -2569,6 +3039,23 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ranking-alert,
+  .ranking-alert--exiting,
+  .ranking-alert__entry-card,
+  .ranking-alert__overtake-loser-track,
+  .ranking-alert__overtake-loser-layer--initial,
+  .ranking-alert__overtake-loser-layer--final,
+  .ranking-alert__overtake-winner-wrap,
+  .ranking-alert__particle,
+  .ranking-alert__rank-before,
+  .ranking-alert__rank-after,
+  .ranking-alert__rank-arrow,
+  .ranking-alert__tag {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
   .donation-alert,
   .donation-alert--exiting,
   .donation-alert__image,

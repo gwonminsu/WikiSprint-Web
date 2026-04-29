@@ -1,5 +1,11 @@
 const koPatchNotesContent = `# WikiSprint 최근 업데이트
 
+## v2.15.0
+- 게임을 클리어해서 일간 전체 랭킹 순위가 바뀌면 화면에 알림이 뜨도록 추가했어요.
+- 다른 사람이 새로 랭킹에 진입하거나 누군가를 제칠 때도 화면에 알림으로 확인할 수 있어요.
+
+---
+
 ## v2.14.0
 - 패치 노트 페이지를 추가했어요.
 - 이제 패치노트 페이지에서 업데이트 된 내용을 확인할 수 있어요.
@@ -20,6 +26,12 @@ const koPatchNotesContent = `# WikiSprint 최근 업데이트
 
 const enPatchNotesContent = `# Recent WikiSprint Updates
 
+## v2.15.0
+- When you clear a game and your daily overall ranking changes, a new alert now pops up on screen.
+- You can also see alerts when other players enter the ranking or overtake someone.
+
+---
+
 ## v2.14.0
 - I added a patch notes page.
 - You can now check the patch notes page for updates.
@@ -39,6 +51,12 @@ const enPatchNotesContent = `# Recent WikiSprint Updates
 - Polished several document and donation screen behaviors to feel more stable and natural.`;
 
 const jaPatchNotesContent = `# WikiSprint 最近のアップデート
+
+## v2.15.0
+- ゲームをクリアしてデイリー総合ランキングの順位が変わると、画面に通知が表示されるようになりました。
+- 他のプレイヤーが新しくランキングに入ったり、誰かを抜いたときも通知で確認できます。
+
+---
 
 ## v2.14.0
 - パッチノートページを追加しました。
@@ -64,7 +82,7 @@ export const patchNotesLocale = {
     title: '패치노트',
     documentTitle: '패치노트 | WikiSprint',
     lastUpdatedLabel: '마지막 업데이트',
-    lastUpdatedDate: '2026-04-25',
+    lastUpdatedDate: '2026-04-29',
     content: koPatchNotesContent,
   },
   en: {
@@ -72,7 +90,7 @@ export const patchNotesLocale = {
     title: 'Patch Notes',
     documentTitle: 'Patch Notes | WikiSprint',
     lastUpdatedLabel: 'Last updated',
-    lastUpdatedDate: '2026-04-25',
+    lastUpdatedDate: '2026-04-29',
     content: enPatchNotesContent,
   },
   ja: {
@@ -80,7 +98,7 @@ export const patchNotesLocale = {
     title: 'パッチノート',
     documentTitle: 'パッチノート | WikiSprint',
     lastUpdatedLabel: '最終更新',
-    lastUpdatedDate: '2026-04-25',
+    lastUpdatedDate: '2026-04-29',
     content: jaPatchNotesContent,
   },
 } as const;

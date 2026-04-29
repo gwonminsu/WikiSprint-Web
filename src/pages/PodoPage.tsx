@@ -66,10 +66,10 @@ export default function PodoPage(): React.ReactElement {
     : podoGalleryImages.find((image) => image.order === selectedImageOrder) ?? null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,_rgba(196,181,253,0.24),_transparent_34%),linear-gradient(180deg,_#f9fafb_0%,_#f3f4f6_100%)] dark:bg-[radial-gradient(circle_at_top,_rgba(91,33,182,0.24),_transparent_30%),linear-gradient(180deg,_#111827_0%,_#0f172a_100%)]">
+    <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,rgba(196,181,253,0.24),transparent_34%),linear-gradient(180deg,#f9fafb_0%,#f3f4f6_100%)] dark:bg-[radial-gradient(circle_at_top,rgba(91,33,182,0.24),transparent_30%),linear-gradient(180deg,#111827_0%,#0f172a_100%)]">
       <w.Header />
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 pb-16 pt-8 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-[0_24px_60px_rgba(88,28,135,0.14)] backdrop-blur dark:border-violet-400/20 dark:bg-slate-950/75 dark:shadow-[0_26px_64px_rgba(10,10,30,0.42)] sm:p-8">
+        <section className="overflow-hidden rounded-4xl border border-white/70 bg-white/85 p-6 shadow-[0_24px_60px_rgba(88,28,135,0.14)] backdrop-blur dark:border-violet-400/20 dark:bg-slate-950/75 dark:shadow-[0_26px_64px_rgba(10,10,30,0.42)] sm:p-8">
           <p className="text-xs font-black tracking-[0.24em] text-violet-700 dark:text-violet-300">
             {t('podo.eyebrow')}
           </p>
@@ -90,7 +90,7 @@ export default function PodoPage(): React.ReactElement {
           </p>
         </section>
 
-        <section className="rounded-[2rem] border border-white/70 bg-white/80 p-5 shadow-[0_18px_44px_rgba(76,29,149,0.1)] backdrop-blur dark:border-violet-400/15 dark:bg-slate-950/70 dark:shadow-[0_20px_48px_rgba(2,6,23,0.38)] sm:p-6">
+        <section className="rounded-4xl border border-white/70 bg-white/80 p-5 shadow-[0_18px_44px_rgba(76,29,149,0.1)] backdrop-blur dark:border-violet-400/15 dark:bg-slate-950/70 dark:shadow-[0_20px_48px_rgba(2,6,23,0.38)] sm:p-6">
           <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-black tracking-[0.22em] text-violet-600 dark:text-violet-300">
@@ -116,8 +116,8 @@ export default function PodoPage(): React.ReactElement {
                 style={{ transitionDelay: `${index * 35}ms` }}
                 aria-label={t('podo.openImage', { order: image.order })}
               >
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(196,181,253,0.24),_transparent_45%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                <div className="aspect-[4/5] overflow-hidden">
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(196,181,253,0.24),transparent_45%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="aspect-4/5 overflow-hidden">
                   <img
                     src={image.src}
                     alt={t('podo.photoAlt', { order: image.order })}
@@ -158,7 +158,7 @@ export default function PodoPage(): React.ReactElement {
       </main>
 
       {selectedImage ? (
-        <div className="fixed inset-0 z-[210] flex items-center justify-center bg-slate-950/86 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-210 flex items-center justify-center bg-slate-950/86 p-4 backdrop-blur-sm">
           <button
             type="button"
             className="absolute inset-0"

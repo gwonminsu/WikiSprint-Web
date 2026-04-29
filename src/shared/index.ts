@@ -5,7 +5,7 @@ import { getLogoByLanguage } from './assets/images';
 import { Dialog, ToastContainer, useDialog, useToast, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup, DocumentPageLayout, MarkdownDocument } from './ui';
 
 // 스토어
-import { useAuthStore, useThemeStore, useGameStore, usePendingRecordStore, syncGameHeartbeat, releaseGameHeartbeat } from './store';
+import { useAuthStore, useThemeStore, useGameStore, usePendingRecordStore, useRankingAlertStore, syncGameHeartbeat, releaseGameHeartbeat } from './store';
 
 // 라이브러리
 import { cn, useTranslation, useLanguageStore, LANGUAGES } from './lib';
@@ -42,6 +42,7 @@ export const shared = {
     useThemeStore,
     useGameStore,
     usePendingRecordStore,
+    useRankingAlertStore,
     syncGameHeartbeat,
     releaseGameHeartbeat,
   },
@@ -70,6 +71,7 @@ export {
   type Theme,
   useGameStore,
   usePendingRecordStore,
+  useRankingAlertStore,
   syncGameHeartbeat,
   releaseGameHeartbeat,
   type Difficulty,

@@ -284,6 +284,14 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.15.0)
+
+- 게임 클리어 직후 일일 전체 랭킹에 신규 진입하거나 순위가 오르면 전체 클라이언트에 알림 오버레이가 표시됩니다.
+- `widgets/ranking-alert/RankingAlertOverlay`와 `shared/store/rankingAlertStore.ts`(idle/showing/exiting 상태 머신)가 신규 추가됐습니다.
+- 본인 클리어 시 클리어 응답의 `rankingAlert`로 즉시 enqueue, 다른 클라이언트는 `POST /api/ranking/alerts/recent` 15초 폴링으로 수신합니다.
+- `widgets/ranking/ui/RankingCardDisplay.tsx`가 알림 오버레이와 랭킹 페이지 카드의 시각 표현을 공유하도록 추출됐습니다.
+- `ranking.alertEntryHeadline / alertOvertakeHeadline / alertSkip / alertNewBadge` 로케일 키가 ko/en/ja에 추가됐습니다.
+
 ## 최근 변경 메모 (v2.13.3)
 
 - 로그인 계정은 다른 창/탭에서 이미 진행 중인 게임이 있으면 새 게임을 시작할 수 없습니다.

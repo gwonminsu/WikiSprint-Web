@@ -1,5 +1,5 @@
 import { apiClient, API_ENDPOINTS } from '@/shared/api';
-import type { RankingListRequest, RankingListResponse } from '@/entities/ranking/types';
+import type { RankingAlertResponse, RankingListRequest, RankingListResponse } from '@/entities/ranking/types';
 
 // 랭킹 목록 조회 (비로그인도 가능)
 export const getRanking = async (
@@ -10,4 +10,12 @@ export const getRanking = async (
     request
   );
   return response.data!;
+};
+
+export const getRecentRankingAlerts = async (): Promise<RankingAlertResponse[]> => {
+  const response = await apiClient.post<RankingAlertResponse[]>(
+    API_ENDPOINTS.RANKING.RECENT_ALERTS
+  );
+
+  return response.data ?? [];
 };
