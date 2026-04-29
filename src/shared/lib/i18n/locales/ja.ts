@@ -61,6 +61,11 @@ export const ja = {
     developerContactPodoAria: 'GwonPodo紹介ページを開く',
     developerContactEmail: 'kd061590@gmail.com',
     version: 'バージョン',
+    notifications: '通知',
+    notificationsRanking: 'ランキング通知',
+    notificationsRankingDesc: 'デイリーランキングへの新規エントリーや順位上昇時に通知を表示します。',
+    notificationsDonation: '寄付通知',
+    notificationsDonationDesc: '新しい寄付を受信した際に通知を表示します。',
   },
   privacy: {
     title: privacyPolicyLocale.ja.title,

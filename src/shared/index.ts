@@ -64,7 +64,7 @@ export const shared = {
 
 // 개별 export (직접 import 용도)
 export { getLogoByLanguage, tutoDoc, talkerStart, talkerFinger, talkerIdle, talkerYawn, talkerSleep, talkerGood, talkerOk, talkerLate, talkerWarn, gameClear, donationCoffee, donationAwake, donationBarrel, donationOverdose, podoGalleryImages, type PodoGalleryImage } from './assets/images';
-export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup, WidgetDropdown, DocumentPageLayout, MarkdownDocument } from './ui';
+export { Dialog, ToastContainer, useDialog, useToast, useDialogStore, useToastStore, ProfileAvatar, EmbossButton, SpeechBubble, Accordion, SuccessOverlay, ThemeOrbitToggle, ThemeSystemButton, ThemeControlGroup, WidgetDropdown, DocumentPageLayout, MarkdownDocument, Switch } from './ui';
 export {
   useAuthStore,
   useThemeStore,
@@ -72,6 +72,7 @@ export {
   useGameStore,
   usePendingRecordStore,
   useRankingAlertStore,
+  useSettingsStore,
   syncGameHeartbeat,
   releaseGameHeartbeat,
   type Difficulty,

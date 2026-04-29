@@ -863,6 +863,304 @@ body {
   }
 }
 
+@keyframes notificationSwitchGlowPulse {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.72);
+  }
+  50% {
+    opacity: 0.2;
+    transform: translateY(-50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50%) scale(1.16);
+  }
+}
+
+@keyframes notificationSwitchTrackShine {
+  0% {
+    opacity: 0;
+    transform: translateX(-10%) scaleX(0.94);
+  }
+  55% {
+    opacity: 0.32;
+    transform: translateX(0%) scaleX(1);
+  }
+  100% {
+    opacity: 0.16;
+    transform: translateX(8%) scaleX(1.02);
+  }
+}
+
+.notification-switch {
+  --notification-switch-width: 2.75rem;
+  --notification-switch-height: 1.5rem;
+  --notification-switch-shell-padding: 0.1rem;
+  --notification-switch-thumb-size: 1.1rem;
+  --notification-switch-thumb-padding: 0.16rem;
+  --notification-switch-track: linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(226, 232, 240, 0.38));
+  --notification-switch-border: rgba(255, 255, 255, 0.48);
+  --notification-switch-accent: rgba(148, 163, 184, 0.18);
+  --notification-switch-thumb-core:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(226, 232, 240, 0.72));
+  --notification-switch-thumb-ring: rgba(255, 255, 255, 0.48);
+  --notification-switch-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -1px 4px rgba(148, 163, 184, 0.14),
+    0 10px 22px rgba(15, 23, 42, 0.08);
+  --notification-switch-thumb-translate: calc(
+    var(--notification-switch-shell-padding) + var(--notification-switch-thumb-padding)
+  );
+  position: relative;
+  width: var(--notification-switch-width);
+  height: var(--notification-switch-height);
+  padding: var(--notification-switch-shell-padding);
+  isolation: isolate;
+  transition:
+    transform 260ms ease,
+    filter 260ms ease,
+    opacity 200ms ease;
+}
+
+.dark .notification-switch {
+  --notification-switch-track: linear-gradient(180deg, rgba(148, 163, 184, 0.16), rgba(51, 65, 85, 0.34));
+  --notification-switch-border: rgba(255, 255, 255, 0.14);
+  --notification-switch-accent: rgba(148, 163, 184, 0.12);
+  --notification-switch-thumb-core:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(203, 213, 225, 0.68));
+  --notification-switch-thumb-ring: rgba(255, 255, 255, 0.3);
+  --notification-switch-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 4px rgba(15, 23, 42, 0.32),
+    0 10px 24px rgba(2, 6, 23, 0.24);
+}
+
+.notification-switch::before {
+  content: '';
+  position: absolute;
+  inset: -0.3rem;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.22), transparent 68%);
+  opacity: 0;
+  transform: scale(0.82);
+  transition:
+    opacity 260ms ease,
+    transform 320ms ease;
+  z-index: -1;
+}
+
+.notification-switch:hover:not(:disabled) {
+  filter: brightness(1.02);
+}
+
+.notification-switch:hover:not(:disabled)::before,
+.notification-switch:focus-visible::before {
+  opacity: 0.52;
+  transform: scale(0.96);
+}
+
+.notification-switch:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.notification-switch:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.26);
+}
+
+.notification-switch__track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  border: 1px solid var(--notification-switch-border);
+  background: var(--notification-switch-track);
+  box-shadow: var(--notification-switch-shadow);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  transition:
+    background 360ms ease,
+    border-color 320ms ease,
+    box-shadow 320ms ease;
+}
+
+.notification-switch__track::before {
+  content: '';
+  position: absolute;
+  inset: 0.08rem;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.06));
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.notification-switch__track::after {
+  content: '';
+  position: absolute;
+  inset: auto 0.22rem 0.14rem 0.22rem;
+  height: 35%;
+  border-radius: 9999px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02), var(--notification-switch-accent), rgba(255, 255, 255, 0.02)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(148, 163, 184, 0.12));
+  opacity: 0.88;
+  pointer-events: none;
+}
+
+.notification-switch__track-glow {
+  position: absolute;
+  top: 50%;
+  left: calc(100% - var(--notification-switch-thumb-size) - 0.08rem);
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.56), rgba(191, 219, 254, 0.12) 58%, transparent 72%);
+  opacity: 0;
+  transform: translateY(-50%) scale(0.58);
+  pointer-events: none;
+}
+
+.notification-switch__track-shine {
+  position: absolute;
+  inset: 0.14rem;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.02));
+  opacity: 0;
+  transform: translateX(-12%) scaleX(0.88);
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+.notification-switch__thumb-shadow {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--notification-switch-thumb-translate) + 0.06rem);
+  width: calc(var(--notification-switch-thumb-size) * 0.82);
+  height: calc(var(--notification-switch-thumb-size) * 0.52);
+  border-radius: 9999px;
+  background: rgba(71, 85, 105, 0.18);
+  filter: blur(0.3rem);
+  transform: translateY(-10%);
+  transition:
+    left 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 240ms ease,
+    opacity 240ms ease;
+  opacity: 0.45;
+}
+
+.notification-switch__thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: var(--notification-switch-thumb-size);
+  height: var(--notification-switch-thumb-size);
+  border-radius: 9999px;
+  transform: translate(var(--notification-switch-thumb-translate), -50%);
+  transition:
+    transform 460ms cubic-bezier(0.22, 1.22, 0.36, 1),
+    filter 260ms ease;
+  will-change: transform;
+}
+
+.notification-switch__thumb-core,
+.notification-switch__thumb-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.notification-switch__thumb-core {
+  background: var(--notification-switch-thumb-core);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow:
+    0 8px 18px rgba(15, 23, 42, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.94) inset,
+    0 -1px 2px rgba(148, 163, 184, 0.14) inset,
+    0 0 0 1px var(--notification-switch-thumb-ring);
+}
+
+.notification-switch__thumb-highlight {
+  inset: 0.12rem 0.18rem 0.48rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0));
+  opacity: 0.9;
+}
+
+.notification-switch[data-state='checked'] {
+  --notification-switch-track: linear-gradient(180deg, rgba(255, 247, 214, 0.92), rgba(253, 183, 85, 0.72));
+  --notification-switch-border: rgba(255, 228, 162, 0.9);
+  --notification-switch-accent: rgba(245, 158, 11, 0.34);
+  --notification-switch-thumb-core:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.98), transparent 36%),
+    linear-gradient(180deg, rgba(255, 250, 235, 0.98), rgba(255, 237, 213, 0.92));
+  --notification-switch-thumb-ring: rgba(255, 248, 220, 0.86);
+  --notification-switch-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 6px rgba(217, 119, 6, 0.14),
+    0 12px 28px rgba(245, 158, 11, 0.28);
+  --notification-switch-thumb-translate: calc(
+    var(--notification-switch-width) - var(--notification-switch-shell-padding) - var(--notification-switch-thumb-size) - var(--notification-switch-thumb-padding) - 0.08rem
+  );
+}
+
+.dark .notification-switch[data-state='checked'] {
+  --notification-switch-track: linear-gradient(180deg, rgba(120, 53, 15, 0.54), rgba(251, 191, 36, 0.56));
+  --notification-switch-border: rgba(253, 230, 138, 0.42);
+  --notification-switch-accent: rgba(253, 230, 138, 0.28);
+  --notification-switch-thumb-core:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.98), transparent 36%),
+    linear-gradient(180deg, rgba(255, 248, 235, 0.96), rgba(254, 240, 138, 0.84));
+  --notification-switch-thumb-ring: rgba(255, 248, 220, 0.58);
+  --notification-switch-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 6px rgba(120, 53, 15, 0.22),
+    0 12px 24px rgba(251, 191, 36, 0.22);
+}
+
+.notification-switch[data-state='checked'] .notification-switch__track-glow {
+  animation: notificationSwitchGlowPulse 560ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+
+.notification-switch[data-state='checked'] .notification-switch__track-shine {
+  opacity: 0.28;
+  animation: notificationSwitchTrackShine 440ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.notification-switch[data-state='checked'] .notification-switch__thumb-shadow {
+  left: calc(var(--notification-switch-thumb-translate) + 0.06rem);
+  opacity: 0.28;
+}
+
+.notification-switch[data-state='checked'] .notification-switch__thumb {
+  filter: saturate(1.08);
+}
+
+.notification-switch:hover:not(:disabled) .notification-switch__thumb,
+.notification-switch:focus-visible .notification-switch__thumb {
+  filter: drop-shadow(0 6px 10px rgba(251, 191, 36, 0.12));
+}
+
+.notification-switch:active:not(:disabled) .notification-switch__thumb {
+  transform: translate(var(--notification-switch-thumb-translate), -50%) scale(0.965);
+}
+
+.notification-switch:disabled .notification-switch__track {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 2px rgba(71, 85, 105, 0.08);
+}
+
+.notification-switch:disabled .notification-switch__thumb-shadow {
+  opacity: 0.34;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .theme-orbit-toggle__world-disc,
   .theme-orbit-toggle__thumb,
@@ -872,7 +1170,14 @@ body {
   .theme-system-button__starfield,
   .theme-system-button__star,
   .theme-system-button__orbit-track,
-  .theme-system-button__orbit-body {
+  .theme-system-button__orbit-body,
+  .notification-switch,
+  .notification-switch::before,
+  .notification-switch__track,
+  .notification-switch__track-glow,
+  .notification-switch__track-shine,
+  .notification-switch__thumb-shadow,
+  .notification-switch__thumb {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

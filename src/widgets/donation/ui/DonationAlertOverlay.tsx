@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getLatestDonations, getRecentAlertDonations, getRecentDonationAlertReplays } from '@features';
 import type { DonationListItem } from '@entities';
-import { donationAwake, donationBarrel, donationCoffee, donationOverdose, useTranslation } from '@shared';
+import { donationAwake, donationBarrel, donationCoffee, donationOverdose, useSettingsStore, useTranslation } from '@shared';
 import {
   toDonationAlertFromListItem,
   useDonationAlertStore,
@@ -76,6 +76,28 @@ function resolveAlertId(donation: { alertId?: string | null; donationId: string 
   return donation.alertId ?? donation.donationId;
 }
 
+function parseAlertTimeMs(value: string | null | undefined): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const parsedTime = new Date(value).getTime();
+  return Number.isFinite(parsedTime) ? parsedTime : null;
+}
+
+function isAtOrAfterCutoff(value: string | null | undefined, cutoffMs: number | null): boolean {
+  if (cutoffMs === null) {
+    return true;
+  }
+
+  const parsedTime = parseAlertTimeMs(value);
+  if (parsedTime === null) {
+    return false;
+  }
+
+  return parsedTime >= cutoffMs;
+}
+
 function isWithinRecentAlertWindow(receivedAt: string): boolean {
   const receivedTime = new Date(receivedAt).getTime();
   if (!Number.isFinite(receivedTime)) {
@@ -138,6 +160,18 @@ export function DonationAlertOverlay(): React.ReactElement | null {
   const replayInitializedIdsRef = useRef<Set<string>>(new Set());
   const hasInitializedRef = useRef(false);
   const [hasLoadedRecentAlerts, setHasLoadedRecentAlerts] = useState(false);
+  const donationAlertEnabled = useSettingsStore((s) => s.donationAlertEnabled);
+  const donationAlertEnabledAt = useSettingsStore((s) => s.donationAlertEnabledAt);
+
+  useEffect(() => {
+    if (!donationAlertEnabled) {
+      useDonationAlertStore.setState({ phase: 'idle', current: null, queue: [] });
+      initializedIdsRef.current = new Set();
+      replayInitializedIdsRef.current = new Set();
+      hasInitializedRef.current = false;
+      // hasLoadedRecentAlerts는 유지 — ON 복귀 시 recentAlertData 재처리 방지
+    }
+  }, [donationAlertEnabled]);
 
   const enqueueIfUnseen = (donation: DonationListItem): void => {
     const alertId = resolveAlertId(donation);
@@ -155,6 +189,7 @@ export function DonationAlertOverlay(): React.ReactElement | null {
     queryFn: getRecentAlertDonations,
     staleTime: Number.POSITIVE_INFINITY,
     gcTime: 1000 * 60 * 10,
+    enabled: donationAlertEnabled,
   });
 
   const { data } = useQuery({
@@ -162,6 +197,7 @@ export function DonationAlertOverlay(): React.ReactElement | null {
     queryFn: getLatestDonations,
     refetchInterval: 1000 * 15,
     staleTime: 1000 * 10,
+    enabled: donationAlertEnabled,
   });
 
   const { data: replayAlertData } = useQuery({
@@ -169,6 +205,7 @@ export function DonationAlertOverlay(): React.ReactElement | null {
     queryFn: getRecentDonationAlertReplays,
     refetchInterval: 1000 * 15,
     staleTime: 0,
+    enabled: donationAlertEnabled,
   });
 
   useEffect(() => {
@@ -181,11 +218,15 @@ export function DonationAlertOverlay(): React.ReactElement | null {
       .sort((left, right) => new Date(left.receivedAt).getTime() - new Date(right.receivedAt).getTime())
       .forEach((donation) => {
         initializedIdsRef.current.add(donation.donationId);
+        if (!isAtOrAfterCutoff(donation.alertCreatedAt ?? donation.receivedAt, donationAlertEnabledAt)) {
+          return;
+        }
+
         enqueueIfUnseen(donation);
       });
 
     setHasLoadedRecentAlerts(true);
-  }, [enqueueIfUnseen, hasLoadedRecentAlerts, recentAlertData]);
+  }, [donationAlertEnabledAt, enqueueIfUnseen, hasLoadedRecentAlerts, recentAlertData]);
 
   useEffect(() => {
     if (!isRecentAlertError || hasLoadedRecentAlerts) {
@@ -205,13 +246,18 @@ export function DonationAlertOverlay(): React.ReactElement | null {
     if (!hasInitializedRef.current) {
       data
         .filter((donation) => !initializedIdsRef.current.has(donation.donationId))
-        .forEach((donation) => {
-          if (isWithinRecentAlertWindow(donation.receivedAt)) {
-            enqueueIfUnseen(donation);
-          } else {
-            markHandled(donation.donationId);
+        .filter((donation) => {
+          if (donationAlertEnabledAt !== null) {
+            return isAtOrAfterCutoff(donation.alertCreatedAt ?? donation.receivedAt, donationAlertEnabledAt);
           }
+
+          return isWithinRecentAlertWindow(donation.receivedAt);
+        })
+        .sort((left, right) => new Date(left.receivedAt).getTime() - new Date(right.receivedAt).getTime())
+        .forEach((donation) => {
+          enqueueIfUnseen(donation);
         });
+
       initializedIdsRef.current = nextIds;
       hasInitializedRef.current = true;
       return;
@@ -219,38 +265,51 @@ export function DonationAlertOverlay(): React.ReactElement | null {
 
     data
       .filter((donation) => !initializedIdsRef.current.has(donation.donationId))
+      .filter((donation) => isAtOrAfterCutoff(donation.alertCreatedAt ?? donation.receivedAt, donationAlertEnabledAt))
       .sort((left, right) => new Date(left.receivedAt).getTime() - new Date(right.receivedAt).getTime())
       .forEach((donation) => {
         enqueueIfUnseen(donation);
       });
 
     initializedIdsRef.current = nextIds;
-  }, [data, enqueueIfUnseen, hasLoadedRecentAlerts, markHandled]);
+  }, [data, donationAlertEnabledAt, enqueueIfUnseen, hasLoadedRecentAlerts]);
 
   useEffect(() => {
     if (!replayAlertData) {
       return;
     }
 
-    replayAlertData.forEach((donation) => {
-      const alertId = resolveAlertId(donation);
-      if (replayInitializedIdsRef.current.has(alertId)) {
-        return;
-      }
+    replayAlertData
+      .slice()
+      .sort((left, right) => {
+        const leftTime = parseAlertTimeMs(left.alertCreatedAt ?? left.receivedAt) ?? 0;
+        const rightTime = parseAlertTimeMs(right.alertCreatedAt ?? right.receivedAt) ?? 0;
+        return leftTime - rightTime;
+      })
+      .forEach((donation) => {
+        const alertId = resolveAlertId(donation);
+        if (replayInitializedIdsRef.current.has(alertId)) {
+          return;
+        }
 
-      replayInitializedIdsRef.current.add(alertId);
-      enqueueIfUnseen(donation);
-    });
-  }, [enqueueIfUnseen, replayAlertData]);
+        replayInitializedIdsRef.current.add(alertId);
+
+        if (!isAtOrAfterCutoff(donation.alertCreatedAt ?? donation.receivedAt, donationAlertEnabledAt)) {
+          return;
+        }
+
+        enqueueIfUnseen(donation);
+      });
+  }, [donationAlertEnabledAt, enqueueIfUnseen, replayAlertData]);
 
   useEffect(() => {
-    if (phase !== 'idle' || queueLength === 0) {
+    if (!donationAlertEnabled || phase !== 'idle' || queueLength === 0) {
       return;
     }
 
     const timerId = window.setTimeout(startNext, 150);
     return () => window.clearTimeout(timerId);
-  }, [phase, queueLength, startNext]);
+  }, [donationAlertEnabled, phase, queueLength, startNext]);
 
   useEffect(() => {
     if (phase !== 'showing' || !current) {
@@ -270,7 +329,7 @@ export function DonationAlertOverlay(): React.ReactElement | null {
     return () => window.clearTimeout(timerId);
   }, [finishExit, phase]);
 
-  if (!current) {
+  if (!donationAlertEnabled || !current) {
     return null;
   }
 

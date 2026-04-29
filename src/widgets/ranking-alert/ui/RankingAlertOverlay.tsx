@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getRecentRankingAlerts } from '@features';
-import { useRankingAlertStore, useTranslation } from '@shared';
+import { useRankingAlertStore, useSettingsStore, useTranslation } from '@shared';
 import { RankingMedalFrame } from '@/widgets/ranking/ui/RankingMedalFrame';
 import {
   RankingCardDisplay,
@@ -393,13 +393,25 @@ export function RankingAlertOverlay(): React.ReactElement | null {
   const markHandled = useRankingAlertStore((state) => state.markHandled);
   const initializedIdsRef = useRef<Set<string>>(new Set());
   const hasInitializedRef = useRef(false);
+  const wasDisabledRef = useRef(false);
+  const rankingAlertEnabled = useSettingsStore((s) => s.rankingAlertEnabled);
 
   const { data } = useQuery<RankingAlertResponse[]>({
     queryKey: ['rankingAlerts', 'recent'],
     queryFn: getRecentRankingAlerts,
     refetchInterval: 1000 * 15,
     staleTime: 0,
+    enabled: rankingAlertEnabled,
   });
+
+  useEffect(() => {
+    if (!rankingAlertEnabled) {
+      useRankingAlertStore.setState({ status: 'idle', current: null, queue: [] });
+      initializedIdsRef.current = new Set();
+      hasInitializedRef.current = false;
+      wasDisabledRef.current = true;
+    }
+  }, [rankingAlertEnabled]);
 
   useEffect(() => {
     if (!data) {
@@ -408,6 +420,7 @@ export function RankingAlertOverlay(): React.ReactElement | null {
 
     const nextIds = new Set(data.map((item) => item.alertId));
     if (!hasInitializedRef.current) {
+      wasDisabledRef.current = false;
       initializedIdsRef.current = nextIds;
       hasInitializedRef.current = true;
       return;
@@ -430,13 +443,13 @@ export function RankingAlertOverlay(): React.ReactElement | null {
   }, [data, enqueue, markHandled]);
 
   useEffect(() => {
-    if (status !== 'idle' || queueLength === 0) {
+    if (!rankingAlertEnabled || status !== 'idle' || queueLength === 0) {
       return;
     }
 
     const timerId = window.setTimeout(startNext, START_DELAY_MS);
     return () => window.clearTimeout(timerId);
-  }, [queueLength, startNext, status]);
+  }, [rankingAlertEnabled, queueLength, startNext, status]);
 
   useEffect(() => {
     if (status !== 'showing' || !current) {
@@ -460,7 +473,7 @@ export function RankingAlertOverlay(): React.ReactElement | null {
     return () => window.clearTimeout(timerId);
   }, [finishExit, status]);
 
-  if (!current) {
+  if (!rankingAlertEnabled || !current) {
     return null;
   }
 

@@ -61,6 +61,11 @@ export const ko = {
     developerContactPodoAria: '권포도 소개 페이지 열기',
     developerContactEmail: 'kd061590@gmail.com',
     version: '버전',
+    notifications: '알림',
+    notificationsRanking: '랭킹 알림',
+    notificationsRankingDesc: '일일 랭킹 신규 진입·추월 시 화면에 알림을 표시합니다.',
+    notificationsDonation: '후원 알림',
+    notificationsDonationDesc: '새 후원이 접수되면 화면에 알림을 표시합니다.',
   },
   privacy: {
     title: privacyPolicyLocale.ko.title,

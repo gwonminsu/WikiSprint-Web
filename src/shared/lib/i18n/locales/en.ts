@@ -61,6 +61,11 @@ export const en = {
     developerContactPodoAria: 'Open the GwonPodo page',
     developerContactEmail: 'kd061590@gmail.com',
     version: 'Version',
+    notifications: 'Notifications',
+    notificationsRanking: 'Ranking alerts',
+    notificationsRankingDesc: 'Show an alert when you enter or move up the daily ranking.',
+    notificationsDonation: 'Donation alerts',
+    notificationsDonationDesc: 'Show an alert when a new donation is received.',
   },
   privacy: {
     title: privacyPolicyLocale.en.title,

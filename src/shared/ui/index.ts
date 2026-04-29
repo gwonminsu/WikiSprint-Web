@@ -11,3 +11,4 @@ export { ThemeControlGroup } from './ThemeControlGroup';
 export { WidgetDropdown } from './WidgetDropdown';
 export { DocumentPageLayout } from './DocumentPageLayout';
 export { MarkdownDocument } from './MarkdownDocument';
+export { Switch } from './Switch';

@@ -284,6 +284,14 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.16.0)
+
+- `shared/store/settingsStore.ts`가 추가되어 랭킹 알림과 후원 알림 on/off 상태를 `settings-storage`에 persist합니다.
+- `shared/ui/Switch.tsx`와 전용 CSS가 추가되어 설정 화면에서 공용 토글 UI를 사용합니다.
+- `widgets/settings/ui/SettingsView.tsx`에 알림 설정 섹션이 추가됐습니다.
+- `DonationAlertOverlay`는 `donationAlertEnabledAt` 이후에 생성된 후원만 재생하도록 보정됐고, off 상태에서는 큐와 폴링을 즉시 정리합니다.
+- `RankingAlertOverlay`도 설정 off 상태에서 오버레이 재생과 폴링을 중단합니다.
+
 ## 최근 변경 메모 (v2.15.0)
 
 - 게임 클리어 직후 일일 전체 랭킹에 신규 진입하거나 순위가 오르면 전체 클라이언트에 알림 오버레이가 표시됩니다.

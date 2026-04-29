@@ -14,6 +14,8 @@ import {
   COUNTRY_LIST,
   type CountryOption,
   ApiException,
+  Switch,
+  useSettingsStore,
 } from '@shared';
 import { usePendingReportCount } from '@features';
 import { getProfileImageUrl, useUpdateNick, useUpdateNationality, useRequestDeletion, ProfileImageEditModal } from '@/features/account';
@@ -93,6 +95,25 @@ function InfoLinkCard({ label, onClick }: InfoLinkCardProps): React.ReactElement
   );
 }
 
+type NotificationToggleRowProps = {
+  title: string;
+  description: string;
+  checked: boolean;
+  onChange: (next: boolean) => void;
+};
+
+function NotificationToggleRow({ title, description, checked, onChange }: NotificationToggleRowProps): React.ReactElement {
+  return (
+    <div className="group -mx-2 flex items-center justify-between gap-4 rounded-2xl px-2 py-2 transition-colors duration-300 hover:bg-gray-50/80 dark:hover:bg-white/4">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-gray-900 transition-colors duration-300 dark:text-white">{title}</p>
+        <p className="mt-0.5 text-xs text-gray-500 transition-colors duration-300 dark:text-gray-400">{description}</p>
+      </div>
+      <Switch checked={checked} onCheckedChange={onChange} />
+    </div>
+  );
+}
+
 export function SettingsView(): React.ReactElement {
   const { t, language, setLanguage } = useTranslation();
   const { accountInfo, setAccountInfo, clearAuth } = useAuthStore();
@@ -104,6 +125,10 @@ export function SettingsView(): React.ReactElement {
   const navigate = useNavigate();
   const isAdmin = accountInfo?.is_admin === true;
   const { data: pendingReportCount = 0 } = usePendingReportCount(isAdmin);
+  const rankingAlertEnabled = useSettingsStore((s) => s.rankingAlertEnabled);
+  const donationAlertEnabled = useSettingsStore((s) => s.donationAlertEnabled);
+  const setRankingAlertEnabled = useSettingsStore((s) => s.setRankingAlertEnabled);
+  const setDonationAlertEnabled = useSettingsStore((s) => s.setDonationAlertEnabled);
 
   const profileImageUrl = accountInfo?.profile_img_url
     ? getProfileImageUrl(accountInfo.profile_img_url)
@@ -604,6 +629,28 @@ export function SettingsView(): React.ReactElement {
       {/* 관리자 전용: 제시어 관리 섹션 */}
       {accountInfo?.is_admin && <AdminTargetWordsSection />}
 
+      {/* 알림 설정 */}
+      <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">
+          {t('settings.notifications')}
+        </h2>
+        <div className="space-y-4">
+          <NotificationToggleRow
+            title={t('settings.notificationsRanking')}
+            description={t('settings.notificationsRankingDesc')}
+            checked={rankingAlertEnabled}
+            onChange={setRankingAlertEnabled}
+          />
+          <div className="border-t border-gray-100 dark:border-gray-700" />
+          <NotificationToggleRow
+            title={t('settings.notificationsDonation')}
+            description={t('settings.notificationsDonationDesc')}
+            checked={donationAlertEnabled}
+            onChange={setDonationAlertEnabled}
+          />
+        </div>
+      </section>
+
       {/* 앱 정보 */}
       <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-4">
@@ -648,7 +695,7 @@ export function SettingsView(): React.ReactElement {
           </div>
           <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
             <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-            <span className="text-gray-500 dark:text-gray-400">2.15.0</span>
+            <span className="text-gray-500 dark:text-gray-400">2.16.0</span>
           </div>
         </div>
       </section>

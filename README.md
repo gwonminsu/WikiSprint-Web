@@ -1,318 +1,211 @@
 <div align="center">
 
-# 🌐 WikiSprint Web
+# WikiSprint Web
 
-**WikiSprint 프론트엔드 — React + TypeScript + Vite**
+**Wikipedia 링크를 따라 목표 문서까지 가장 빠르게 도달하는 WikiSprint의 프론트엔드입니다.**
 
 [![React](https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/query)
 [![Zustand](https://img.shields.io/badge/Zustand-5.x-433E38?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![Version](https://img.shields.io/badge/version-v2.15.0-brightgreen?style=flat-square)](./PATCH.md)
+[![Version](https://img.shields.io/badge/version-v2.16.0-brightgreen?style=flat-square)](./PATCH.md)
 
 </div>
 
 ---
 
-## 🎮 WikiSprint이란?
+## 소개
 
-**WikiSprint**는 유튜버 **침착맨**이 소개한 나무위키 스피드런에서 영감을 받아 만들어진 위키 스피드런 게임입니다.
+WikiSprint Web은 게임 플레이, 기록 조회, 랭킹, 공유, 후원, 관리자 화면까지 연결하는 사용자 인터페이스입니다.  
+Wikipedia REST API와 WikiSprint 서버 API를 함께 사용하며, 빠른 탐색 UX와 실시간에 가까운 상태 반영을 목표로 합니다.
 
-[Wikipedia REST API](https://ko.wikipedia.org/api/rest_v1/) (CC BY-SA 3.0)를 활용해 위키피디아 문서를 제공하며, **제시어**가 주어지면 무작위 위키피디아 문서에서 출발해 문서 내 링크만을 따라 목표 문서에 가장 빠르게 도달하는 것이 목표입니다.
+> 콘텐츠 출처: [Wikipedia](https://ko.wikipedia.org/) (CC BY-SA 3.0)
 
-### 게임 규칙
+### 게임 방식
 
-- 게임 시작 버튼을 누르는 순간 타이머가 시작됩니다
-- 문서 내 링크만을 이용해 제시어 문서까지 이동해야 합니다
-- 비로그인 상태로도 플레이 가능, 랭킹 등록은 로그인 필요
-
-> 📄 콘텐츠 출처: [Wikipedia](https://ko.wikipedia.org/) (CC BY-SA 3.0)
-
----
-
-## ✨ 주요 기능
-
-| 기능 | 설명 |
-|------|------|
-| 🎮 위키 스피드런 게임 | 랜덤 문서에서 제시어까지 링크만으로 도달, 타이머 측정 |
-| 🎯 난이도 선택 | 쉬움 / 보통 / 어려움 / 오마카세(랜덤) 4단계 |
-| 📊 전적 관리 | 게임 기록 자동 저장, 클리어/포기 통계 조회 |
-| 🏆 랭킹 시스템 | 일간·주간·월간 × 난이도 Top 100 리더보드 |
-| 🔐 Google OAuth 로그인 | Google 계정으로 원클릭 로그인 + 약관 동의 가입 |
-| 📋 약관 동의 가입 | 신규 유저 약관 동의 후 회원가입 (필수 3개 + 선택 1개) |
-| 🚪 회원탈퇴 | 계정 삭제 요청 및 탈퇴 대기 중 취소 가능 |
-| 🔄 JWT 자동 갱신 | Access Token 만료 시 Refresh Token으로 자동 재발급 |
-| 👤 계정 관리 | 닉네임 변경, 프로필 이미지 업로드/삭제 |
-| 🏳️ 국적 설정 | 프로필 국기 표시, 랭킹 카드 국기 반영 |
-| 📘 인터랙티브 문서 가이드 | `/doc` 페이지에 TOC, 플레이형 튜토리얼, FAQ, 영상 아코디언 제공 |
-| 🏷️ 전적 난이도 태그 | `/record` 카드에서 제시어 난이도를 함께 표시 |
-| 🔗 공유 결과 링크 | 공유 전용 `shareId` 기반 URL 생성, 24시간 유효 공유 페이지 제공 |
-| 💖 후원 | Ko-fi 해외 후원(iframe) + 국내 계좌이체(관리자 수동 승인) 2-분기 구조, 티어 글로우 표시 |
-| 🌍 다국어 지원 | 한국어 · 영어 · 일본어 (i18n) |
-| 🎨 테마 지원 | 라이트 / 다크 / 시스템 자동 테마 |
-| 📱 웹뷰 호환 | `window.alert` 없이 커스텀 Dialog/Toast 사용 |
+1. 시작 문서와 목표 문서를 받습니다.
+2. 현재 문서 안의 링크만 따라 이동합니다.
+3. 가장 짧은 시간 안에 목표 문서에 도달하면 승리합니다.
+4. 결과는 기록, 랭킹, 공유 페이지로 이어집니다.
 
 ---
 
-## 🛠 기술 스택
+## 핵심 기능
 
-| 카테고리 | 기술 | 버전 |
-|---------|------|------|
-| 프레임워크 | React | 19.x |
-| 언어 | TypeScript | 5.x |
-| 빌드 도구 | Vite + SWC | 7.x |
-| 스타일링 | Tailwind CSS | 4.x |
-| 서버 상태 | TanStack Query | 5.x |
-| 클라이언트 상태 | Zustand | 5.x |
-| 라우팅 | react-router-dom | 7.x |
-| Google OAuth | @react-oauth/google | 최신 |
-| UI 프리미티브 | Radix UI | 최신 |
-| XSS 방어 | DOMPurify | 최신 |
-
----
-
-## 🏗 아키텍처 — Feature-Sliced Design (FSD)
-
-계층 간 **단방향 의존성**을 강제하는 FSD 아키텍처를 채택합니다.
-
-```
-app → pages → widgets → features → entities → shared
-```
-
-> 동일 레이어 간 import는 금지됩니다.
-
-### 네임스페이스 import 패턴
-
-```typescript
-import { w }      from '@widgets';  // w.Header, w.SettingsView, w.GameIntroView
-import { f }      from '@features'; // f.hook.useGoogleLogin, f.api.gameRecord
-import { e }      from '@entities'; // e.auth.type.GoogleLoginRequest
-import { shared } from '@shared';   // shared.ui.Dialog, shared.store.useAuthStore
-```
+| 영역 | 설명 |
+|---|---|
+| 게임 플레이 | Wikipedia 문서 링크를 따라 목표 문서까지 이동하는 메인 게임 흐름 |
+| 난이도 선택 | `easy`, `normal`, `hard`, `random` 기반 시작/목표 문서 조합 |
+| 기록 관리 | 최근 기록, 통계, 최고 기록, 중단 기록 정리 |
+| 랭킹 | 일간, 주간, 월간, 전체 랭킹 Top 100 조회 |
+| 랭킹 알림 | 전체 랭킹 신규 진입과 순위 추월을 오버레이로 표시 |
+| 후원 알림 | 최신 후원 알림 재생과 관리자용 후원 확인 흐름 제공 |
+| 알림 설정 | 설정 화면에서 랭킹/후원 알림을 각각 on/off로 제어 |
+| 공유 | `shareId` 기반 결과 공유 페이지와 QR, 링크 복사, 카카오 공유 지원 |
+| 인증 | Google OAuth 로그인, 회원가입, 탈퇴 취소 |
+| 다국어 | 한국어, 영어, 일본어 지원 |
+| 테마 | 라이트, 다크, 시스템 테마 지원 |
 
 ---
 
-## 📁 디렉토리 구조
+## 기술 스택
 
+| 구분 | 사용 기술 |
+|---|---|
+| 프레임워크 | React 19 |
+| 언어 | TypeScript 5 |
+| 빌드 | Vite 7 |
+| 스타일 | Tailwind CSS 4 |
+| 서버 상태 | TanStack Query 5 |
+| 클라이언트 상태 | Zustand 5 |
+| 라우팅 | React Router DOM 7 |
+| UI 보조 | Radix UI |
+| HTML 정제 | DOMPurify |
+
+---
+
+## 구조
+
+WikiSprint Web은 FSD(Feature-Sliced Design) 구조를 기준으로 구성합니다.
+
+```text
+app -> pages -> widgets -> features -> entities -> shared
 ```
+
+### 디렉터리 개요
+
+```text
 WikiSprint-Web/
-└── src/
-    ├── app/
-    │   ├── App.tsx
-    │   ├── providers/
-    │   │   └── QueryProvider.tsx
-    │   └── router/
-    │       └── Router.tsx
-    │
-    ├── pages/
-    │   ├── AuthPage.tsx          # Google OAuth 로그인 페이지
-    │   ├── HomePage.tsx          # 게임 메인 페이지
-    │   ├── SettingsPage.tsx      # 설정 페이지
-    │   ├── DocPage.tsx           # WikiSprint 소개 문서
-    │   ├── RecordPage.tsx        # 전적 조회 페이지
-    │   ├── RankingPage.tsx       # 랭킹 페이지
-    │   ├── SharePage.tsx         # 공유 결과 페이지 (/share/:shareId)
-    │   └── DonationInfoPage.tsx  # 후원 정보 페이지 (/donations)
-    │
-    ├── widgets/
-    │   ├── main-layout/          # Header 네비게이션
-    │   ├── settings/             # SettingsView (프로필·테마·언어·관리자·회원탈퇴)
-    │   ├── consent/              # ConsentModal (약관 동의 가입 모달)
-    │   ├── doc-content/          # DocContentView, DocInteractiveTutorial, DocVideoAccordion
-    │   ├── game-intro/           # GameIntroView (게임 진행 화면 + Wikipedia 렌더링)
-    │   ├── game-result/          # GameResultView (게임 결과 카드 타임라인)
-    │   ├── game-record/          # GameRecordView (전적 목록 + 통계 바)
-    │   ├── ranking/              # RankingView (기간×난이도 리더보드)
-    │   └── donation/             # 후원 위젯 슬라이스
-    │       ├── lib/              # donationSupport.tsx (공용 유틸), donationAlert.ts (알림 로직)
-    │       └── ui/               # DonationFloatingButton, DonationSection, DonationInfoListWidget, DonationPendingListWidget, DonationAlertOverlay
-    │
-    ├── features/
-    │   ├── auth/                 # Google OAuth 로그인 훅 & API
-    │   ├── account/              # 계정 관리 훅 & API (닉네임·이미지·회원탈퇴)
-    │   ├── consent/              # 회원가입 훅 & API (register, useRegister)
-    │   ├── wiki/                 # Wikipedia API 클라이언트
-    │   ├── admin/                # 관리자 제시어 CRUD
-    │   ├── game-record/          # 게임 전적 훅 & API
-    │   ├── ranking/              # 랭킹 조회 훅 & API
-    │   └── donation.ts           # 후원 API + 훅 (getLatestDonations, createAccountTransferDonation 등)
-    │
-    ├── entities/
-    │   ├── auth/                 # GoogleLoginRequest/Response 타입
-    │   ├── account/              # Account, AccountResponse 타입
-    │   ├── consent/              # ConsentType, ConsentItem, RegisterRequest 타입
-    │   ├── wiki/                 # WikiSummary, TargetWordResponse 타입
-    │   ├── game-record/          # GameRecord, RecordSummary 타입
-    │   ├── ranking/              # RankingRecord, RankingListResponse 타입
-    │   └── donation.ts           # DonationListItem, PendingAccountTransferDonationItem 타입
-    │
-    └── shared/
-        ├── api/                  # JWT 인터셉터, API 클라이언트, 엔드포인트
-        ├── config/               # QueryClient 설정
-        ├── lib/                  # cn 유틸, i18n (ko/en/ja), countryUtils (국기 이미지)
-        ├── store/                # authStore, themeStore, gameStore, pendingRecordStore
-        ├── ui/                   # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay, Accordion
-        └── styles/               # 전역 스타일 + 테마 CSS 변수
+├─ src/
+│  ├─ app/
+│  ├─ pages/
+│  ├─ widgets/
+│  ├─ features/
+│  ├─ entities/
+│  └─ shared/
+├─ public/
+└─ dist/
 ```
+
+### 자주 보는 위치
+
+| 경로 | 설명 |
+|---|---|
+| `src/widgets/settings/ui/SettingsView.tsx` | 설정 화면과 앱 버전 표기 |
+| `src/widgets/ranking-alert/ui/RankingAlertOverlay.tsx` | 랭킹 알림 오버레이 |
+| `src/widgets/donation/ui/DonationAlertOverlay.tsx` | 후원 알림 오버레이 |
+| `src/shared/store/settingsStore.ts` | 알림 on/off 설정 저장 |
+| `src/shared/lib/i18n/locales/` | 한국어, 영어, 일본어 번역 리소스 |
 
 ---
 
-## 🚀 시작하기
+## 화면 구성
 
-### 요구사항
+| 경로 | 페이지 | 설명 |
+|---|---|---|
+| `/` | `HomePage` | 게임 메인 화면 |
+| `/auth` | `AuthPage` | 로그인과 회원가입 진입 |
+| `/settings` | `SettingsPage` | 계정, 테마, 언어, 알림 설정 |
+| `/record` | `RecordPage` | 최근 기록과 통계 |
+| `/ranking` | `RankingPage` | 기간별 랭킹 조회 |
+| `/share/:shareId` | `SharePage` | 공유 결과 페이지 |
+| `/donations` | `DonationInfoPage` | 후원 안내와 관리자 후원 확인 |
+| `/admin/accounts` | `AdminAccountPage` | 관리자 계정 관리 |
+| `/doc` | `DocPage` | 서비스 문서 |
+| `/patch` | `PatchPage` | 패치노트 |
 
-- Node.js 20+
-- pnpm
+`PrivateRoute`는 사용하지 않고, 게임 진행 중 이탈 같은 상황은 확인 다이얼로그 기반 흐름으로 제어합니다.
 
-### 설치 및 실행
+---
+
+## 실행 방법
+
+### 요구 사항
+
+- Node.js 20 이상
+- npm 또는 pnpm
+
+### 설치 및 개발 서버 실행
 
 ```bash
-# 저장소 클론
-git clone https://github.com/your-org/WikiSprint.git
+git clone <repository-url>
 cd WikiSprint/WikiSprint-Web
-
-# 의존성 설치
-pnpm install
-
-# 개발 서버 실행 (포트 5969)
-pnpm dev -- --port 5969
+npm install
+npm run dev -- --port 5969
 ```
 
 ### 빌드
 
 ```bash
-pnpm build
-pnpm preview
+npm run build
+npm run preview
 ```
 
 ---
 
-## ⚙️ 환경 설정
+## 환경 변수
 
-프로젝트 루트에 `.env` 파일을 생성하세요:
+프로젝트 루트에 `.env` 파일을 생성합니다.
 
 ```env
 VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 VITE_KAKAO_JS_KEY=your-kakao-javascript-key
 ```
 
-| 환경변수 | 설명 |
-|---------|------|
+| 변수 | 설명 |
+|---|---|
 | `VITE_GOOGLE_CLIENT_ID` | Google OAuth 클라이언트 ID |
-| `VITE_KAKAO_JS_KEY` | 카카오 JavaScript SDK 초기화 키 |
+| `VITE_KAKAO_JS_KEY` | 카카오 공유용 JavaScript SDK 키 |
 
 ---
 
-## 🗺 라우팅 구조
+## 백엔드 연동
 
-| 경로 | 페이지 | 인증 필요 |
-|------|--------|----------|
-| `/` | `HomePage` | ❌ (게스트 포함) |
-| `/auth` | `AuthPage` | ❌ |
-| `/settings` | `SettingsPage` | ❌ (게스트 포함) |
-| `/doc` | `DocPage` | ❌ |
-| `/patch` | `PatchPage` | ❌ |
-| `/podo` | `PodoPage` | ❌ |
-| `/record` | `RecordPage` | ✅ |
-| `/ranking` | `RankingPage` | ❌ (게스트 포함) |
-| `/share/:shareId` | `SharePage` | ❌ |
-| `/donations` | `DonationInfoPage` | ❌ |
+- 프론트엔드 개발 서버: `http://localhost:5969`
+- 백엔드 API 서버: `http://localhost:8585`
+- 기본 API prefix: `/api`
 
-> PrivateRoute 없음. 게임 진행 중 이탈은 Header의 `guardedNavigate`로 확인 다이얼로그 처리.
+주요 API 범주는 다음과 같습니다.
 
----
+- 인증: `/api/auth/**`
+- 계정: `/api/account/**`
+- 기록: `/api/record/**`
+- 랭킹: `/api/ranking/**`
+- 후원: `/api/donations/**`
+- 관리자: `/api/admin/**`
 
-## 🔗 백엔드 연동
-
-- 백엔드 서버: `http://localhost:8585`
-- API 기본 경로: `/api`
-- CORS 허용 오리진: `http://localhost:5969`
-
-→ [WikiSprint-Server README](../WikiSprint-Server/README.md)
+서버 상세 설명은 [WikiSprint-Server README](../WikiSprint-Server/README.md)에서 확인할 수 있습니다.
 
 ---
 
-## 🔗 공유 링크 메모
+## 운영 메모
 
-- 결과 화면에서 공유 직전 `POST /api/record/share`를 호출해 공유 전용 `shareId`를 생성합니다.
-- 공유 URL은 전적 ID를 그대로 쓰지 않고, 서버가 발급한 `shareId`를 기반으로 만듭니다.
-- 공유 페이지는 24시간 동안 유효하며, 카카오톡 공유, QR 코드, 링크 복사 흐름과 연결됩니다.
+### 공유 기능
 
----
+- 결과 화면에서 `POST /api/record/share` 호출 후 `shareId`를 발급받습니다.
+- 공유 페이지는 기록 ID가 아니라 `shareId` 기반으로 조회합니다.
+- 공유 링크는 24시간 동안 유효합니다.
 
-## 💖 후원 메모
+### 후원 및 알림
 
-- 전역 플로팅 버튼(`DonationFloatingButton`)은 `app/App.tsx`에서 상시 마운트됩니다.
-- 해외 후원: Ko-fi(`https://ko-fi.com/minjoy`) iframe 임베드를 통한 PayPal 결제.
-- 국내 후원: Ko-fi가 한국 결제를 지원하지 않아 계좌이체 + 관리자 수동 승인 방식으로 구현됩니다.
-  - 커피 1잔 = 2000 KRW, 1~100잔 선택 가능
-  - `POST /api/donations/account-transfer/request` 호출 → 관리자가 `/donations` 페이지에서 입금 확인
-- 후원 티어(`bronze/silver/gold/rainbow`)는 `widgets/donation-support.tsx`의 `getDonationTierGlowClass`에서 결정됩니다.
+- 해외 후원은 Ko-fi iframe을 사용합니다.
+- 국내 후원은 계좌이체 요청 후 관리자 확인으로 이어집니다.
+- 후원 알림은 설정을 다시 켠 시점 이후에 생성된 항목만 재생합니다.
+- 랭킹 알림과 후원 알림은 설정 화면에서 각각 독립적으로 제어할 수 있습니다.
 
 ---
 
-## 📜 패치 노트
+## 문서
 
-최신 변경사항은 [PATCH.md](./PATCH.md)를 참고하세요.
+- 변경 이력: [PATCH.md](./PATCH.md)
+- 작업 메모: [CLAUDE.md](./CLAUDE.md)
 
 ---
 
 <div align="center">
 
-**WikiSprint** — Built with ❤️ using React & TypeScript
+**WikiSprint** · Built with React & TypeScript
 
 </div>
----
-
-## 🆕 v2.15.0 문서 메모
-
-### 랭킹 알림 오버레이
-
-- 게임 클리어 후 일일 전체 랭킹에 변동이 생기면 전체 클라이언트에 알림 오버레이(`RankingAlertOverlay`)가 표시됩니다.
-- 신규 진입(`new-entry`)은 입성 카드 한 장, 추월(`overtake`)은 승자/패자 카드 두 장으로 구분됩니다.
-- 본인 클리어 시 클리어 응답 본문의 `rankingAlert`로 즉시 enqueue, 다른 클라이언트는 15초 폴링(`/api/ranking/alerts/recent`)으로 수신합니다.
-- `rankingAlertStore`(zustand) + localStorage `wikisprint-seen-ranking-alerts` 이중 중복 방지가 적용됩니다.
-- `widgets/ranking/ui/RankingCardDisplay.tsx`가 알림 오버레이와 랭킹 페이지 카드의 시각 표현을 공유합니다.
-
-## 🆕 v2.13.3 문서 메모
-
-### 게임 시작 동시성 보정
-
-- 로그인 계정은 다른 창이나 탭에서 이미 진행 중인 게임이 있으면 새 게임을 시작할 수 없습니다.
-- `GameIntroView`는 서버의 `409 CONFLICT` 응답을 감지하면 게임 시작을 반려하고 경고 토스트만 표시합니다.
-- 시작 반려 문구 `game.startBlockedByAnotherSession`이 `ko`, `en`, `ja` 로케일에 추가됐습니다.
-
-## 🆕 v2.13.1 문서 메모
-
-### 후원/신고 UX 보정
-
-- 신고 제출은 `ReportModal`에서 확인 다이얼로그를 거친 뒤 진행됩니다.
-- `/admin/accounts`와 `/donations` 관리자 액션 버튼은 검열, 권한 부여, 처리 완료 전에 한 번 더 확인을 받습니다.
-- `/doc` 후원 미리보기는 서포터 네임 기준으로 서로 다른 후원자만 노출합니다.
-- 비연동 후원의 첫 글자 아바타는 `/donations`와 같은 컬러 배경 스타일로 맞췄습니다.
-- 게임 문서 도착 판정은 링크 문자열이 아니라 실제 문서의 canonical title 기준으로 보강됐습니다.
-
-## 🆕 v2.13.0 문서 메모
-
-### 관리자/신고 기능
-
-- 신고 모달(`widgets/report/ui/ReportModal.tsx`)을 통해 랭킹과 후원 정보에서 사용자 신고를 접수합니다.
-- 관리자 전용 `/admin/accounts` 페이지에서 계정 신고 요약, 기타 사유 목록, 프로필/닉네임 검열, 관리자 권한 부여를 처리합니다.
-- `/donations` 관리자 화면에서 후원 카드 확장 패널로 신고 요약, 서포터 네임 검열/복구, 후원 내용 검열, 처리 완료, 삭제를 수행합니다.
-
-### 추가 라우트
-
-| 경로 | 페이지 | 접근 |
-|------|--------|------|
-| `/admin/accounts` | `AdminAccountPage` | 관리자 전용 |
-
-### 추가 슬라이스
-
-- `pages/AdminAccountPage.tsx`
-- `widgets/admin-account/`
-- `widgets/report/`
-- `features/admin-account.ts`
-- `features/report.ts`
-- `entities/report.ts`

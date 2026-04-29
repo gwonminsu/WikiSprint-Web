@@ -12,6 +12,7 @@ export interface DonationListItem {
   amount: string | null;
   currency: string | null;
   isAnonymous: boolean | null;
+  alertCreatedAt?: string | null;
   receivedAt: string;
 }
 

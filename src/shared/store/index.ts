@@ -8,3 +8,4 @@ export {
 } from './gameStore';
 export { usePendingRecordStore } from './pendingRecordStore';
 export { useRankingAlertStore } from './rankingAlertStore';
+export { useSettingsStore } from './settingsStore';
