@@ -110,6 +110,11 @@ export function WidgetDropdown({
     setActiveIndex(null);
   };
 
+  const closeAndFocusTrigger = (): void => {
+    triggerRef.current?.focus();
+    close();
+  };
+
   const focusIndex = (index: number | null): void => {
     if (index === null) return;
 
@@ -213,7 +218,7 @@ export function WidgetDropdown({
     onClick: () => {
       if (disabled) return;
       onSelect();
-      close();
+      closeAndFocusTrigger();
     },
     onKeyDown: (event) => {
       if (event.key === 'ArrowDown') {
@@ -244,8 +249,7 @@ export function WidgetDropdown({
 
       if (event.key === 'Escape') {
         event.preventDefault();
-        close();
-        triggerRef.current?.focus();
+        closeAndFocusTrigger();
         return;
       }
 
@@ -257,7 +261,7 @@ export function WidgetDropdown({
         event.preventDefault();
         if (disabled) return;
         onSelect();
-        close();
+        closeAndFocusTrigger();
       }
     },
   });
