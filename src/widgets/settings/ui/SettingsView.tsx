@@ -279,7 +279,8 @@ export function SettingsView(): React.ReactElement {
         c.code.toLowerCase().includes(q) ||
         c.nameKo.toLowerCase().includes(q) ||
         c.nameEn.toLowerCase().includes(q) ||
-        c.nameJa.toLowerCase().includes(q)
+        c.nameJa.toLowerCase().includes(q) ||
+        c.nameZh.toLowerCase().includes(q)
       );
     }),
     [nationalitySearch]
@@ -301,6 +302,7 @@ export function SettingsView(): React.ReactElement {
     { value: 'ko', label: LANGUAGES.ko.nativeName },
     { value: 'en', label: LANGUAGES.en.nativeName },
     { value: 'ja', label: LANGUAGES.ja.nativeName },
+    { value: 'zh', label: LANGUAGES.zh.nativeName },
   ];
 
   return (
@@ -434,7 +436,9 @@ export function SettingsView(): React.ReactElement {
                       srcSet={currentFlagSrcSet}
                       alt={
                         currentCountry
-                          ? (language === 'ja'
+                          ? (language === 'zh'
+                              ? currentCountry.nameZh
+                              : language === 'ja'
                               ? currentCountry.nameJa
                               : language === 'en'
                                 ? currentCountry.nameEn
@@ -452,7 +456,13 @@ export function SettingsView(): React.ReactElement {
 
                   <span className="text-sm text-gray-500 dark:text-gray-400 truncate ml-1">
                     {currentCountry
-                      ? (language === 'ja' ? currentCountry.nameJa : language === 'en' ? currentCountry.nameEn : currentCountry.nameKo)
+                      ? (language === 'zh'
+                          ? currentCountry.nameZh
+                          : language === 'ja'
+                            ? currentCountry.nameJa
+                            : language === 'en'
+                              ? currentCountry.nameEn
+                              : currentCountry.nameKo)
                       : t('profile.stateless')}
                   </span>
                   <button
@@ -518,7 +528,7 @@ export function SettingsView(): React.ReactElement {
                               <img
                                 src={getCountryFlagUrl(c.code) ?? undefined}
                                 srcSet={getCountryFlagSrcSet(c.code)}
-                                alt={language === 'ja' ? c.nameJa : language === 'en' ? c.nameEn : c.nameKo}
+                                alt={language === 'zh' ? c.nameZh : language === 'ja' ? c.nameJa : language === 'en' ? c.nameEn : c.nameKo}
                                 width={16}
                                 height={12}
                                 className="shrink-0 rounded-xs object-cover mr-1"
@@ -526,7 +536,7 @@ export function SettingsView(): React.ReactElement {
                               />
 
                               <span className="truncate">
-                                {language === 'ja' ? c.nameJa : language === 'en' ? c.nameEn : c.nameKo}
+                                {language === 'zh' ? c.nameZh : language === 'ja' ? c.nameJa : language === 'en' ? c.nameEn : c.nameKo}
                               </span>
                             </button>
                           </li>

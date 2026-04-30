@@ -1,15 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { ko, en, ja } from './locales';
+import { ko, en, ja, zh } from './locales';
 
 // 지원 언어 타입
-export type Language = 'ko' | 'en' | 'ja';
+export type Language = 'ko' | 'en' | 'ja' | 'zh';
 
 // 언어 정보
 export const LANGUAGES: Record<Language, { label: string; nativeName: string }> = {
   ko: { label: '한국어', nativeName: '한국어' },
   en: { label: 'English', nativeName: 'English' },
   ja: { label: '日本語', nativeName: '日本語' },
+  zh: { label: '中文', nativeName: '中文' },
 };
 
 // 공유 만료 안내는 locale 원본을 크게 흔들지 않도록 여기서 덮어쓴다.
@@ -18,6 +19,7 @@ const translations = {
   ko,
   en,
   ja,
+  zh,
 } as const;
 
 export type TranslationKeys = typeof translations.ko;

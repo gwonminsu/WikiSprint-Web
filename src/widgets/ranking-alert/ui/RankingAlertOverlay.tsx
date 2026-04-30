@@ -79,6 +79,16 @@ function RankingAlertHeadlineRank({
     );
   }
 
+  if (language === 'zh') {
+    return (
+      <span className="ranking-alert__headline-rank">
+        {'日榜总排行第 '}
+        <span className="ranking-alert__headline-rank-number">{rank}</span>
+        {' 名'}
+      </span>
+    );
+  }
+
   if (language === 'ja') {
     return (
       <span className="ranking-alert__headline-rank">
@@ -118,6 +128,19 @@ function renderRankingAlertHeadline(
       );
     }
 
+    if (language === 'zh') {
+      return (
+        <>
+          <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
+          {' 超过了 '}
+          <RankingAlertHeadlineName tone="loser">{alert.loser.nickname}</RankingAlertHeadlineName>
+          {'，并获得 '}
+          {rankNode}
+          {'！'}
+        </>
+      );
+    }
+
     if (language === 'ja') {
       return (
         <>
@@ -150,6 +173,17 @@ function renderRankingAlertHeadline(
         {' reached '}
         {rankNode}
         {'!'}
+      </>
+    );
+  }
+
+  if (language === 'zh') {
+    return (
+      <>
+        <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
+        {' 获得了 '}
+        {rankNode}
+        {'！'}
       </>
     );
   }

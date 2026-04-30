@@ -128,7 +128,7 @@ src/
     ├── assets/
     │   └── images/         # 언어별 로고 PNG (ko/en/ja) + getLogoByLanguage()
     ├── config/             # QueryClient 설정
-    ├── lib/                # cn, i18n (ko/en/ja), countryUtils (국가 목록 + 국기 이미지 URL), kakao (kakaoSdk, kakao.d.ts)
+    ├── lib/                # cn, i18n (ko/en/ja/zh), countryUtils (국가 목록 + 국기 이미지 URL), kakao (kakaoSdk, kakao.d.ts)
     ├── store/              # authStore (is_admin, nationality 포함), themeStore, gameStore (difficulty·popDoc 포함, persist), pendingRecordStore
     ├── ui/                 # Dialog, Toast, ProfileAvatar, EmbossButton, SuccessOverlay, Accordion
     └── styles/             # 전역 스타일 + 테마 CSS 변수
@@ -259,7 +259,7 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ## 다국어 (i18n)
 
-- 한국어 (ko, 기본), 영어 (en), 일본어 (ja)
+- 한국어 (ko, 기본), 영어 (en), 일본어 (ja), 중국어 (zh)
 - 파일 위치: `shared/lib/i18n/locales/{lang}.ts`
 
 ---

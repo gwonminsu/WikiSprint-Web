@@ -5,13 +5,9 @@ const koPatchNotesContent = `# WikiSprint 최근 업데이트
 - 랭킹 알림 헤더에서 플레이어 이름과 순위가 더 잘 눈에 들어오도록 강조 표현을 정리했어요.
 - 랭킹 페이지에서 접힌 카드 내용이 세로 가운데에 더 자연스럽게 보이도록 정리했어요.
 
----
-
 ## v2.16.1
 - 설정 화면 알림 토글 스위치의 라이트 모드 가시성을 더 또렷하게 다듬었어요.
 - 토글 thumb가 꺼짐일 때는 더 왼쪽으로, 켜짐일 때는 더 오른쪽으로 움직이도록 미세 조정했어요.
-
----
 
 ## v2.16.0
 - 설정 화면에서 랭크 알림과 후원 알림을 각각 켜고 끌 수 있게 되었어요.
@@ -50,13 +46,9 @@ const enPatchNotesContent = `# Recent WikiSprint Updates
 - Ranking alert headlines now make player names and achieved rank easier to notice.
 - Collapsed ranking cards on the ranking page now feel more vertically centered.
 
----
-
 ## v2.16.1
 - Improved the visibility of the notification toggle switches in light mode on the Settings screen.
 - Fine-tuned the thumb travel so it sits farther left when off and reaches a bit farther right when on.
-
----
 
 ## v2.16.0
 - You can now turn ranking alerts and donation alerts on or off separately in Settings.
@@ -95,13 +87,9 @@ const jaPatchNotesContent = `# WikiSprint 最近のアップデート
 - ランキング通知ヘッダーで、プレイヤー名と達成順位がより目に入りやすくなりました。
 - ランキングページの折りたたみカードは、内容が縦方向の中央により自然に見えるよう整えました。
 
----
-
 ## v2.16.1
 - 設定画面の通知トグルは、ライトモードでも見やすくなるように調整しました。
 - トグルのつまみは、オフのときはもう少し左へ、オンのときは少しだけ右へ動くよう微調整しました。
-
----
 
 ## v2.16.0
 - 設定画面でランキング通知と支援通知をそれぞれ個別にオンオフできるようになりました。
@@ -133,6 +121,33 @@ const jaPatchNotesContent = `# WikiSprint 最近のアップデート
 - 通報や管理者操作の送信前に、もう一段階の確認を追加しました。
 - ドキュメント画面と支援画面のいくつかの動作を、より自然で安定したものに整えました。`;
 
+const zhPatchNotesContent = `# WikiSprint 最新更新
+
+## v2.16.2
+- 超越类排行通知中，进入中的卡片现在会在更合适的时机显示火花效果。
+- 排行通知标题里，玩家名称和达成名次会更容易被看见。
+- 排行页面中折叠状态的卡片内容，看起来会更自然地位于垂直中间。
+
+## v2.16.1
+- 设置页面里的通知开关在浅色模式下更清晰了。
+- 开关圆点在关闭时会更靠左、开启时会更靠右，细节上更自然。
+
+## v2.16.0
+- 现在可以在设置页面中分别开启或关闭排行通知与赞助通知。
+- 重新开启赞助通知后，只会显示开启之后收到的新赞助通知。
+
+---
+
+## v2.15.0
+- 当你通关后，若日榜总排行发生变化，现在会立刻在画面上显示通知。
+- 你也能看到其他玩家新进入排行或超越他人的提示通知。
+
+---
+
+## v2.14.0
+- 新增了更新日志页面。
+- 现在可以直接在更新日志页面查看最近更新内容。`;
+
 export const patchNotesLocale = {
   ko: {
     eyebrow: 'PATCH NOTES',
@@ -157,5 +172,13 @@ export const patchNotesLocale = {
     lastUpdatedLabel: '最終更新',
     lastUpdatedDate: '2026-04-30',
     content: jaPatchNotesContent,
+  },
+  zh: {
+    eyebrow: 'PATCH NOTES',
+    title: '更新日志',
+    documentTitle: '更新日志 | WikiSprint',
+    lastUpdatedLabel: '最后更新',
+    lastUpdatedDate: '2026-04-30',
+    content: zhPatchNotesContent,
   },
 } as const;

@@ -11,7 +11,7 @@ type KakaoShareParams = {
   shareUrl: string;
 };
 
-type SupportedLanguage = 'ko' | 'en' | 'ja';
+type SupportedLanguage = 'ko' | 'en' | 'ja' | 'zh';
 
 export function formatElapsed(ms: number, language: SupportedLanguage): string {
   const totalSeconds = ms / 1000;
@@ -26,7 +26,11 @@ export function formatElapsed(ms: number, language: SupportedLanguage): string {
     return minutes > 0 ? `${minutes}分${seconds}秒` : `${seconds}秒`;
   }
 
-  return minutes > 0 ? `${minutes}분 ${seconds}초` : `${seconds}초`;
+  if (language === 'zh') {
+    return minutes > 0 ? `${minutes}分${seconds}秒` : `${seconds}秒`;
+  }
+
+  return minutes > 0 ? `${minutes}분${seconds}초` : `${seconds}초`;
 }
 
 function copyWithExecCommand(text: string): boolean {
@@ -56,7 +60,7 @@ export async function copyShareText(text: string): Promise<boolean> {
       return true;
     }
   } catch {
-    // 최신 API가 막히면 레거시 복사 방식으로 폴백한다.
+    // 최신 API가 막히면 구형 복사 방식으로 대체합니다.
   }
 
   return copyWithExecCommand(text);

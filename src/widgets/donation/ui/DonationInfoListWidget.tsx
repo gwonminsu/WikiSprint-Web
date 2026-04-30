@@ -24,6 +24,8 @@ function formatDonationDate(receivedAt: string, language: string): string {
     ? 'ko-KR'
     : language === 'ja'
       ? 'ja-JP'
+      : language === 'zh'
+        ? 'zh-CN'
       : 'en-US';
 
   return new Intl.DateTimeFormat(locale, {

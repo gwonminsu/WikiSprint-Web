@@ -3,6 +3,7 @@ import type { Language } from '../../lib/i18n/i18n';
 import logoKo from './wikisprint-logo-ko.png';
 import logoEn from './wikisprint-logo-en.png';
 import logoJa from './wikisprint-logo-ja.png';
+import logoZh from './wikisprint-logo-zh.png';
 import tutoDoc from './tutoDoc.png';
 import talkerStart from './talker-start.png';
 import talkerFinger from './talker-finger.png';
@@ -25,6 +26,7 @@ const logoMap: Record<Language, string> = {
   ko: logoKo,
   en: logoEn,
   ja: logoJa,
+  zh: logoZh,
 };
 
 // 현재 언어에 맞는 로고 이미지 URL 반환

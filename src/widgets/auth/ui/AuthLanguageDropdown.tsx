@@ -9,6 +9,7 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
   { value: 'ko', label: LANGUAGES.ko.nativeName },
   { value: 'en', label: LANGUAGES.en.nativeName },
   { value: 'ja', label: LANGUAGES.ja.nativeName },
+  { value: 'zh', label: LANGUAGES.zh.nativeName },
 ];
 
 export function AuthLanguageDropdown(): React.ReactElement {

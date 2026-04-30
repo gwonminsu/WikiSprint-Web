@@ -3,7 +3,7 @@ import { WidgetDropdown, getTokenStorage, useTranslation, useToast, useDialog, E
 import { useTargetWords, useAddTargetWord, useDeleteTargetWord } from '@features';
 import type { TargetWordResponse } from '@entities';
 
-type LangFilter = 'all' | 'ko' | 'en' | 'ja';
+type LangFilter = 'all' | 'ko' | 'en' | 'ja' | 'zh';
 type DiffFilter = 0 | 1 | 2 | 3;
 type SortOption = 'newest' | 'name' | 'difficulty';
 
@@ -11,6 +11,7 @@ const LANG_STYLE: Record<string, string> = {
   ko: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   en: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
   ja: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
+  zh: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
 };
 
 const DIFF_STYLE: Record<number, string> = {
@@ -162,6 +163,7 @@ export function AdminTargetWordsSection(): React.ReactElement | null {
     { value: 'ko', label: '한국어 (ko)' },
     { value: 'en', label: 'English (en)' },
     { value: 'ja', label: '日本語 (ja)' },
+    { value: 'zh', label: '中文 (zh)' },
   ];
 
   const diffOptions = [
@@ -175,6 +177,7 @@ export function AdminTargetWordsSection(): React.ReactElement | null {
     { value: 'ko', label: 'ko' },
     { value: 'en', label: 'en' },
     { value: 'ja', label: 'ja' },
+    { value: 'zh', label: 'zh' },
   ];
 
   const diffFilterOptions = [

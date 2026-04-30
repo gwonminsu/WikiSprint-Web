@@ -113,7 +113,13 @@ export default function SharePage(): React.ReactElement {
         }
 
         return new Intl.DateTimeFormat(
-          language === 'ko' ? 'ko-KR' : language === 'ja' ? 'ja-JP' : 'en-US',
+          language === 'ko'
+            ? 'ko-KR'
+            : language === 'ja'
+              ? 'ja-JP'
+              : language === 'zh'
+                ? 'zh-CN'
+                : 'en-US',
           {
             year: 'numeric',
             month: 'long',
