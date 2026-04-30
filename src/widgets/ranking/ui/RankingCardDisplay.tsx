@@ -164,11 +164,7 @@ export function RankingCardDisplay({
         </div>
       </div>
 
-      {footerSlot ? (
-        <div className="mt-3">
-          {footerSlot}
-        </div>
-      ) : null}
+      {footerSlot}
     </div>
   );
 }

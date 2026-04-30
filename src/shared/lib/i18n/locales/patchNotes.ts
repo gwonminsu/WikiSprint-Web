@@ -1,8 +1,17 @@
 const koPatchNotesContent = `# WikiSprint 최근 업데이트
 
+## v2.16.2
+- 추월 랭킹 알림에서 등장하는 카드 뒤로 불꽃 스파크가 함께 보이도록 다듬었어요.
+- 랭킹 알림 헤더에서 플레이어 이름과 순위가 더 잘 눈에 들어오도록 강조 표현을 정리했어요.
+- 랭킹 페이지에서 접힌 카드 내용이 세로 가운데에 더 자연스럽게 보이도록 정리했어요.
+
+---
+
 ## v2.16.1
 - 설정 화면 알림 토글 스위치의 라이트 모드 가시성을 더 또렷하게 다듬었어요.
 - 토글 thumb가 꺼짐일 때는 더 왼쪽으로, 켜짐일 때는 더 오른쪽으로 움직이도록 미세 조정했어요.
+
+---
 
 ## v2.16.0
 - 설정 화면에서 랭크 알림과 후원 알림을 각각 켜고 끌 수 있게 되었어요.
@@ -36,9 +45,18 @@ const koPatchNotesContent = `# WikiSprint 최근 업데이트
 
 const enPatchNotesContent = `# Recent WikiSprint Updates
 
+## v2.16.2
+- Overtake ranking alerts now show the spark effect behind the entering card at the right moment.
+- Ranking alert headlines now make player names and achieved rank easier to notice.
+- Collapsed ranking cards on the ranking page now feel more vertically centered.
+
+---
+
 ## v2.16.1
 - Improved the visibility of the notification toggle switches in light mode on the Settings screen.
 - Fine-tuned the thumb travel so it sits farther left when off and reaches a bit farther right when on.
+
+---
 
 ## v2.16.0
 - You can now turn ranking alerts and donation alerts on or off separately in Settings.
@@ -72,9 +90,18 @@ const enPatchNotesContent = `# Recent WikiSprint Updates
 
 const jaPatchNotesContent = `# WikiSprint 最近のアップデート
 
+## v2.16.2
+- 追い抜きランキング通知では、登場するカードの後ろに火花スパークがタイミングよく見えるようになりました。
+- ランキング通知ヘッダーで、プレイヤー名と達成順位がより目に入りやすくなりました。
+- ランキングページの折りたたみカードは、内容が縦方向の中央により自然に見えるよう整えました。
+
+---
+
 ## v2.16.1
 - 設定画面の通知トグルは、ライトモードでも見やすくなるように調整しました。
 - トグルのつまみは、オフのときはもう少し左へ、オンのときは少しだけ右へ動くよう微調整しました。
+
+---
 
 ## v2.16.0
 - 設定画面でランキング通知と支援通知をそれぞれ個別にオンオフできるようになりました。

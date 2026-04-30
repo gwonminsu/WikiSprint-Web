@@ -284,6 +284,12 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.16.2)
+
+- `widgets/ranking-alert/ui/RankingAlertOverlay.tsx`의 오버테이크 알림은 승자 카드 등장 시점에 맞춰 카드 뒤에서 스파크가 재생되도록 정리됐습니다.
+- 랭킹 알림 헤더는 닉네임/순위 숫자를 강조하는 별도 마크업과 스타일을 사용하도록 바뀌었습니다.
+- `widgets/ranking/ui/RankingCardDisplay.tsx`는 접힌 카드 상태에서 불필요한 하단 여백이 남지 않도록 `footerSlot` 래핑 구조가 단순화됐습니다.
+
 ## 최근 변경 메모 (v2.16.0)
 
 - `shared/store/settingsStore.ts`가 추가되어 랭킹 알림과 후원 알림 on/off 상태를 `settings-storage`에 persist합니다.

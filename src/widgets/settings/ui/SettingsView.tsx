@@ -695,7 +695,7 @@ export function SettingsView(): React.ReactElement {
           </div>
           <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
             <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-            <span className="text-gray-500 dark:text-gray-400">2.16.1</span>
+            <span className="text-gray-500 dark:text-gray-400">2.16.2</span>
           </div>
         </div>
       </section>
