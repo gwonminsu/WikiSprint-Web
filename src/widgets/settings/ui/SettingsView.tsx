@@ -120,6 +120,7 @@ const RANKING_ALERT_PERIODS: readonly RankingPeriod[] = ['daily', 'weekly', 'mon
 type RankingAlertPeriodRadioProps = {
   value: RankingPeriod;
   checked: boolean;
+  index: number;
   label: string;
   onSelect: (value: RankingPeriod) => void;
   onMove: (value: RankingPeriod, direction: -1 | 1) => void;
@@ -130,6 +131,7 @@ function RankingAlertPeriodRadio({
   value,
   checked,
   label,
+  index,
   onSelect,
   onMove,
   disabled,
@@ -153,14 +155,14 @@ function RankingAlertPeriodRadio({
         }
       }}
       className={[
-        'rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300',
-        checked
-          ? 'border-primary bg-primary text-white shadow-sm'
-          : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary dark:border-gray-600 dark:text-gray-300 dark:hover:border-primary dark:hover:text-primary',
+        'settings-ranking-period-option',
+        checked ? 'settings-ranking-period-option--active' : 'settings-ranking-period-option--inactive',
         disabled ? 'cursor-default opacity-60' : '',
       ].join(' ')}
+      style={{ ['--settings-period-order' as string]: index } as React.CSSProperties}
     >
-      {label}
+      <span className="settings-ranking-period-option__label">{label}</span>
+      <span className="settings-ranking-period-option__hit" aria-hidden="true" />
     </button>
   );
 }
@@ -372,6 +374,8 @@ export function SettingsView(): React.ReactElement {
 
     setRankingAlertPeriod(nextPeriod);
   };
+
+  const activeRankingAlertPeriodIndex = Math.max(0, RANKING_ALERT_PERIODS.indexOf(rankingAlertPeriod));
 
   return (
     <div className="space-y-6">
@@ -721,29 +725,46 @@ export function SettingsView(): React.ReactElement {
           />
           <div
             className={[
-              'grid transition-[grid-template-rows,opacity] duration-300 ease-out',
-              rankingAlertEnabled ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+              'settings-ranking-period-panel',
+              rankingAlertEnabled ? 'settings-ranking-period-panel--open' : '',
             ].join(' ')}
             aria-hidden={!rankingAlertEnabled}
           >
-            <div className="min-h-0 overflow-hidden">
+            <div className="settings-ranking-period-panel__inner">
               <div
                 role="radiogroup"
                 aria-label={t('settings.notificationsRankingPeriodLabel')}
-                className="flex flex-wrap gap-2 px-2 pb-1 pt-1"
+                className="settings-ranking-period-shell"
+                style={{ ['--settings-period-index' as string]: activeRankingAlertPeriodIndex } as React.CSSProperties}
               >
-                {RANKING_ALERT_PERIODS.map((period) => (
+                <div className="settings-ranking-period-track" aria-hidden="true">
+                  <span className="settings-ranking-period-track__markers">
+                    <span className="settings-ranking-period-track__marker" />
+                    <span className="settings-ranking-period-track__connector" />
+                    <span className="settings-ranking-period-track__marker" />
+                    <span className="settings-ranking-period-track__connector" />
+                    <span className="settings-ranking-period-track__marker" />
+                  </span>
+                  <span className="settings-ranking-period-indicator">
+                    <span className="settings-ranking-period-indicator__shine" />
+                  </span>
+                </div>
+                {RANKING_ALERT_PERIODS.map((period, index) => (
                   <RankingAlertPeriodRadio
                     key={period}
                     value={period}
                     checked={rankingAlertPeriod === period}
                     label={t(`ranking.${period}` as Parameters<typeof t>[0])}
+                    index={index}
                     onSelect={setRankingAlertPeriod}
                     onMove={moveRankingAlertPeriod}
                     disabled={!rankingAlertEnabled}
                   />
                 ))}
               </div>
+              <p className="settings-ranking-period-hint">
+                {t('settings.notificationsRankingPeriodHint')}
+              </p>
             </div>
           </div>
           <div className="border-t border-gray-100 dark:border-gray-700" />

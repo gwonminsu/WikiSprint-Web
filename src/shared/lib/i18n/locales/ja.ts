@@ -65,6 +65,7 @@ export const ja = {
     notificationsRanking: 'ランキング通知',
     notificationsRankingDesc: 'ランキングへの新規エントリーや順位上昇時に通知を表示します。',
     notificationsRankingPeriodLabel: 'ランキング通知の期間',
+    notificationsRankingPeriodHint: '選択した期間の易しい、普通、難しいランキング通知を表示します。',
     notificationsDonation: '寄付通知',
     notificationsDonationDesc: '新しい寄付を受信した際に通知を表示します。',
   },

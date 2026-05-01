@@ -65,6 +65,7 @@ export const en = {
     notificationsRanking: 'Ranking alerts',
     notificationsRankingDesc: 'Show an alert when you enter or move up the ranking.',
     notificationsRankingPeriodLabel: 'Ranking alert period',
+    notificationsRankingPeriodHint: 'Show easy, normal, and hard ranking alerts for the selected period.',
     notificationsDonation: 'Donation alerts',
     notificationsDonationDesc: 'Show an alert when a new donation is received.',
   },

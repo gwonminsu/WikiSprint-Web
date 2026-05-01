@@ -65,6 +65,7 @@ export const ko = {
     notificationsRanking: '랭킹 알림',
     notificationsRankingDesc: '랭킹 신규 진입·추월 시 화면에 알림을 표시합니다.',
     notificationsRankingPeriodLabel: '랭킹 알림 기간',
+    notificationsRankingPeriodHint: '선택한 기간의 쉬움 · 보통 · 어려움 랭킹 알림을 표시해요.',
     notificationsDonation: '후원 알림',
     notificationsDonationDesc: '새 후원이 접수되면 화면에 알림을 표시합니다.',
   },

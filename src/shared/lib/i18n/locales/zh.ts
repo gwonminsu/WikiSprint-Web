@@ -64,6 +64,7 @@ export const zh = {
     notificationsRanking: '排行榜通知',
     notificationsRankingDesc: '排名有新进入或超越时，会在画面上显示通知。',
     notificationsRankingPeriodLabel: '排行榜通知周期',
+    notificationsRankingPeriodHint: '显示所选周期下的简单、普通、困难排行榜通知。',
     notificationsDonation: '赞助通知',
     notificationsDonationDesc: '有新的赞助进入时，会在画面上显示通知。',
   },
