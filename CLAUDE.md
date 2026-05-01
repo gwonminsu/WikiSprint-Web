@@ -284,6 +284,14 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 
 ---
 
+## 최근 변경 메모 (v2.16.3)
+
+- `shared/store/settingsStore.ts`에 `rankingAlertPeriod`가 추가되어 랭킹 알림 기간(`daily | weekly | monthly`)을 `settings-storage`에 persist합니다.
+- `widgets/settings/ui/SettingsView.tsx`에서 랭킹 알림 토글을 켜면 기간 라디오 버튼 영역이 부드럽게 펼쳐지고, 끄면 닫히도록 바뀌었습니다.
+- `features/game-record/lib/useGameRecord.ts`는 클리어 응답의 `rankingAlerts` 목록 중 현재 선택한 기간과 일치하는 알림만 즉시 enqueue합니다.
+- `widgets/ranking-alert/ui/RankingAlertOverlay.tsx`는 알림의 `periodType`, `difficulty`를 사용해 헤더 문구와 카드 정보를 실제 버킷 기준으로 렌더링합니다.
+- 랭킹 알림 헤더와 버킷 라벨 번역이 `ko`, `en`, `ja`, `zh` 4개 언어 기준으로 정리됐고, `/patch` 페이지의 패치노트도 사용자 관점 문구로 갱신됐습니다.
+
 ## 최근 변경 메모 (v2.16.2)
 
 - `widgets/ranking-alert/ui/RankingAlertOverlay.tsx`의 오버테이크 알림은 승자 카드 등장 시점에 맞춰 카드 뒤에서 스파크가 재생되도록 정리됐습니다.

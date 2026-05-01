@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getRecentRankingAlerts } from '@features';
 import { useRankingAlertStore, useSettingsStore, useTranslation } from '@shared';
-import type { Language } from '@shared';
 import { RankingMedalFrame } from '@/widgets/ranking/ui/RankingMedalFrame';
 import {
   RankingCardDisplay,
@@ -10,8 +9,10 @@ import {
   formatRankingMs,
 } from '@/widgets/ranking/ui/RankingCardDisplay';
 import type {
+  RankingAlertDifficulty,
   RankingAlertPlayer,
   RankingAlertResponse,
+  RankingPeriod,
   RankingRecord,
 } from '@/entities/ranking/types';
 
@@ -36,9 +37,18 @@ type RankingAlertParticle = {
   size: string;
 };
 
+type RankingAlertHeadlineToken =
+  | 'nickname'
+  | 'winner'
+  | 'loser'
+  | 'bucketLabel'
+  | 'rank';
+
 type RankingAlertViewModel = {
   alertId: string;
   kind: 'new-entry' | 'overtake';
+  periodType: RankingPeriod;
+  difficulty: RankingAlertDifficulty;
   currentRank: number;
   previousRank: number | null;
   winnerRankDelta: number | null;
@@ -62,151 +72,38 @@ function RankingAlertHeadlineName({
   );
 }
 
-function RankingAlertHeadlineRank({
-  rank,
-  language,
-}: {
-  rank: number;
-  language: Language;
-}): React.ReactElement {
-  if (language === 'en') {
-    return (
-      <span className="ranking-alert__headline-rank">
-        {'#'}
-        <span className="ranking-alert__headline-rank-number">{rank}</span>
-        {' on the daily overall ranking'}
-      </span>
-    );
-  }
+function renderTemplateWithNodes(
+  template: string,
+  values: Record<RankingAlertHeadlineToken, React.ReactNode>,
+): React.ReactNode {
+  const segments = template.split(/({{(?:nickname|winner|loser|bucketLabel|rank)}})/g);
 
-  if (language === 'zh') {
-    return (
-      <span className="ranking-alert__headline-rank">
-        {'日榜总排行第 '}
-        <span className="ranking-alert__headline-rank-number">{rank}</span>
-        {' 名'}
-      </span>
-    );
-  }
+  return segments.map((segment, index) => {
+    const tokenName = segment.match(/^{{(nickname|winner|loser|bucketLabel|rank)}}$/)?.[1] as RankingAlertHeadlineToken | undefined;
+    if (!tokenName) {
+      return <span key={`text-${index}`}>{segment}</span>;
+    }
 
-  if (language === 'ja') {
-    return (
-      <span className="ranking-alert__headline-rank">
-        {'デイリー総合ランキング'}
-        <span className="ranking-alert__headline-rank-number">{rank}</span>
-        {'位'}
-      </span>
-    );
-  }
-
-  return (
-    <span className="ranking-alert__headline-rank">
-      {'일간 전체 랭킹 '}
-      <span className="ranking-alert__headline-rank-number">{rank}</span>
-      {'위'}
-    </span>
-  );
+    return <span key={`token-${tokenName}-${index}`}>{values[tokenName]}</span>;
+  });
 }
 
 function renderRankingAlertHeadline(
   alert: RankingAlertViewModel,
-  language: Language,
+  t: ReturnType<typeof useTranslation>['t'],
 ): React.ReactNode {
-  const rankNode = <RankingAlertHeadlineRank rank={alert.currentRank} language={language} />;
+  const bucketLabel = t(`ranking.alertBucketLabel.${alert.periodType}.${alert.difficulty}` as Parameters<typeof t>[0]);
+  const template = alert.kind === 'overtake' && alert.loser
+    ? t('ranking.alertOvertakeHeadline')
+    : t('ranking.alertEntryHeadline');
 
-  if (alert.kind === 'overtake' && alert.loser) {
-    if (language === 'en') {
-      return (
-        <>
-          <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-          {' overtook '}
-          <RankingAlertHeadlineName tone="loser">{alert.loser.nickname}</RankingAlertHeadlineName>
-          {' and reached '}
-          {rankNode}
-          {'!'}
-        </>
-      );
-    }
-
-    if (language === 'zh') {
-      return (
-        <>
-          <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-          {' 超过了 '}
-          <RankingAlertHeadlineName tone="loser">{alert.loser.nickname}</RankingAlertHeadlineName>
-          {'，并获得 '}
-          {rankNode}
-          {'！'}
-        </>
-      );
-    }
-
-    if (language === 'ja') {
-      return (
-        <>
-          <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-          {'さんが'}
-          <RankingAlertHeadlineName tone="loser">{alert.loser.nickname}</RankingAlertHeadlineName>
-          {'さんを抜いて '}
-          {rankNode}
-          {'を達成しました！'}
-        </>
-      );
-    }
-
-    return (
-      <>
-        <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-        {'님이 '}
-        <RankingAlertHeadlineName tone="loser">{alert.loser.nickname}</RankingAlertHeadlineName>
-        {'님을 제치고 '}
-        {rankNode}
-        {'를 달성했습니다!'}
-      </>
-    );
-  }
-
-  if (language === 'en') {
-    return (
-      <>
-        <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-        {' reached '}
-        {rankNode}
-        {'!'}
-      </>
-    );
-  }
-
-  if (language === 'zh') {
-    return (
-      <>
-        <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-        {' 获得了 '}
-        {rankNode}
-        {'！'}
-      </>
-    );
-  }
-
-  if (language === 'ja') {
-    return (
-      <>
-        <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-        {'さんが '}
-        {rankNode}
-        {'を達成しました！'}
-      </>
-    );
-  }
-
-  return (
-    <>
-      <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>
-      {'님이 '}
-      {rankNode}
-      {'를 달성했습니다!'}
-    </>
-  );
+  return renderTemplateWithNodes(template, {
+    nickname: <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>,
+    winner: <RankingAlertHeadlineName tone="winner">{alert.winner.nickname}</RankingAlertHeadlineName>,
+    loser: <RankingAlertHeadlineName tone="loser">{alert.loser?.nickname ?? ''}</RankingAlertHeadlineName>,
+    bucketLabel: <span className="ranking-alert__headline-rank">{bucketLabel}</span>,
+    rank: <span className="ranking-alert__headline-rank-number">{alert.currentRank}</span>,
+  });
 }
 
 function formatRankDisplay(rank: number | null): string {
@@ -284,6 +181,8 @@ function normalizeAlert(alert: RankingAlertResponse): RankingAlertViewModel {
   return {
     alertId: alert.alertId,
     kind,
+    periodType: alert.periodType,
+    difficulty: alert.difficulty,
     currentRank: alert.currentRank,
     previousRank,
     winnerRankDelta,
@@ -292,15 +191,19 @@ function normalizeAlert(alert: RankingAlertResponse): RankingAlertViewModel {
   };
 }
 
-function toRankingRecord(player: RankingAlertPlayer): RankingRecord {
+function toRankingRecord(
+  player: RankingAlertPlayer,
+  periodType: RankingPeriod,
+  difficulty: RankingAlertDifficulty,
+): RankingRecord {
   return {
     id: 0,
     accountId: player.accountId,
     nickname: player.nickname,
     profileImageUrl: player.profileImageUrl,
     nationality: player.nationality,
-    periodType: 'daily',
-    difficulty: 'all',
+    periodType,
+    difficulty,
     elapsedMs: player.elapsedMs,
     targetWord: player.targetWord,
     startDoc: player.startDoc,
@@ -402,18 +305,22 @@ function RankingAlertParticles({
 function RankingAlertCardVisual({
   player,
   rank,
+  periodType,
+  difficulty,
   className = '',
   rankSlot,
 }: {
   player: RankingAlertPlayer;
   rank: number;
+  periodType: RankingPeriod;
+  difficulty: RankingAlertDifficulty;
   className?: string;
   rankSlot: React.ReactNode;
 }): React.ReactElement {
   const { t } = useTranslation();
   const card = (
     <RankingCardDisplay
-      record={toRankingRecord(player)}
+      record={toRankingRecord(player, periodType, difficulty)}
       rank={rank}
       className={className}
       rankSlot={rankSlot}
@@ -445,6 +352,8 @@ function RankingAlertEntryScene({
           <RankingAlertCardVisual
             player={alert.winner}
             rank={alert.currentRank}
+            periodType={alert.periodType}
+            difficulty={alert.difficulty}
             className="ranking-alert__card-surface ranking-alert__card-surface--entry"
             rankSlot={(
               <RankingAlertRankSlot
@@ -482,7 +391,7 @@ function RankingAlertOvertakeScene({
   const winnerDelta = alert.winnerRankDelta ?? 0;
   const winnerTagText = winnerIsNewEntry
     ? t('ranking.alertNewBadge')
-    : `▲ ${winnerDelta}`;
+    : `▲${winnerDelta}`;
   const winnerTagVariant = winnerIsNewEntry ? 'new' : 'up';
   const winnerMode: RankingAlertRankSlotMode = winnerIsNewEntry ? 'entry' : 'overtake';
 
@@ -495,6 +404,8 @@ function RankingAlertOvertakeScene({
               <RankingAlertCardVisual
                 player={loser}
                 rank={loserFromRank}
+                periodType={alert.periodType}
+                difficulty={alert.difficulty}
                 className="ranking-alert__card-surface ranking-alert__card-surface--loser-initial"
                 rankSlot={<RankingAlertStaticRankSlot rank={loserFromRank} />}
               />
@@ -504,12 +415,14 @@ function RankingAlertOvertakeScene({
               <RankingAlertCardVisual
                 player={loser}
                 rank={loserToRank}
+                periodType={alert.periodType}
+                difficulty={alert.difficulty}
                 className="ranking-alert__card-surface ranking-alert__card-surface--loser-final"
                 rankSlot={(
                   <RankingAlertRankSlot
                     fromRank={loserFromRank}
                     toRank={loserToRank}
-                    tagText="▼ 1"
+                    tagText="▼1"
                     tagVariant="down"
                     mode="overtake"
                     showArrow={false}
@@ -525,6 +438,8 @@ function RankingAlertOvertakeScene({
             <RankingAlertCardVisual
               player={alert.winner}
               rank={alert.currentRank}
+              periodType={alert.periodType}
+              difficulty={alert.difficulty}
               className="ranking-alert__card-surface ranking-alert__card-surface--winner"
               rankSlot={(
                 <RankingAlertRankSlot
@@ -545,7 +460,7 @@ function RankingAlertOvertakeScene({
 }
 
 export function RankingAlertOverlay(): React.ReactElement | null {
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
   const status = useRankingAlertStore((state) => state.status);
   const current = useRankingAlertStore((state) => state.current);
   const queueLength = useRankingAlertStore((state) => state.queue.length);
@@ -556,8 +471,8 @@ export function RankingAlertOverlay(): React.ReactElement | null {
   const markHandled = useRankingAlertStore((state) => state.markHandled);
   const initializedIdsRef = useRef<Set<string>>(new Set());
   const hasInitializedRef = useRef(false);
-  const wasDisabledRef = useRef(false);
-  const rankingAlertEnabled = useSettingsStore((s) => s.rankingAlertEnabled);
+  const rankingAlertEnabled = useSettingsStore((state) => state.rankingAlertEnabled);
+  const rankingAlertPeriod = useSettingsStore((state) => state.rankingAlertPeriod);
 
   const { data } = useQuery<RankingAlertResponse[]>({
     queryKey: ['rankingAlerts', 'recent'],
@@ -572,9 +487,14 @@ export function RankingAlertOverlay(): React.ReactElement | null {
       useRankingAlertStore.setState({ status: 'idle', current: null, queue: [] });
       initializedIdsRef.current = new Set();
       hasInitializedRef.current = false;
-      wasDisabledRef.current = true;
     }
   }, [rankingAlertEnabled]);
+
+  useEffect(() => {
+    useRankingAlertStore.setState({ status: 'idle', current: null, queue: [] });
+    initializedIdsRef.current = new Set();
+    hasInitializedRef.current = false;
+  }, [rankingAlertPeriod]);
 
   useEffect(() => {
     if (!data) {
@@ -583,7 +503,6 @@ export function RankingAlertOverlay(): React.ReactElement | null {
 
     const nextIds = new Set(data.map((item) => item.alertId));
     if (!hasInitializedRef.current) {
-      wasDisabledRef.current = false;
       initializedIdsRef.current = nextIds;
       hasInitializedRef.current = true;
       return;
@@ -591,6 +510,7 @@ export function RankingAlertOverlay(): React.ReactElement | null {
 
     data
       .filter((item) => !initializedIdsRef.current.has(item.alertId))
+      .filter((item) => item.periodType === rankingAlertPeriod)
       .sort((left, right) => new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime())
       .forEach((item) => {
         if (hasSeenRankingAlert(item.alertId)) {
@@ -603,7 +523,7 @@ export function RankingAlertOverlay(): React.ReactElement | null {
       });
 
     initializedIdsRef.current = nextIds;
-  }, [data, enqueue, markHandled]);
+  }, [data, enqueue, markHandled, rankingAlertPeriod]);
 
   useEffect(() => {
     if (!rankingAlertEnabled || status !== 'idle' || queueLength === 0) {
@@ -612,7 +532,7 @@ export function RankingAlertOverlay(): React.ReactElement | null {
 
     const timerId = window.setTimeout(startNext, START_DELAY_MS);
     return () => window.clearTimeout(timerId);
-  }, [rankingAlertEnabled, queueLength, startNext, status]);
+  }, [queueLength, rankingAlertEnabled, startNext, status]);
 
   useEffect(() => {
     if (status !== 'showing' || !current) {
@@ -649,7 +569,7 @@ export function RankingAlertOverlay(): React.ReactElement | null {
       onClick={requestExit}
     >
       <p className="ranking-alert__headline">
-        {renderRankingAlertHeadline(alert, language)}
+        {renderRankingAlertHeadline(alert, t)}
       </p>
 
       {alert.kind === 'overtake' && alert.loser ? (

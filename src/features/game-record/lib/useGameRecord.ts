@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { useAuthStore, useGameStore, usePendingRecordStore, useRankingAlertStore, useToastStore } from '@shared';
+import { useAuthStore, useGameStore, usePendingRecordStore, useRankingAlertStore, useSettingsStore, useToastStore } from '@shared';
 import { queryClient } from '@/shared/config/queryClient';
 import {
   startGameRecord,
@@ -82,8 +82,14 @@ export function useGameRecord(): {
         elapsedMs,
       })
         .then((response) => {
-          if (response.rankingAlert) {
-            useRankingAlertStore.getState().enqueue(response.rankingAlert);
+          const { rankingAlertEnabled, rankingAlertPeriod } = useSettingsStore.getState();
+          if (rankingAlertEnabled) {
+            response.rankingAlerts
+              .filter((alert) => alert.periodType === rankingAlertPeriod)
+              .sort((left, right) => new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime())
+              .forEach((alert) => {
+                useRankingAlertStore.getState().enqueue(alert);
+              });
           }
 
           return Promise.all([

@@ -58,7 +58,7 @@ export type CompleteRecordRequest = {
 };
 
 export type CompleteRecordResponse = {
-  rankingAlert: import('@/entities/ranking/types').RankingAlertResponse | null;
+  rankingAlerts: import('@/entities/ranking/types').RankingAlertResponse[];
 };
 
 // 포기 요청

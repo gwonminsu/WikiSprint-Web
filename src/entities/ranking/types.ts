@@ -2,6 +2,7 @@
 
 export type RankingPeriod = 'daily' | 'weekly' | 'monthly';
 export type RankingDifficulty = 'all' | 'easy' | 'normal' | 'hard';
+export type RankingAlertDifficulty = Exclude<RankingDifficulty, 'all'>;
 
 export interface RankingRecord {
   id: number;
@@ -48,6 +49,8 @@ export interface RankingAlertResponse {
   alertId: string;
   kind: RankingAlertKind;
   createdAt: string;
+  periodType: RankingPeriod;
+  difficulty: RankingAlertDifficulty;
   winner: RankingAlertPlayer;
   loser: RankingAlertPlayer | null;
   currentRank: number;

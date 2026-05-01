@@ -19,6 +19,7 @@ import {
 } from '@shared';
 import { usePendingReportCount } from '@features';
 import { getProfileImageUrl, useUpdateNick, useUpdateNationality, useRequestDeletion, ProfileImageEditModal } from '@/features/account';
+import type { RankingPeriod } from '@/entities/ranking/types';
 import { AdminTargetWordsSection } from './AdminTargetWordsSection';
 
 const CAT_FACE_EMOJIS: readonly string[] = ['🐱', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'] as const;
@@ -114,6 +115,56 @@ function NotificationToggleRow({ title, description, checked, onChange }: Notifi
   );
 }
 
+const RANKING_ALERT_PERIODS: readonly RankingPeriod[] = ['daily', 'weekly', 'monthly'] as const;
+
+type RankingAlertPeriodRadioProps = {
+  value: RankingPeriod;
+  checked: boolean;
+  label: string;
+  onSelect: (value: RankingPeriod) => void;
+  onMove: (value: RankingPeriod, direction: -1 | 1) => void;
+  disabled: boolean;
+};
+
+function RankingAlertPeriodRadio({
+  value,
+  checked,
+  label,
+  onSelect,
+  onMove,
+  disabled,
+}: RankingAlertPeriodRadioProps): React.ReactElement {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => onSelect(value)}
+      onKeyDown={(event: React.KeyboardEvent<HTMLButtonElement>) => {
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          onMove(value, -1);
+        }
+
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+          event.preventDefault();
+          onMove(value, 1);
+        }
+      }}
+      className={[
+        'rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300',
+        checked
+          ? 'border-primary bg-primary text-white shadow-sm'
+          : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary dark:border-gray-600 dark:text-gray-300 dark:hover:border-primary dark:hover:text-primary',
+        disabled ? 'cursor-default opacity-60' : '',
+      ].join(' ')}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function SettingsView(): React.ReactElement {
   const { t, language, setLanguage } = useTranslation();
   const { accountInfo, setAccountInfo, clearAuth } = useAuthStore();
@@ -126,8 +177,10 @@ export function SettingsView(): React.ReactElement {
   const isAdmin = accountInfo?.is_admin === true;
   const { data: pendingReportCount = 0 } = usePendingReportCount(isAdmin);
   const rankingAlertEnabled = useSettingsStore((s) => s.rankingAlertEnabled);
+  const rankingAlertPeriod = useSettingsStore((s) => s.rankingAlertPeriod);
   const donationAlertEnabled = useSettingsStore((s) => s.donationAlertEnabled);
   const setRankingAlertEnabled = useSettingsStore((s) => s.setRankingAlertEnabled);
+  const setRankingAlertPeriod = useSettingsStore((s) => s.setRankingAlertPeriod);
   const setDonationAlertEnabled = useSettingsStore((s) => s.setDonationAlertEnabled);
 
   const profileImageUrl = accountInfo?.profile_img_url
@@ -304,6 +357,21 @@ export function SettingsView(): React.ReactElement {
     { value: 'ja', label: LANGUAGES.ja.nativeName },
     { value: 'zh', label: LANGUAGES.zh.nativeName },
   ];
+
+  const moveRankingAlertPeriod = (currentPeriod: RankingPeriod, direction: -1 | 1): void => {
+    const currentIndex = RANKING_ALERT_PERIODS.indexOf(currentPeriod);
+    if (currentIndex < 0) {
+      return;
+    }
+
+    const nextIndex = (currentIndex + direction + RANKING_ALERT_PERIODS.length) % RANKING_ALERT_PERIODS.length;
+    const nextPeriod = RANKING_ALERT_PERIODS[nextIndex];
+    if (!nextPeriod) {
+      return;
+    }
+
+    setRankingAlertPeriod(nextPeriod);
+  };
 
   return (
     <div className="space-y-6">
@@ -651,6 +719,33 @@ export function SettingsView(): React.ReactElement {
             checked={rankingAlertEnabled}
             onChange={setRankingAlertEnabled}
           />
+          <div
+            className={[
+              'grid transition-[grid-template-rows,opacity] duration-300 ease-out',
+              rankingAlertEnabled ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+            ].join(' ')}
+            aria-hidden={!rankingAlertEnabled}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <div
+                role="radiogroup"
+                aria-label={t('settings.notificationsRankingPeriodLabel')}
+                className="flex flex-wrap gap-2 px-2 pb-1 pt-1"
+              >
+                {RANKING_ALERT_PERIODS.map((period) => (
+                  <RankingAlertPeriodRadio
+                    key={period}
+                    value={period}
+                    checked={rankingAlertPeriod === period}
+                    label={t(`ranking.${period}` as Parameters<typeof t>[0])}
+                    onSelect={setRankingAlertPeriod}
+                    onMove={moveRankingAlertPeriod}
+                    disabled={!rankingAlertEnabled}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
           <div className="border-t border-gray-100 dark:border-gray-700" />
           <NotificationToggleRow
             title={t('settings.notificationsDonation')}
@@ -705,7 +800,7 @@ export function SettingsView(): React.ReactElement {
           </div>
           <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-700">
             <span className="text-gray-900 dark:text-white">{t('settings.version')}</span>
-            <span className="text-gray-500 dark:text-gray-400">2.16.2</span>
+            <span className="text-gray-500 dark:text-gray-400">2.16.3</span>
           </div>
         </div>
       </section>

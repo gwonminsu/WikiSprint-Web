@@ -1,5 +1,10 @@
 const koPatchNotesContent = `# WikiSprint 최근 업데이트
 
+## v2.16.3
+- 설정에서 랭킹 알림 기간을 일간, 주간, 월간 중 하나로 고를 수 있어요.
+- 이제 일간 전체 대신 선택한 기간의 쉬움, 보통, 어려움 랭킹 알림을 보여줘요.
+- 알림 제목도 일간 쉬움 랭킹, 주간 보통 랭킹처럼 지금 보고 있는 랭킹 기준에 맞춰 더 알아보기 쉽게 바뀌었어요.
+
 ## v2.16.2
 - 추월 랭킹 알림에서 등장하는 카드 뒤로 불꽃 스파크가 함께 보이도록 다듬었어요.
 - 랭킹 알림 헤더에서 플레이어 이름과 순위가 더 잘 눈에 들어오도록 강조 표현을 정리했어요.
@@ -40,6 +45,11 @@ const koPatchNotesContent = `# WikiSprint 최근 업데이트
 - 문서 화면과 후원 화면의 여러 동작을 더 자연스럽고 안정적으로 다듬었어요.`;
 
 const enPatchNotesContent = `# Recent WikiSprint Updates
+
+## v2.16.3
+- You can now choose whether ranking alerts follow the daily, weekly, or monthly ranking.
+- Instead of only daily overall alerts, you now see easy, normal, and hard alerts for the period you selected.
+- Alert headlines now match the actual ranking bucket, such as daily easy or weekly normal.
 
 ## v2.16.2
 - Overtake ranking alerts now show the spark effect behind the entering card at the right moment.
@@ -82,6 +92,11 @@ const enPatchNotesContent = `# Recent WikiSprint Updates
 
 const jaPatchNotesContent = `# WikiSprint 最近のアップデート
 
+## v2.16.3
+- 設定画面でランキング通知の対象期間をデイリー、ウィークリー、マンスリーから選べるようになりました。
+- これからはデイリー総合だけでなく、選択した期間の易しい、普通、難しいランキング通知が表示されます。
+- 通知見出しもデイリー易しいランキング、ウィークリー普通ランキングのように、実際のランキング区分に合わせて分かりやすくなりました。
+
 ## v2.16.2
 - 追い抜きランキング通知では、登場するカードの後ろに火花スパークがタイミングよく見えるようになりました。
 - ランキング通知ヘッダーで、プレイヤー名と達成順位がより目に入りやすくなりました。
@@ -122,6 +137,11 @@ const jaPatchNotesContent = `# WikiSprint 最近のアップデート
 - ドキュメント画面と支援画面のいくつかの動作を、より自然で安定したものに整えました。`;
 
 const zhPatchNotesContent = `# WikiSprint 最新更新
+
+## v2.16.3
+- 现在你可以在设置中选择排行榜通知跟随日榜、周榜或月榜。
+- 现在显示的不再只是日榜总排行通知，而是你所选期间下的简单、普通、困难排行通知。
+- 通知标题也会按照实际排行榜分组显示，例如日榜简单排行、周榜普通排行，更容易理解。
 
 ## v2.16.2
 - 在超越类排行榜通知中，进入中的卡片现在会在更合适的时机显示火花效果。
@@ -168,7 +188,7 @@ export const patchNotesLocale = {
     title: '패치노트',
     documentTitle: '패치노트 | WikiSprint',
     lastUpdatedLabel: '마지막 업데이트',
-    lastUpdatedDate: '2026-04-30',
+    lastUpdatedDate: '2026-05-01',
     content: koPatchNotesContent,
   },
   en: {
@@ -176,7 +196,7 @@ export const patchNotesLocale = {
     title: 'Patch Notes',
     documentTitle: 'Patch Notes | WikiSprint',
     lastUpdatedLabel: 'Last updated',
-    lastUpdatedDate: '2026-04-30',
+    lastUpdatedDate: '2026-05-01',
     content: enPatchNotesContent,
   },
   ja: {
@@ -184,7 +204,7 @@ export const patchNotesLocale = {
     title: 'パッチノート',
     documentTitle: 'パッチノート | WikiSprint',
     lastUpdatedLabel: '最終更新',
-    lastUpdatedDate: '2026-04-30',
+    lastUpdatedDate: '2026-05-01',
     content: jaPatchNotesContent,
   },
   zh: {
@@ -192,7 +212,7 @@ export const patchNotesLocale = {
     title: '更新日志',
     documentTitle: '更新日志 | WikiSprint',
     lastUpdatedLabel: '最后更新',
-    lastUpdatedDate: '2026-04-30',
+    lastUpdatedDate: '2026-05-01',
     content: zhPatchNotesContent,
   },
 } as const;
