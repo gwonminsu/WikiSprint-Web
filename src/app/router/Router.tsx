@@ -1,9 +1,10 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { setAuthFailureCallback, useAuthStore, useDialog, useToast, useTranslation, getTokenStorage } from '@shared';
 import { GameLeaveGuard } from '@features';
 import { ConsentModal } from '@widgets';
 import { authApi } from '@features/auth/api/authApi';
+import { useGameStore } from '@/shared';
 
 // 코드 스플리팅으로 각 페이지를 필요 시점에만 로드한다.
 const AuthPage = lazy(() => import('@/pages/AuthPage'));
@@ -18,6 +19,46 @@ const AdminAccountPage = lazy(() => import('@/pages/AdminAccountPage'));
 const RecordPage = lazy(() => import('@/pages/RecordPage'));
 const RankingPage = lazy(() => import('@/pages/RankingPage'));
 const SharePage = lazy(() => import('@/pages/SharePage'));
+
+const ADSENSE_SCRIPT_ID = 'adsense-script';
+const ADSENSE_CLIENT_ID = 'ca-pub-6043490808663640';
+
+function removeInjectedAds(): void {
+  document.querySelectorAll('ins.adsbygoogle, .google-auto-placed, [id^="aswift_"], [id^="google_ads_iframe"], iframe[src*="googleads"], iframe[id^="google_ads_frame"]').forEach((node) => {
+    node.remove();
+  });
+}
+
+function AdSenseController(): null {
+  const location = useLocation();
+  const phase = useGameStore((state) => state.phase);
+
+  useEffect(() => {
+    const isGuidePage = location.pathname === '/';
+    const isPlayableAdPhase =
+      location.pathname === '/play' &&
+      (phase === 'intro' || phase === 'ready' || phase === 'result');
+    const shouldEnableAds = isGuidePage || isPlayableAdPhase;
+    const existingScript = document.getElementById(ADSENSE_SCRIPT_ID);
+
+    if (!shouldEnableAds) {
+      existingScript?.remove();
+      removeInjectedAds();
+      return;
+    }
+
+    if (existingScript) return;
+
+    const script = document.createElement('script');
+    script.id = ADSENSE_SCRIPT_ID;
+    script.async = true;
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+  }, [location.pathname, phase]);
+
+  return null;
+}
 
 // 인증 실패 시 SPA 내부에서 로그인 페이지로 보낸다.
 function AuthFailureHandler(): null {
@@ -118,13 +159,15 @@ export function Router(): React.ReactElement {
     <BrowserRouter>
       <AuthFailureHandler />
       <GameLeaveGuard />
+      <AdSenseController />
       <GlobalModals />
       <Suspense fallback={null}>
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<DocPage />} />
+          <Route path="/play" element={<HomePage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/doc" element={<DocPage />} />
+          <Route path="/doc" element={<Navigate to="/" replace />} />
           <Route path="/donations" element={<DonationInfoPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/patch" element={<PatchPage />} />

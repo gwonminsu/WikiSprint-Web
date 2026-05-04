@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage, tutoDoc } from '@shared';
+import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage } from '@shared';
 import { getProfileImageUrl, useGameLeaveGuard } from '@features';
 
 function NavDivider(): React.ReactElement {
@@ -54,18 +54,17 @@ export function Header(): React.ReactElement {
             onClick={() => guardedNavigate('/')}
             className="whitespace-nowrap text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors px-1"
           >
-            🏠{t('nav.home')}
+            📙{t('nav.home')}
           </button>
 
           <NavDivider />
 
           <button
             type="button"
-            onClick={() => guardedNavigate('/doc')}
+            onClick={() => guardedNavigate('/play')}
             className="whitespace-nowrap flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors px-1"
           >
-            <img src={tutoDoc} alt="도움말" className="w-8 h-8 object-contain" />
-            {t('game.helpButton')}
+            🎮{t('game.helpButton')}
           </button>
 
           <NavDivider />

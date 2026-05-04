@@ -134,7 +134,7 @@ WikiSprint-Web/
 | `widgets/ranking` | 기간별 랭킹 목록과 카드 표시 |
 | `widgets/ranking-alert` | 전체 랭킹 진입/추월 알림 오버레이 |
 | `widgets/donation` | 후원 버튼, 후원 목록, 후원 알림, 관리자 후원 UI |
-| `widgets/doc-content` | `/doc` 페이지 본문, TOC, 인터랙션 구성 |
+| `widgets/doc-content` | `/` 가이드 페이지 본문, TOC, 인터랙션 구성 |
 
 ### 상태 저장소 메모
 
@@ -150,7 +150,8 @@ WikiSprint-Web/
 
 | 경로 | 페이지 | 설명 |
 |---|---|---|
-| `/` | `HomePage` | 게임 메인 화면 |
+| `/` | `DocPage` | 서비스 가이드 (랜딩 페이지) |
+| `/play` | `HomePage` | 게임 메인 화면 |
 | `/auth` | `AuthPage` | 로그인과 회원가입 진입 |
 | `/settings` | `SettingsPage` | 계정, 테마, 언어, 알림 설정 |
 | `/record` | `RecordPage` | 최근 기록과 통계 |
@@ -158,7 +159,7 @@ WikiSprint-Web/
 | `/share/:shareId` | `SharePage` | 공유 결과 페이지 |
 | `/donations` | `DonationInfoPage` | 후원 안내와 관리자 후원 확인 |
 | `/admin/accounts` | `AdminAccountPage` | 관리자 계정 관리 |
-| `/doc` | `DocPage` | 서비스 문서 |
+| `/doc` | — | `/`로 리다이렉트 (구 경로 호환) |
 | `/patch` | `PatchPage` | 패치노트 |
 | `/podo` | `PodoPage` | 캐릭터 및 부가 소개 페이지 |
 

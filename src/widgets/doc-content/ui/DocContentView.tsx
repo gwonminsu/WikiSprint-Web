@@ -358,14 +358,14 @@ export function DocContentView(): React.ReactElement {
                 <div className="flex flex-wrap gap-3">
                   <EmbossButton
                     onClick={() => handleScrollToSection('tutorial')}
-                    variant="primary"
+                    variant="secondary"
                     className="px-6"
                   >
                     {t('doc.hero.primaryAction')}
                   </EmbossButton>
                   <EmbossButton
-                    onClick={() => navigate('/')}
-                    variant="secondary"
+                    onClick={() => navigate('/play')}
+                    variant="primary"
                     className="px-6"
                   >
                     {t('doc.hero.secondaryAction')}
@@ -754,7 +754,7 @@ export function DocContentView(): React.ReactElement {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <EmbossButton onClick={() => navigate('/')} variant="primary" className="px-8">
+                <EmbossButton onClick={() => navigate('/play')} variant="primary" className="px-8">
                   {t('doc.cta.primaryAction')}
                 </EmbossButton>
                 <EmbossButton onClick={() => handleScrollToSection('tutorial')} variant="secondary" className="px-8">

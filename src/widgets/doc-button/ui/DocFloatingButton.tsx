@@ -7,7 +7,7 @@ export function DocFloatingButton(): React.ReactElement {
   const { t } = useTranslation();
 
   const handleClick = (): void => {
-    navigate('/doc');
+    navigate('/');
   };
 
   return (

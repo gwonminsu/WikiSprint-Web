@@ -224,10 +224,11 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 ## 라우팅 구조
 
 ```
-/                → HomePage      (게스트 포함 누구나 접근 가능)
+/                → DocPage       (서비스 가이드 랜딩, 게스트 포함 누구나 접근 가능)
+/play            → HomePage      (게임 메인 화면, 게스트 포함 누구나 접근 가능)
 /auth            → AuthPage      (로그인 페이지)
 /settings        → SettingsPage  (게스트 포함 누구나 접근 가능)
-/doc             → DocPage       (WikiSprint 소개)
+/doc             → /로 리다이렉트 (구 경로 호환, <Navigate to="/" replace />)
 /ranking         → RankingPage   (게스트 포함 누구나 접근 가능)
 /share/:shareId  → SharePage     (공유 결과 페이지, JWT 불필요)
 /donations       → DonationInfoPage (후원 정보 + 관리자 대기 목록, 누구나 접근 가능)
@@ -283,6 +284,13 @@ initKakaoSdk       // 카카오 JS SDK 동적 로드 + 초기화 (VITE_KAKAO_JS_
 - 문서 문구 수정 시 `ko`, `en`, `ja` locale을 함께 갱신합니다.
 
 ---
+
+## 최근 변경 메모 (v2.16.3+, AdSense 라우트 재배치)
+
+- AdSense 검토 대응을 위해 루트(`/`)가 `DocPage`(가이드 페이지)로 승격됐고, 게임 화면(`HomePage`)은 `/play`로 분리됐습니다. 기존 `/doc` 경로는 `/`로 자동 리다이렉트합니다.
+- `Router.tsx`에 `AdSenseController` 컴포넌트가 추가됐습니다. `useLocation`·`useGameStore(phase)`를 구독하여 `/`(가이드) 또는 `/play`의 `intro/ready/result` 단계에서만 `adsbygoogle.js`를 동적으로 `<head>`에 주입하고, 그 외 경로·단계에서는 스크립트와 주입된 광고 DOM(`ins.adsbygoogle`, `[id^="aswift_"]`, `iframe[src*="googleads"]` 등)을 모두 정리합니다.
+- `Header.tsx`의 도움말 버튼이 `tutoDoc` 이미지에서 🎮 이모지로 교체됐으며 타깃 경로가 `/play`로 변경됐습니다. `tutoDoc` import는 사용처가 없으므로 제거합니다.
+- `nav.home` / `doc.cta.primaryAction` / `game.helpButton` i18n 키가 `ko/en/ja/zh` 4개 언어 기준으로 가이드·플레이 어휘로 갱신됐습니다.
 
 ## 최근 변경 메모 (v2.16.3)
 
