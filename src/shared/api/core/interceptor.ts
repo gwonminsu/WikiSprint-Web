@@ -153,10 +153,7 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
         console.error('[API Error]', {
           endpoint,
           status: response.status,
-          statusText: response.statusText,
           message: data.message,
-          data: data.data,
-          fullResponse: data,
         });
         throw new ApiException(
           data.message || '요청 처리 중 오류가 발생했습니다.',

@@ -9,6 +9,8 @@ export const API_ENDPOINTS = {
     REGISTER: '/api/auth/register',
     // 탈퇴 취소 (Google ID 토큰으로 본인 확인, permitAll)
     CANCEL_DELETION: '/api/auth/cancel-deletion',
+    // 로그아웃 — Refresh 토큰 jti 블랙리스트 처리
+    LOGOUT: '/api/auth/logout',
   },
   ACCOUNT: {
     ME: '/api/account/me',

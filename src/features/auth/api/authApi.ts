@@ -40,4 +40,13 @@ export const authApi = {
   cancelDeletion: async (data: CancelDeletionRequest): Promise<ApiResponse<GoogleLoginResponse>> => {
     return apiClient.post<GoogleLoginResponse>(API_ENDPOINTS.AUTH.CANCEL_DELETION, data, true);
   },
+
+  // 로그아웃 — 서버에 Refresh 토큰 jti 폐기 요청 (실패해도 클라이언트 토큰은 지워짐)
+  logout: async (refreshToken: string): Promise<void> => {
+    try {
+      await apiClient.post<void>(API_ENDPOINTS.AUTH.LOGOUT, { refreshToken }, true);
+    } catch {
+      // 서버 logout 실패는 무시 — 클라이언트 토큰 삭제가 1차 방어선
+    }
+  },
 };

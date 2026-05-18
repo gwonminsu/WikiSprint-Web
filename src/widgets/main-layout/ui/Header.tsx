@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage } from '@shared';
-import { getProfileImageUrl, useGameLeaveGuard } from '@features';
+import { useAuthStore, useDialog, useTranslation, useToast, ProfileAvatar, getLogoByLanguage, getTokenStorage } from '@shared';
+import { getProfileImageUrl, useGameLeaveGuard, authApi } from '@features';
 
 type HeaderNavItem = {
   href: string;
@@ -59,9 +59,14 @@ export function Header(): React.ReactElement {
       message: t('auth.logoutConfirm'),
       confirmText: t('auth.logout'),
       onConfirm: () => {
+        const refreshToken = getTokenStorage().getRefreshToken();
         clearAuth();
         navigate('/');
         showSuccess(t('auth.logoutSuccess'));
+        // clearAuth 이후 비동기로 서버에 jti 폐기 요청 (실패해도 UX 영향 없음)
+        if (refreshToken) {
+          authApi.logout(refreshToken);
+        }
       },
     });
   };
