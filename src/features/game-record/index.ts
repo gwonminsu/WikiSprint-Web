@@ -2,6 +2,7 @@ export {
   startGameRecord,
   updateRecordPath,
   completeGameRecord,
+  recoverClearedGameRecord,
   abandonGameRecord,
   createShareRecord,
   getGameRecords,

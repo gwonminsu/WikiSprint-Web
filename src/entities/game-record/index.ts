@@ -8,6 +8,7 @@ export type {
   UpdatePathRequest,
   CompleteRecordRequest,
   CompleteRecordResponse,
+  RecoverClearedRecordRequest,
   AbandonRecordRequest,
   PendingGameState,
   CreateShareRecordRequest,

@@ -5,6 +5,7 @@ import type {
   UpdatePathRequest,
   CompleteRecordRequest,
   CompleteRecordResponse,
+  RecoverClearedRecordRequest,
   AbandonRecordRequest,
   GameRecordListResponse,
   SharedGameRecord,
@@ -36,6 +37,17 @@ export const updateRecordPath = async (request: UpdatePathRequest): Promise<void
 // 클리어 처리
 export const completeGameRecord = async (request: CompleteRecordRequest): Promise<CompleteRecordResponse> => {
   const response = await apiClient.post<CompleteRecordResponse>(API_ENDPOINTS.RECORD.COMPLETE, request);
+  return response.data ?? { rankingAlerts: [] };
+};
+
+// 게스트 복구 클리어 직삽입 — start 없이 cleared 상태로 한 번에 기록한다.
+export const recoverClearedGameRecord = async (
+  request: RecoverClearedRecordRequest
+): Promise<CompleteRecordResponse> => {
+  const response = await apiClient.post<CompleteRecordResponse>(
+    API_ENDPOINTS.RECORD.RECOVER_CLEARED,
+    request
+  );
   return response.data ?? { rankingAlerts: [] };
 };
 

@@ -52,6 +52,7 @@ export const API_ENDPOINTS = {
     START: '/api/record/start',
     UPDATE_PATH: '/api/record/update-path',
     COMPLETE: '/api/record/complete',
+    RECOVER_CLEARED: '/api/record/recover-cleared',
     ABANDON: '/api/record/abandon',
     LIST: '/api/record/list',
     SHARE: '/api/record/share', // + /{shareId}

@@ -4,6 +4,8 @@ import {
   useAuthStore,
   useGameStore,
   usePendingRecordStore,
+  useRankingAlertStore,
+  useSettingsStore,
   useToast,
   useTranslation,
   type AuthState,
@@ -13,8 +15,8 @@ import type { GoogleLoginRequest, GoogleLoginResponse } from '@entities';
 import { queryClient } from '@/shared/config/queryClient';
 import { authApi } from '../api/authApi';
 import {
+  recoverClearedGameRecord,
   startGameRecord,
-  completeGameRecord,
   abandonGameRecord,
   isRecoverableClearedPendingGame,
 } from '../../game-record';
@@ -51,21 +53,29 @@ async function handleSuccessfulLogin(
   const pending = usePendingRecordStore.getState().pendingGame;
   if (pending) {
     try {
-      const resp = await startGameRecord({
-        targetWord: pending.targetWord,
-        startDoc: pending.startDoc,
-      });
-
       if (isRecoverableClearedPendingGame(pending)) {
-        useGameStore.getState().setRecordId(resp.recordId);
-        await completeGameRecord({
-          recordId: resp.recordId,
+        const resp = await recoverClearedGameRecord({
+          targetWord: pending.targetWord,
           navPath: JSON.stringify(pending.navPath),
           elapsedMs: pending.elapsedMs,
         });
+        // 결과 화면 공유 버튼이 recordId를 필요로 한다.
+        if (resp.recordId) {
+          useGameStore.getState().setRecordId(resp.recordId);
+        }
+        const { rankingAlertEnabled, rankingAlertPeriod } = useSettingsStore.getState();
+        if (rankingAlertEnabled) {
+          resp.rankingAlerts
+            .filter((alert) => alert.periodType === rankingAlertPeriod)
+            .sort((l, r) => new Date(l.createdAt).getTime() - new Date(r.createdAt).getTime())
+            .forEach((alert) => {
+              useRankingAlertStore.getState().enqueue(alert);
+            });
+        }
         toast.success(t('record.savedAfterLogin'));
       } else {
-        await abandonGameRecord({ recordId: resp.recordId });
+        const record = await startGameRecord({ targetWord: pending.targetWord, startDoc: pending.startDoc });
+        await abandonGameRecord({ recordId: record.recordId });
         if (pending.status === 'cleared') {
           console.warn('[useGoogleLogin] 마지막 경로가 제시어와 달라 게스트 클리어 전적 복구를 중단합니다.', {
             targetWord: pending.targetWord,
@@ -85,6 +95,7 @@ async function handleSuccessfulLogin(
     queryClient.invalidateQueries({ queryKey: ['myAccount'] }),
     queryClient.invalidateQueries({ queryKey: ['gameRecords'] }),
     queryClient.invalidateQueries({ queryKey: ['ranking'] }),
+    queryClient.invalidateQueries({ queryKey: ['rankingAlerts'] }),
   ]);
 
   navigate('/');

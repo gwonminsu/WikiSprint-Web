@@ -59,6 +59,15 @@ export type CompleteRecordRequest = {
 
 export type CompleteRecordResponse = {
   rankingAlerts: import('@/entities/ranking/types').RankingAlertResponse[];
+  // 게스트 복구 응답에서만 채워진다. 결과 화면 공유 버튼이 recordId를 필요로 함.
+  recordId?: string;
+};
+
+// 게스트 복구 클리어 직삽입 요청 (startDoc은 서버가 navPath[0]에서 추출)
+export type RecoverClearedRecordRequest = {
+  targetWord: string;
+  navPath: string;
+  elapsedMs: number;
 };
 
 // 포기 요청
